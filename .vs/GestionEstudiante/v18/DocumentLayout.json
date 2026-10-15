@@ -1,0 +1,86 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|c:\\users\\user\\documents\\universidad\\ciclo 3\\fundamentos de programacion\\gestionestudiantes\\frmgestionestudiantes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|solutionrelative:frmgestionestudiantes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|c:\\users\\user\\documents\\universidad\\ciclo 3\\fundamentos de programacion\\gestionestudiantes\\frmgestionestudiantes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|solutionrelative:frmgestionestudiantes.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|c:\\users\\user\\documents\\universidad\\ciclo 3\\fundamentos de programacion\\gestionestudiantes\\frmgestionestudiantes.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|solutionrelative:frmgestionestudiantes.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|c:\\users\\user\\documents\\universidad\\ciclo 3\\fundamentos de programacion\\gestionestudiantes\\frmgestionestudiantes.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}",
+      "RelativeMoniker": "D:0:0:{46B1592D-E2C7-A414-D8D7-6FCB316A42BE}|GestionEstudiante.csproj|solutionrelative:frmgestionestudiantes.resx||{81828910-B8B3-4D2B-99A3-067027C180C1}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FrmGestionEstudiantes.cs [Dise\u00F1o]",
+              "DocumentMoniker": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.cs",
+              "RelativeDocumentMoniker": "FrmGestionEstudiantes.cs",
+              "ToolTip": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.cs [Dise\u00F1o]",
+              "RelativeToolTip": "FrmGestionEstudiantes.cs [Dise\u00F1o]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-15T14:59:00.392Z",
+              "EditorCaption": " [Dise\u00F1o]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FrmGestionEstudiantes.resx",
+              "DocumentMoniker": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.resx",
+              "RelativeDocumentMoniker": "FrmGestionEstudiantes.resx",
+              "ToolTip": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.resx",
+              "RelativeToolTip": "FrmGestionEstudiantes.resx",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2026-10-15T14:58:56.473Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FrmGestionEstudiantes.cs",
+              "DocumentMoniker": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.cs",
+              "RelativeDocumentMoniker": "FrmGestionEstudiantes.cs",
+              "ToolTip": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.cs",
+              "RelativeToolTip": "FrmGestionEstudiantes.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-15T14:58:55.136Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FrmGestionEstudiantes.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.Designer.cs",
+              "RelativeDocumentMoniker": "FrmGestionEstudiantes.Designer.cs",
+              "ToolTip": "C:\\Users\\USER\\Documents\\universidad\\ciclo 3\\fundamentos de programacion\\GestionEstudiantes\\FrmGestionEstudiantes.Designer.cs",
+              "RelativeToolTip": "FrmGestionEstudiantes.Designer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-10-15T14:58:54.304Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

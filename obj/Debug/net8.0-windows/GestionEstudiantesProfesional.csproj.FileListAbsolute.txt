@@ -1,0 +1,33 @@
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.exe
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.deps.json
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.runtimeconfig.json
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.dll
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.pdb
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.FrmGestionEstudiantes.resources
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.csproj.GenerateResource.cache
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.AssemblyInfoInputs.cache
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.AssemblyInfo.cs
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.csproj.CoreCompileInputs.cache
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.dll
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\refint\GestionEstudiantesProfesional.dll
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.pdb
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.genruntimeconfig.cache
+C:\Users\UPN\Desktop\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\ref\GestionEstudiantesProfesional.dll
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.exe
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.deps.json
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.runtimeconfig.json
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.dll
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\bin\Debug\net8.0-windows\GestionEstudiantesProfesional.pdb
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.FrmGestionEstudiantes.resources
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.csproj.GenerateResource.cache
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.AssemblyInfoInputs.cache
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.AssemblyInfo.cs
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.csproj.CoreCompileInputs.cache
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.dll
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\refint\GestionEstudiantesProfesional.dll
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.pdb
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionEstudiantesProfesional.genruntimeconfig.cache
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\ref\GestionEstudiantesProfesional.dll
+C:\Users\USER\Documents\universidad\ciclo 3\fundamentos de programacion\GestionEstudiantesProfesional\GestionEstudiantesProfesional\obj\Debug\net8.0-windows\GestionE.D2B1DBE4.Up2Date
