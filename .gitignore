@@ -1,6 +1,10 @@
 ﻿# Prototipos y documentacion local
 /doc/
 
+# Documentos generados y archivos temporales
+/output/
+/tmp/
+
 # Archivos generados al compilar .NET
 [Bb]in/
 [Oo]bj/
