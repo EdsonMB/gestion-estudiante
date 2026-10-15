@@ -1,49 +1,60 @@
 using GestionEstudiante.model;
 using GestionEstudiante.repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GestionEstudiante.service
+namespace GestionEstudiante.service;
+
+public class EstudianteService
 {
-    public class EstudianteService
+    // El formulario pasa por este servicio para trabajar con los datos.
+    // Normalizamos los textos antes de agregar o modificar un registro.
+    private readonly EstudianteRepository repository = new();
+    public int Capacidad
     {
-        private EstudianteRepository repository = new EstudianteRepository();
-
-
-        public EstudianteService() { }
-
-
-        public void Agregar(Estudiante estudiante)
+        get
         {
-            repository.Agregar(estudiante);
+            return EstudianteRepository.Capacidad;
         }
-
-        public void Modificar(Estudiante estudiante)
-        {
-            repository.Modificar(estudiante);
-        }
-        public void Eliminar(int id)
-        {
-            repository.Eliminar(id);
-        }
-
-        public Estudiante[] Listar()
-        {
-            return repository.Listar();
-        }
-
-        public Estudiante ObtenerPorId(int id)
-        {
-            return repository.ObtenerPorId(id);
-        }
-
-        public int Conteo()
-        {
-            return repository.Conteo();
-        }
-
+    }
+    // Enviamos el nuevo estudiante al repositorio, donde se asignan código y fecha.
+    public void Agregar(Estudiante estudiante)
+    {
+        NormalizarDatos(estudiante);
+        repository.Agregar(estudiante);
+    }
+    // Actualizamos un registro existente usando su identificador.
+    public void Modificar(Estudiante estudiante)
+    {
+        NormalizarDatos(estudiante);
+        repository.Modificar(estudiante);
+    }
+    // Aplicamos la misma regla de almacenamiento al registrar y al editar, incluido el correo.
+    // Trim quita espacios de los extremos y ToUpperInvariant convierte el texto a mayúsculas.
+    private static void NormalizarDatos(Estudiante estudiante)
+    {
+        estudiante.codigo = estudiante.codigo.Trim().ToUpperInvariant();
+        estudiante.nombre = estudiante.nombre.Trim().ToUpperInvariant();
+        estudiante.carrera = estudiante.carrera.Trim().ToUpperInvariant();
+        estudiante.correo = estudiante.correo.Trim().ToUpperInvariant();
+        estudiante.telefono = estudiante.telefono.Trim().ToUpperInvariant();
+    }
+    // Indicamos qué estudiante debe retirarse del almacenamiento.
+    public void Eliminar(int id)
+    {
+        repository.Eliminar(id);
+    }
+    // Pedimos los estudiantes registrados, sin incluir los espacios vacíos del arreglo.
+    public Estudiante[] Listar()
+    {
+        return repository.Listar();
+    }
+    // Buscamos un estudiante concreto; el resultado puede ser null si no existe.
+    public Estudiante? ObtenerPorId(int id)
+    {
+        return repository.ObtenerPorId(id);
+    }
+    // Consultamos cuántos estudiantes hay para el total y los cupos disponibles.
+    public int Conteo()
+    {
+        return repository.Conteo();
     }
 }

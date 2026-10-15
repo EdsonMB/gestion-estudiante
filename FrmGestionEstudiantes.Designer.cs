@@ -1,364 +1,588 @@
+#nullable enable
 namespace GestionEstudiante;
 
 partial class FrmGestionEstudiantes
 {
     private System.ComponentModel.IContainer? components = null;
-
-    private Panel pnlHeader = null!;
-    private Label lblTitulo = null!;
-    private GroupBox grpDatos = null!;
-    private Label lblCodigo = null!;
-    private Label lblNombre = null!;
-    private Label lblCarrera = null!;
-    private Label lblCorreo = null!;
-    private Label lblTelefono = null!;
-    private TextBox txtCodigo = null!;
-    private TextBox txtNombre = null!;
-    private TextBox txtCarrera = null!;
-    private TextBox txtCorreo = null!;
-    private TextBox txtTelefono = null!;
     private Button btnAgregar = null!;
+    private Button btnLimpiar = null!;
+    private Button limpiarFiltro = null!;
     private Button btnModificar = null!;
     private Button btnEliminar = null!;
-    private Button btnLimpiar = null!;
-    private DataGridView dgvEstudiantes = null!;
-    private DataGridViewTextBoxColumn colNro = null!;
+    private TableLayoutPanel pnlTotal = null!;
+    private Label lblTotalTitulo = null!;
+    private Label lblTotalValor = null!;
+    private TableLayoutPanel pnlCupos = null!;
+    private Label lblCuposTitulo = null!;
+    private Label lblCuposValor = null!;
+    private TableLayoutPanel pnlCarrera = null!;
+    private Label lblCarreraTitulo = null!;
+    private Label lblCarreraValor = null!;
+    private Label lblCampoCodigo = null!;
+    private TextBox txtCodigo = null!;
+    private Label lblCampoNombre = null!;
+    private TextBox txtNombre = null!;
+    private Label lblCampoCarrera = null!;
+    private ComboBox cboCarrera = null!;
+    private Label lblCampoCorreo = null!;
+    private TextBox txtCorreo = null!;
+    private Label lblCampoTelefono = null!;
+    private TextBox txtTelefono = null!;
+    private Label lblAyuda1 = null!;
+    private Label lblAyuda2 = null!;
     private DataGridViewTextBoxColumn colCodigo = null!;
     private DataGridViewTextBoxColumn colNombre = null!;
     private DataGridViewTextBoxColumn colCarrera = null!;
     private DataGridViewTextBoxColumn colCorreo = null!;
     private DataGridViewTextBoxColumn colTelefono = null!;
-    private GroupBox grpCadenas = null!;
-    private Label lblCadenaEntrada = null!;
-    private Label lblLongitud = null!;
-    private Label lblMayusculas = null!;
-    private Label lblMinusculas = null!;
-    private Label lblPrimeraLetra = null!;
-    private Label lblUltimaLetra = null!;
-    private Label lblSubcadena = null!;
-    private Label lblInvertido = null!;
-    private Label lblSinEspacios = null!;
-    private Label lblReemplazo = null!;
-    private Label lblVocales = null!;
-    private TextBox txtCadenaEntrada = null!;
-    private TextBox txtLongitud = null!;
-    private TextBox txtMayusculas = null!;
-    private TextBox txtMinusculas = null!;
-    private TextBox txtPrimeraLetra = null!;
-    private TextBox txtUltimaLetra = null!;
-    private TextBox txtSubcadena = null!;
-    private TextBox txtInvertido = null!;
-    private TextBox txtSinEspacios = null!;
-    private TextBox txtReemplazo = null!;
-    private TextBox txtVocales = null!;
-    private Button btnProcesar = null!;
-    private GroupBox grpBuscar = null!;
-    private Label lblBuscarNombre = null!;
+    private DataGridViewTextBoxColumn colFecha = null!;
+    private TableLayoutPanel root = null!;
+    private Label header = null!;
+    private TableLayoutPanel indicadores = null!;
+    private TableLayoutPanel contenido = null!;
+    private TableLayoutPanel editor = null!;
+    private Label lblModo = null!;
+    private TableLayoutPanel listado = null!;
+    private TableLayoutPanel busqueda = null!;
     private TextBox txtBuscar = null!;
-    private Button btnBuscar = null!;
-    private ListBox lstResultados = null!;
-    private GroupBox grpInfo = null!;
-    private Label lblTotalTexto = null!;
-    private Label lblCarreraTexto = null!;
-    private Label lblMedicinaTexto = null!;
-    private Label lblTotalValor = null!;
-    private Label lblCarreraValor = null!;
-    private Label lblMedicinaValor = null!;
+    private DataGridView dgvEstudiantes = null!;
+    private FlowLayoutPanel acciones = null!;
+    private Label lblResultados = null!;
 
+    // Liberamos los componentes del formulario cuando ya no se necesitan.
     protected override void Dispose(bool disposing)
     {
-        if (disposing && (components != null))
-        {
-            components.Dispose();
-        }
+        if (disposing) components?.Dispose();
         base.Dispose(disposing);
     }
 
+    // Armamos la pantalla por secciones: encabezado, indicadores, editor y listado.
+    // Los paneles distribuyen el espacio cuando cambia el tamaño de la ventana.
     private void InitializeComponent()
     {
         DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
         DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
         DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
-        pnlHeader = new Panel();
-        lblTitulo = new Label();
-        grpDatos = new GroupBox();
-        lblCodigo = new Label();
-        lblNombre = new Label();
-        lblCarrera = new Label();
-        lblCorreo = new Label();
-        lblTelefono = new Label();
+        root = new TableLayoutPanel();
+        header = new Label();
+        indicadores = new TableLayoutPanel();
+        pnlTotal = new TableLayoutPanel();
+        lblTotalTitulo = new Label();
+        lblTotalValor = new Label();
+        pnlCupos = new TableLayoutPanel();
+        lblCuposTitulo = new Label();
+        lblCuposValor = new Label();
+        pnlCarrera = new TableLayoutPanel();
+        lblCarreraTitulo = new Label();
+        lblCarreraValor = new Label();
+        contenido = new TableLayoutPanel();
+        editor = new TableLayoutPanel();
+        lblModo = new Label();
+        lblCampoCodigo = new Label();
         txtCodigo = new TextBox();
+        lblCampoNombre = new Label();
         txtNombre = new TextBox();
-        txtCarrera = new TextBox();
+        lblCampoCarrera = new Label();
+        cboCarrera = new ComboBox();
+        lblCampoCorreo = new Label();
         txtCorreo = new TextBox();
+        lblCampoTelefono = new Label();
         txtTelefono = new TextBox();
         btnAgregar = new Button();
-        btnModificar = new Button();
-        btnEliminar = new Button();
         btnLimpiar = new Button();
+        lblAyuda1 = new Label();
+        listado = new TableLayoutPanel();
+        lblAyuda2 = new Label();
+        busqueda = new TableLayoutPanel();
+        txtBuscar = new TextBox();
+        limpiarFiltro = new Button();
         dgvEstudiantes = new DataGridView();
-        colNro = new DataGridViewTextBoxColumn();
         colCodigo = new DataGridViewTextBoxColumn();
         colNombre = new DataGridViewTextBoxColumn();
         colCarrera = new DataGridViewTextBoxColumn();
         colCorreo = new DataGridViewTextBoxColumn();
         colTelefono = new DataGridViewTextBoxColumn();
-        grpCadenas = new GroupBox();
-        lblCadenaEntrada = new Label();
-        lblLongitud = new Label();
-        lblMayusculas = new Label();
-        lblMinusculas = new Label();
-        lblPrimeraLetra = new Label();
-        lblUltimaLetra = new Label();
-        lblSubcadena = new Label();
-        lblInvertido = new Label();
-        lblSinEspacios = new Label();
-        lblReemplazo = new Label();
-        lblVocales = new Label();
-        txtCadenaEntrada = new TextBox();
-        txtLongitud = new TextBox();
-        txtMayusculas = new TextBox();
-        txtMinusculas = new TextBox();
-        txtPrimeraLetra = new TextBox();
-        txtUltimaLetra = new TextBox();
-        txtSubcadena = new TextBox();
-        txtInvertido = new TextBox();
-        txtSinEspacios = new TextBox();
-        txtReemplazo = new TextBox();
-        txtVocales = new TextBox();
-        btnProcesar = new Button();
-        grpBuscar = new GroupBox();
-        lblBuscarNombre = new Label();
-        txtBuscar = new TextBox();
-        btnBuscar = new Button();
-        lstResultados = new ListBox();
-        grpInfo = new GroupBox();
-        lblTotalTexto = new Label();
-        lblCarreraTexto = new Label();
-        lblMedicinaTexto = new Label();
-        lblTotalValor = new Label();
-        lblCarreraValor = new Label();
-        lblMedicinaValor = new Label();
-        pnlHeader.SuspendLayout();
-        grpDatos.SuspendLayout();
+        colFecha = new DataGridViewTextBoxColumn();
+        acciones = new FlowLayoutPanel();
+        btnModificar = new Button();
+        btnEliminar = new Button();
+        lblResultados = new Label();
+        root.SuspendLayout();
+        indicadores.SuspendLayout();
+        pnlTotal.SuspendLayout();
+        pnlCupos.SuspendLayout();
+        pnlCarrera.SuspendLayout();
+        contenido.SuspendLayout();
+        editor.SuspendLayout();
+        listado.SuspendLayout();
+        busqueda.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvEstudiantes).BeginInit();
-        grpCadenas.SuspendLayout();
-        grpBuscar.SuspendLayout();
-        grpInfo.SuspendLayout();
+        acciones.SuspendLayout();
         SuspendLayout();
         // 
-        // pnlHeader
+        // root
         // 
-        pnlHeader.BackColor = Color.FromArgb(31, 55, 82);
-        pnlHeader.Controls.Add(lblTitulo);
-        pnlHeader.Dock = DockStyle.Top;
-        pnlHeader.Location = new Point(0, 0);
-        pnlHeader.Name = "pnlHeader";
-        pnlHeader.Size = new Size(1548, 88);
-        pnlHeader.TabIndex = 0;
+        root.ColumnCount = 1;
+        root.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+        root.Controls.Add(header, 0, 0);
+        root.Controls.Add(indicadores, 0, 1);
+        root.Controls.Add(contenido, 0, 2);
+        root.Dock = DockStyle.Fill;
+        root.Location = new Point(0, 0);
+        root.Name = "root";
+        root.RowCount = 3;
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
+        root.RowStyles.Add(new RowStyle(SizeType.Absolute, 104F));
+        root.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        root.Size = new Size(1320, 790);
+        root.TabIndex = 0;
         // 
-        // lblTitulo
+        // header
         // 
-        lblTitulo.Dock = DockStyle.Fill;
-        lblTitulo.Font = new Font("Segoe UI", 27F, FontStyle.Bold);
-        lblTitulo.ForeColor = Color.White;
-        lblTitulo.Location = new Point(0, 0);
-        lblTitulo.Name = "lblTitulo";
-        lblTitulo.Size = new Size(1548, 88);
-        lblTitulo.TabIndex = 0;
-        lblTitulo.Text = "GESTIÓN DE ESTUDIANTES";
-        lblTitulo.TextAlign = ContentAlignment.MiddleCenter;
+        header.BackColor = Color.FromArgb(31, 55, 82);
+        header.Dock = DockStyle.Fill;
+        header.Font = new Font("Segoe UI", 24F, FontStyle.Bold);
+        header.ForeColor = Color.White;
+        header.Location = new Point(0, 0);
+        header.Margin = new Padding(0);
+        header.Name = "header";
+        header.Padding = new Padding(28, 0, 0, 0);
+        header.Size = new Size(1320, 90);
+        header.TabIndex = 0;
+        header.Text = "Gestión de estudiantes";
+        header.TextAlign = ContentAlignment.MiddleLeft;
         // 
-        // grpDatos
+        // indicadores
         // 
-        grpDatos.BackColor = Color.FromArgb(245, 247, 250);
-        grpDatos.Controls.Add(lblCodigo);
-        grpDatos.Controls.Add(lblNombre);
-        grpDatos.Controls.Add(lblCarrera);
-        grpDatos.Controls.Add(lblCorreo);
-        grpDatos.Controls.Add(lblTelefono);
-        grpDatos.Controls.Add(txtCodigo);
-        grpDatos.Controls.Add(txtNombre);
-        grpDatos.Controls.Add(txtCarrera);
-        grpDatos.Controls.Add(txtCorreo);
-        grpDatos.Controls.Add(txtTelefono);
-        grpDatos.Controls.Add(btnAgregar);
-        grpDatos.Controls.Add(btnModificar);
-        grpDatos.Controls.Add(btnEliminar);
-        grpDatos.Controls.Add(btnLimpiar);
-        grpDatos.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
-        grpDatos.ForeColor = Color.FromArgb(31, 55, 82);
-        grpDatos.Location = new Point(24, 105);
-        grpDatos.Name = "grpDatos";
-        grpDatos.Size = new Size(405, 795);
-        grpDatos.TabIndex = 1;
-        grpDatos.TabStop = false;
-        grpDatos.Text = "  Datos del estudiante  ";
+        indicadores.ColumnCount = 3;
+        indicadores.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 28F));
+        indicadores.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 28F));
+        indicadores.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 44F));
+        indicadores.Controls.Add(pnlTotal, 0, 0);
+        indicadores.Controls.Add(pnlCupos, 1, 0);
+        indicadores.Controls.Add(pnlCarrera, 2, 0);
+        indicadores.Dock = DockStyle.Fill;
+        indicadores.Location = new Point(3, 93);
+        indicadores.Name = "indicadores";
+        indicadores.Padding = new Padding(24, 16, 24, 8);
+        indicadores.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+        indicadores.Size = new Size(1314, 98);
+        indicadores.TabIndex = 1;
         // 
-        // lblCodigo
+        // pnlTotal
         // 
-        lblCodigo.Font = new Font("Segoe UI", 9.5F);
-        lblCodigo.ForeColor = Color.FromArgb(32, 47, 67);
-        lblCodigo.Location = new Point(24, 66);
-        lblCodigo.Name = "lblCodigo";
-        lblCodigo.Size = new Size(105, 24);
-        lblCodigo.TabIndex = 0;
-        lblCodigo.Text = "Código:";
-        lblCodigo.TextAlign = ContentAlignment.MiddleLeft;
+        pnlTotal.BackColor = Color.White;
+        pnlTotal.ColumnCount = 2;
+        pnlTotal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+        pnlTotal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+        pnlTotal.Controls.Add(lblTotalTitulo, 0, 0);
+        pnlTotal.Controls.Add(lblTotalValor, 1, 0);
+        pnlTotal.Dock = DockStyle.Fill;
+        pnlTotal.Location = new Point(24, 16);
+        pnlTotal.Margin = new Padding(0, 0, 12, 0);
+        pnlTotal.Name = "pnlTotal";
+        pnlTotal.Padding = new Padding(14);
+        pnlTotal.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+        pnlTotal.Size = new Size(342, 74);
+        pnlTotal.TabIndex = 0;
         // 
-        // lblNombre
+        // lblTotalTitulo
         // 
-        lblNombre.Font = new Font("Segoe UI", 9.5F);
-        lblNombre.ForeColor = Color.FromArgb(32, 47, 67);
-        lblNombre.Location = new Point(24, 122);
-        lblNombre.Name = "lblNombre";
-        lblNombre.Size = new Size(105, 24);
-        lblNombre.TabIndex = 1;
-        lblNombre.Text = "Nombre:";
-        lblNombre.TextAlign = ContentAlignment.MiddleLeft;
+        lblTotalTitulo.Dock = DockStyle.Fill;
+        lblTotalTitulo.Location = new Point(17, 14);
+        lblTotalTitulo.Name = "lblTotalTitulo";
+        lblTotalTitulo.Size = new Size(182, 46);
+        lblTotalTitulo.TabIndex = 0;
+        lblTotalTitulo.Text = "Estudiantes";
+        lblTotalTitulo.TextAlign = ContentAlignment.MiddleLeft;
         // 
-        // lblCarrera
+        // lblTotalValor
         // 
-        lblCarrera.Font = new Font("Segoe UI", 9.5F);
-        lblCarrera.ForeColor = Color.FromArgb(32, 47, 67);
-        lblCarrera.Location = new Point(24, 178);
-        lblCarrera.Name = "lblCarrera";
-        lblCarrera.Size = new Size(105, 24);
-        lblCarrera.TabIndex = 2;
-        lblCarrera.Text = "Carrera:";
-        lblCarrera.TextAlign = ContentAlignment.MiddleLeft;
+        lblTotalValor.AutoEllipsis = true;
+        lblTotalValor.Dock = DockStyle.Fill;
+        lblTotalValor.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblTotalValor.Location = new Point(205, 14);
+        lblTotalValor.Name = "lblTotalValor";
+        lblTotalValor.Size = new Size(120, 46);
+        lblTotalValor.TabIndex = 1;
+        lblTotalValor.Text = "0";
+        lblTotalValor.TextAlign = ContentAlignment.MiddleRight;
         // 
-        // lblCorreo
+        // pnlCupos
         // 
-        lblCorreo.Font = new Font("Segoe UI", 9.5F);
-        lblCorreo.ForeColor = Color.FromArgb(32, 47, 67);
-        lblCorreo.Location = new Point(24, 234);
-        lblCorreo.Name = "lblCorreo";
-        lblCorreo.Size = new Size(105, 24);
-        lblCorreo.TabIndex = 3;
-        lblCorreo.Text = "Correo:";
-        lblCorreo.TextAlign = ContentAlignment.MiddleLeft;
+        pnlCupos.BackColor = Color.White;
+        pnlCupos.ColumnCount = 2;
+        pnlCupos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+        pnlCupos.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+        pnlCupos.Controls.Add(lblCuposTitulo, 0, 0);
+        pnlCupos.Controls.Add(lblCuposValor, 1, 0);
+        pnlCupos.Dock = DockStyle.Fill;
+        pnlCupos.Location = new Point(378, 16);
+        pnlCupos.Margin = new Padding(0, 0, 12, 0);
+        pnlCupos.Name = "pnlCupos";
+        pnlCupos.Padding = new Padding(14);
+        pnlCupos.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+        pnlCupos.Size = new Size(342, 74);
+        pnlCupos.TabIndex = 1;
         // 
-        // lblTelefono
+        // lblCuposTitulo
         // 
-        lblTelefono.Font = new Font("Segoe UI", 9.5F);
-        lblTelefono.ForeColor = Color.FromArgb(32, 47, 67);
-        lblTelefono.Location = new Point(24, 290);
-        lblTelefono.Name = "lblTelefono";
-        lblTelefono.Size = new Size(105, 24);
-        lblTelefono.TabIndex = 4;
-        lblTelefono.Text = "Teléfono:";
-        lblTelefono.TextAlign = ContentAlignment.MiddleLeft;
+        lblCuposTitulo.Dock = DockStyle.Fill;
+        lblCuposTitulo.Location = new Point(17, 14);
+        lblCuposTitulo.Name = "lblCuposTitulo";
+        lblCuposTitulo.Size = new Size(182, 46);
+        lblCuposTitulo.TabIndex = 0;
+        lblCuposTitulo.Text = "Cupos libres";
+        lblCuposTitulo.TextAlign = ContentAlignment.MiddleLeft;
+        // 
+        // lblCuposValor
+        // 
+        lblCuposValor.AutoEllipsis = true;
+        lblCuposValor.Dock = DockStyle.Fill;
+        lblCuposValor.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblCuposValor.Location = new Point(205, 14);
+        lblCuposValor.Name = "lblCuposValor";
+        lblCuposValor.Size = new Size(120, 46);
+        lblCuposValor.TabIndex = 1;
+        lblCuposValor.Text = "0";
+        lblCuposValor.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // pnlCarrera
+        // 
+        pnlCarrera.BackColor = Color.White;
+        pnlCarrera.ColumnCount = 2;
+        pnlCarrera.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
+        pnlCarrera.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
+        pnlCarrera.Controls.Add(lblCarreraTitulo, 0, 0);
+        pnlCarrera.Controls.Add(lblCarreraValor, 1, 0);
+        pnlCarrera.Dock = DockStyle.Fill;
+        pnlCarrera.Location = new Point(732, 16);
+        pnlCarrera.Margin = new Padding(0, 0, 12, 0);
+        pnlCarrera.Name = "pnlCarrera";
+        pnlCarrera.Padding = new Padding(14);
+        pnlCarrera.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+        pnlCarrera.Size = new Size(546, 74);
+        pnlCarrera.TabIndex = 2;
+        // 
+        // lblCarreraTitulo
+        // 
+        lblCarreraTitulo.Dock = DockStyle.Fill;
+        lblCarreraTitulo.Location = new Point(17, 14);
+        lblCarreraTitulo.Name = "lblCarreraTitulo";
+        lblCarreraTitulo.Size = new Size(304, 46);
+        lblCarreraTitulo.TabIndex = 0;
+        lblCarreraTitulo.Text = "Carrera con más estudiantes";
+        lblCarreraTitulo.TextAlign = ContentAlignment.MiddleLeft;
+        // 
+        // lblCarreraValor
+        // 
+        lblCarreraValor.AutoEllipsis = true;
+        lblCarreraValor.Dock = DockStyle.Fill;
+        lblCarreraValor.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+        lblCarreraValor.Location = new Point(327, 14);
+        lblCarreraValor.Name = "lblCarreraValor";
+        lblCarreraValor.Size = new Size(202, 46);
+        lblCarreraValor.TabIndex = 1;
+        lblCarreraValor.Text = "0";
+        lblCarreraValor.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // contenido
+        // 
+        contenido.ColumnCount = 2;
+        contenido.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 310F));
+        contenido.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        contenido.Controls.Add(editor, 0, 0);
+        contenido.Controls.Add(listado, 1, 0);
+        contenido.Dock = DockStyle.Fill;
+        contenido.Location = new Point(3, 197);
+        contenido.Name = "contenido";
+        contenido.Padding = new Padding(24, 8, 24, 20);
+        contenido.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+        contenido.Size = new Size(1314, 590);
+        contenido.TabIndex = 2;
+        // 
+        // editor
+        // 
+        editor.AutoScroll = true;
+        editor.BackColor = Color.White;
+        editor.ColumnCount = 1;
+        editor.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        editor.Controls.Add(lblModo, 0, 0);
+        editor.Controls.Add(lblCampoCodigo, 0, 1);
+        editor.Controls.Add(txtCodigo, 0, 2);
+        editor.Controls.Add(lblCampoNombre, 0, 3);
+        editor.Controls.Add(txtNombre, 0, 4);
+        editor.Controls.Add(lblCampoCarrera, 0, 5);
+        editor.Controls.Add(cboCarrera, 0, 6);
+        editor.Controls.Add(lblCampoCorreo, 0, 7);
+        editor.Controls.Add(txtCorreo, 0, 8);
+        editor.Controls.Add(lblCampoTelefono, 0, 9);
+        editor.Controls.Add(txtTelefono, 0, 10);
+        editor.Controls.Add(btnAgregar, 0, 11);
+        editor.Controls.Add(btnLimpiar, 0, 12);
+        editor.Controls.Add(lblAyuda1, 0, 13);
+        editor.Dock = DockStyle.Fill;
+        editor.Location = new Point(24, 8);
+        editor.Margin = new Padding(0, 0, 20, 0);
+        editor.Name = "editor";
+        editor.Padding = new Padding(20);
+        editor.RowCount = 15;
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle());
+        editor.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        editor.Size = new Size(290, 562);
+        editor.TabIndex = 0;
+        // 
+        // lblModo
+        // 
+        lblModo.AutoSize = true;
+        lblModo.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblModo.Location = new Point(20, 20);
+        lblModo.Margin = new Padding(0, 0, 0, 12);
+        lblModo.Name = "lblModo";
+        lblModo.Size = new Size(169, 25);
+        lblModo.TabIndex = 0;
+        lblModo.Text = "Nuevo estudiante";
+        // 
+        // lblCampoCodigo
+        // 
+        lblCampoCodigo.AutoSize = true;
+        lblCampoCodigo.Location = new Point(20, 63);
+        lblCampoCodigo.Margin = new Padding(0, 6, 0, 4);
+        lblCampoCodigo.Name = "lblCampoCodigo";
+        lblCampoCodigo.Size = new Size(53, 19);
+        lblCampoCodigo.TabIndex = 1;
+        lblCampoCodigo.Text = "Código";
         // 
         // txtCodigo
         // 
-        txtCodigo.BorderStyle = BorderStyle.FixedSingle;
-        txtCodigo.Enabled = false;
-        txtCodigo.Font = new Font("Segoe UI", 9.5F);
-        txtCodigo.Location = new Point(135, 64);
+        txtCodigo.Dock = DockStyle.Top;
+        txtCodigo.Location = new Point(20, 86);
+        txtCodigo.Margin = new Padding(0, 0, 16, 8);
         txtCodigo.Name = "txtCodigo";
-        txtCodigo.Size = new Size(235, 24);
-        txtCodigo.TabIndex = 5;
+        txtCodigo.PlaceholderText = "Se genera al guardar";
+        txtCodigo.ReadOnly = true;
+        txtCodigo.Size = new Size(234, 25);
+        txtCodigo.TabIndex = 2;
+        txtCodigo.TabStop = false;
+        // 
+        // lblCampoNombre
+        // 
+        lblCampoNombre.AutoSize = true;
+        lblCampoNombre.Location = new Point(20, 125);
+        lblCampoNombre.Margin = new Padding(0, 6, 0, 4);
+        lblCampoNombre.Name = "lblCampoNombre";
+        lblCampoNombre.Size = new Size(130, 19);
+        lblCampoNombre.TabIndex = 3;
+        lblCampoNombre.Text = "Nombre completo *";
         // 
         // txtNombre
         // 
-        txtNombre.BorderStyle = BorderStyle.FixedSingle;
-        txtNombre.Font = new Font("Segoe UI", 9.5F);
-        txtNombre.Location = new Point(135, 120);
+        txtNombre.CharacterCasing = CharacterCasing.Upper;
+        txtNombre.Dock = DockStyle.Top;
+        txtNombre.Location = new Point(20, 148);
+        txtNombre.Margin = new Padding(0, 0, 16, 8);
         txtNombre.Name = "txtNombre";
-        txtNombre.Size = new Size(235, 24);
-        txtNombre.TabIndex = 6;
+        txtNombre.Size = new Size(234, 25);
+        txtNombre.TabIndex = 4;
         // 
-        // txtCarrera
+        // lblCampoCarrera
         // 
-        txtCarrera.BorderStyle = BorderStyle.FixedSingle;
-        txtCarrera.Font = new Font("Segoe UI", 9.5F);
-        txtCarrera.Location = new Point(135, 176);
-        txtCarrera.Name = "txtCarrera";
-        txtCarrera.Size = new Size(235, 24);
-        txtCarrera.TabIndex = 7;
+        lblCampoCarrera.AutoSize = true;
+        lblCampoCarrera.Location = new Point(20, 187);
+        lblCampoCarrera.Margin = new Padding(0, 6, 0, 4);
+        lblCampoCarrera.Name = "lblCampoCarrera";
+        lblCampoCarrera.Size = new Size(64, 19);
+        lblCampoCarrera.TabIndex = 5;
+        lblCampoCarrera.Text = "Carrera *";
+        // 
+        // cboCarrera
+        // 
+        cboCarrera.Dock = DockStyle.Top;
+        cboCarrera.DropDownStyle = ComboBoxStyle.DropDownList;
+        cboCarrera.DropDownWidth = 360;
+        cboCarrera.Items.AddRange(new object[] { "ADMINISTRACIÓN", "CONTABILIDAD", "DERECHO", "INGENIERÍA DE SISTEMAS", "INGENIERÍA INDUSTRIAL" });
+        cboCarrera.Location = new Point(20, 210);
+        cboCarrera.Margin = new Padding(0, 0, 16, 8);
+        cboCarrera.Name = "cboCarrera";
+        cboCarrera.Size = new Size(234, 25);
+        cboCarrera.TabIndex = 6;
+        // 
+        // lblCampoCorreo
+        // 
+        lblCampoCorreo.AutoSize = true;
+        lblCampoCorreo.Location = new Point(20, 249);
+        lblCampoCorreo.Margin = new Padding(0, 6, 0, 4);
+        lblCampoCorreo.Name = "lblCampoCorreo";
+        lblCampoCorreo.Size = new Size(121, 19);
+        lblCampoCorreo.TabIndex = 7;
+        lblCampoCorreo.Text = "Correo electrónico";
         // 
         // txtCorreo
         // 
-        txtCorreo.BorderStyle = BorderStyle.FixedSingle;
-        txtCorreo.Font = new Font("Segoe UI", 9.5F);
-        txtCorreo.Location = new Point(135, 232);
+        txtCorreo.CharacterCasing = CharacterCasing.Upper;
+        txtCorreo.Dock = DockStyle.Top;
+        txtCorreo.Location = new Point(20, 272);
+        txtCorreo.Margin = new Padding(0, 0, 16, 8);
         txtCorreo.Name = "txtCorreo";
-        txtCorreo.Size = new Size(235, 24);
+        txtCorreo.Size = new Size(234, 25);
         txtCorreo.TabIndex = 8;
+        // 
+        // lblCampoTelefono
+        // 
+        lblCampoTelefono.AutoSize = true;
+        lblCampoTelefono.Location = new Point(20, 311);
+        lblCampoTelefono.Margin = new Padding(0, 6, 0, 4);
+        lblCampoTelefono.Name = "lblCampoTelefono";
+        lblCampoTelefono.Size = new Size(60, 19);
+        lblCampoTelefono.TabIndex = 9;
+        lblCampoTelefono.Text = "Teléfono";
         // 
         // txtTelefono
         // 
-        txtTelefono.BorderStyle = BorderStyle.FixedSingle;
-        txtTelefono.Font = new Font("Segoe UI", 9.5F);
-        txtTelefono.Location = new Point(135, 288);
+        txtTelefono.Dock = DockStyle.Top;
+        txtTelefono.Location = new Point(20, 334);
+        txtTelefono.Margin = new Padding(0, 0, 16, 8);
         txtTelefono.Name = "txtTelefono";
-        txtTelefono.Size = new Size(235, 24);
-        txtTelefono.TabIndex = 9;
+        txtTelefono.Size = new Size(234, 25);
+        txtTelefono.TabIndex = 10;
         // 
         // btnAgregar
         // 
+        btnAgregar.AutoSize = true;
         btnAgregar.BackColor = Color.FromArgb(41, 98, 144);
         btnAgregar.Cursor = Cursors.Hand;
-        btnAgregar.FlatAppearance.BorderSize = 0;
+        btnAgregar.Dock = DockStyle.Top;
         btnAgregar.FlatStyle = FlatStyle.Flat;
-        btnAgregar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
         btnAgregar.ForeColor = Color.White;
-        btnAgregar.Location = new Point(24, 365);
+        btnAgregar.Location = new Point(20, 371);
+        btnAgregar.Margin = new Padding(0, 4, 10, 4);
+        btnAgregar.MinimumSize = new Size(110, 36);
         btnAgregar.Name = "btnAgregar";
-        btnAgregar.Size = new Size(346, 70);
-        btnAgregar.TabIndex = 10;
-        btnAgregar.Text = "+   Agregar";
+        btnAgregar.Padding = new Padding(8, 2, 8, 2);
+        btnAgregar.Size = new Size(240, 36);
+        btnAgregar.TabIndex = 11;
+        btnAgregar.Text = "Agregar estudiante";
         btnAgregar.UseVisualStyleBackColor = false;
         btnAgregar.Click += btnAgregar_Click;
         // 
-        // btnModificar
-        // 
-        btnModificar.BackColor = Color.FromArgb(46, 110, 120);
-        btnModificar.Cursor = Cursors.Hand;
-        btnModificar.FlatAppearance.BorderSize = 0;
-        btnModificar.FlatStyle = FlatStyle.Flat;
-        btnModificar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        btnModificar.ForeColor = Color.White;
-        btnModificar.Location = new Point(24, 450);
-        btnModificar.Name = "btnModificar";
-        btnModificar.Size = new Size(346, 70);
-        btnModificar.TabIndex = 11;
-        btnModificar.Text = "✎   Modificar";
-        btnModificar.UseVisualStyleBackColor = false;
-        btnModificar.Click += btnModificar_Click;
-        // 
-        // btnEliminar
-        // 
-        btnEliminar.BackColor = Color.FromArgb(180, 58, 58);
-        btnEliminar.Cursor = Cursors.Hand;
-        btnEliminar.FlatAppearance.BorderSize = 0;
-        btnEliminar.FlatStyle = FlatStyle.Flat;
-        btnEliminar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        btnEliminar.ForeColor = Color.White;
-        btnEliminar.Location = new Point(24, 535);
-        btnEliminar.Name = "btnEliminar";
-        btnEliminar.Size = new Size(346, 70);
-        btnEliminar.TabIndex = 12;
-        btnEliminar.Text = "−   Eliminar";
-        btnEliminar.UseVisualStyleBackColor = false;
-        btnEliminar.Click += btnEliminar_Click;
-        // 
         // btnLimpiar
         // 
-        btnLimpiar.BackColor = Color.FromArgb(90, 100, 110);
+        btnLimpiar.AutoSize = true;
+        btnLimpiar.BackColor = Color.White;
         btnLimpiar.Cursor = Cursors.Hand;
-        btnLimpiar.FlatAppearance.BorderSize = 0;
+        btnLimpiar.Dock = DockStyle.Top;
         btnLimpiar.FlatStyle = FlatStyle.Flat;
-        btnLimpiar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        btnLimpiar.ForeColor = Color.White;
-        btnLimpiar.Location = new Point(24, 620);
+        btnLimpiar.ForeColor = Color.FromArgb(31, 55, 82);
+        btnLimpiar.Location = new Point(20, 415);
+        btnLimpiar.Margin = new Padding(0, 4, 10, 4);
+        btnLimpiar.MinimumSize = new Size(110, 36);
         btnLimpiar.Name = "btnLimpiar";
-        btnLimpiar.Size = new Size(346, 70);
-        btnLimpiar.TabIndex = 13;
-        btnLimpiar.Text = "Limpiar";
+        btnLimpiar.Padding = new Padding(8, 2, 8, 2);
+        btnLimpiar.Size = new Size(240, 36);
+        btnLimpiar.TabIndex = 12;
+        btnLimpiar.Text = "Limpiar / Cancelar";
         btnLimpiar.UseVisualStyleBackColor = false;
         btnLimpiar.Click += btnLimpiar_Click;
+        // 
+        // lblAyuda1
+        // 
+        lblAyuda1.AutoSize = true;
+        lblAyuda1.ForeColor = Color.DimGray;
+        lblAyuda1.Location = new Point(20, 465);
+        lblAyuda1.Margin = new Padding(0, 10, 0, 0);
+        lblAyuda1.Name = "lblAyuda1";
+        lblAyuda1.Size = new Size(145, 19);
+        lblAyuda1.TabIndex = 13;
+        lblAyuda1.Text = "* Campos obligatorios";
+        // 
+        // listado
+        // 
+        listado.BackColor = Color.White;
+        listado.ColumnCount = 1;
+        listado.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+        listado.Controls.Add(lblAyuda2, 0, 0);
+        listado.Controls.Add(busqueda, 0, 1);
+        listado.Controls.Add(dgvEstudiantes, 0, 2);
+        listado.Controls.Add(acciones, 0, 3);
+        listado.Controls.Add(lblResultados, 0, 4);
+        listado.Dock = DockStyle.Fill;
+        listado.Location = new Point(334, 8);
+        listado.Margin = new Padding(0);
+        listado.Name = "listado";
+        listado.Padding = new Padding(16);
+        listado.RowCount = 5;
+        listado.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
+        listado.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
+        listado.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        listado.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
+        listado.RowStyles.Add(new RowStyle(SizeType.Absolute, 48F));
+        listado.Size = new Size(956, 562);
+        listado.TabIndex = 1;
+        // 
+        // lblAyuda2
+        // 
+        lblAyuda2.Dock = DockStyle.Fill;
+        lblAyuda2.Location = new Point(19, 16);
+        lblAyuda2.Name = "lblAyuda2";
+        lblAyuda2.Size = new Size(918, 52);
+        lblAyuda2.TabIndex = 0;
+        lblAyuda2.Text = "Estudiantes\nHaga doble clic en una fila para editar sus datos.";
+        // 
+        // busqueda
+        // 
+        busqueda.ColumnCount = 2;
+        busqueda.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        busqueda.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130F));
+        busqueda.Controls.Add(txtBuscar, 0, 0);
+        busqueda.Controls.Add(limpiarFiltro, 1, 0);
+        busqueda.Dock = DockStyle.Fill;
+        busqueda.Location = new Point(19, 71);
+        busqueda.Name = "busqueda";
+        busqueda.RowCount = 1;
+        busqueda.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        busqueda.Size = new Size(918, 46);
+        busqueda.TabIndex = 1;
+        // 
+        // txtBuscar
+        // 
+        txtBuscar.Dock = DockStyle.Fill;
+        txtBuscar.Location = new Point(0, 6);
+        txtBuscar.Margin = new Padding(0, 6, 12, 6);
+        txtBuscar.Name = "txtBuscar";
+        txtBuscar.PlaceholderText = "Buscar por nombre o código…";
+        txtBuscar.Size = new Size(776, 25);
+        txtBuscar.TabIndex = 0;
+        txtBuscar.TextChanged += txtBuscar_TextChanged;
+        // 
+        // limpiarFiltro
+        // 
+        limpiarFiltro.BackColor = Color.White;
+        limpiarFiltro.Cursor = Cursors.Hand;
+        limpiarFiltro.FlatStyle = FlatStyle.Flat;
+        limpiarFiltro.ForeColor = Color.FromArgb(31, 55, 82);
+        limpiarFiltro.Location = new Point(788, 4);
+        limpiarFiltro.Margin = new Padding(0, 4, 10, 4);
+        limpiarFiltro.MinimumSize = new Size(110, 36);
+        limpiarFiltro.Name = "limpiarFiltro";
+        limpiarFiltro.Padding = new Padding(8, 2, 8, 2);
+        limpiarFiltro.Size = new Size(120, 36);
+        limpiarFiltro.TabIndex = 1;
+        limpiarFiltro.Text = "Limpiar filtro";
+        limpiarFiltro.UseVisualStyleBackColor = false;
+        limpiarFiltro.Click += btnLimpiarFiltro_Click;
         // 
         // dgvEstudiantes
         // 
@@ -371,535 +595,175 @@ partial class FrmGestionEstudiantes
         dgvEstudiantes.BackgroundColor = Color.White;
         dgvEstudiantes.BorderStyle = BorderStyle.None;
         dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        dataGridViewCellStyle2.BackColor = Color.FromArgb(31, 55, 82);
-        dataGridViewCellStyle2.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-        dataGridViewCellStyle2.ForeColor = Color.White;
+        dataGridViewCellStyle2.BackColor = Color.FromArgb(244, 247, 250);
+        dataGridViewCellStyle2.Font = new Font("Segoe UI", 10F);
+        dataGridViewCellStyle2.ForeColor = Color.FromArgb(31, 55, 82);
         dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
         dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
         dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
         dgvEstudiantes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
-        dgvEstudiantes.ColumnHeadersHeight = 44;
-        dgvEstudiantes.Columns.AddRange(new DataGridViewColumn[] { colNro, colCodigo, colNombre, colCarrera, colCorreo, colTelefono });
+        dgvEstudiantes.ColumnHeadersHeight = 40;
+        dgvEstudiantes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+        dgvEstudiantes.Columns.AddRange(new DataGridViewColumn[] { colCodigo, colNombre, colCarrera, colCorreo, colTelefono, colFecha });
         dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
         dataGridViewCellStyle3.BackColor = SystemColors.Window;
-        dataGridViewCellStyle3.Font = new Font("Segoe UI", 9.5F);
+        dataGridViewCellStyle3.Font = new Font("Segoe UI", 10F);
         dataGridViewCellStyle3.ForeColor = SystemColors.ControlText;
-        dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(190, 215, 235);
-        dataGridViewCellStyle3.SelectionForeColor = Color.Black;
+        dataGridViewCellStyle3.SelectionBackColor = Color.FromArgb(224, 237, 249);
+        dataGridViewCellStyle3.SelectionForeColor = Color.FromArgb(31, 55, 82);
         dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
         dgvEstudiantes.DefaultCellStyle = dataGridViewCellStyle3;
+        dgvEstudiantes.Dock = DockStyle.Fill;
         dgvEstudiantes.EnableHeadersVisualStyles = false;
-        dgvEstudiantes.GridColor = Color.FromArgb(215, 224, 234);
-        dgvEstudiantes.Location = new Point(450, 105);
+        dgvEstudiantes.Location = new Point(19, 123);
         dgvEstudiantes.MultiSelect = false;
         dgvEstudiantes.Name = "dgvEstudiantes";
         dgvEstudiantes.ReadOnly = true;
         dgvEstudiantes.RowHeadersVisible = false;
-        dgvEstudiantes.RowTemplate.Height = 36;
+        dgvEstudiantes.RowTemplate.Height = 38;
         dgvEstudiantes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        dgvEstudiantes.Size = new Size(1072, 295);
+        dgvEstudiantes.Size = new Size(918, 318);
         dgvEstudiantes.TabIndex = 2;
         dgvEstudiantes.CellDoubleClick += dgvEstudiantes_CellDoubleClick;
         // 
-        // colNro
-        // 
-        colNro.FillWeight = 35F;
-        colNro.HeaderText = "N°";
-        colNro.Name = "colNro";
-        colNro.ReadOnly = true;
-        // 
         // colCodigo
         // 
-        colCodigo.FillWeight = 75F;
+        colCodigo.FillWeight = 90F;
         colCodigo.HeaderText = "Código";
+        colCodigo.MinimumWidth = 90;
         colCodigo.Name = "colCodigo";
         colCodigo.ReadOnly = true;
+        colCodigo.SortMode = DataGridViewColumnSortMode.NotSortable;
         // 
         // colNombre
         // 
-        colNombre.FillWeight = 145F;
+        colNombre.FillWeight = 150F;
         colNombre.HeaderText = "Nombre";
+        colNombre.MinimumWidth = 150;
         colNombre.Name = "colNombre";
         colNombre.ReadOnly = true;
+        colNombre.SortMode = DataGridViewColumnSortMode.NotSortable;
         // 
         // colCarrera
         // 
         colCarrera.FillWeight = 120F;
         colCarrera.HeaderText = "Carrera";
+        colCarrera.MinimumWidth = 120;
         colCarrera.Name = "colCarrera";
         colCarrera.ReadOnly = true;
+        colCarrera.SortMode = DataGridViewColumnSortMode.NotSortable;
         // 
         // colCorreo
         // 
-        colCorreo.FillWeight = 150F;
+        colCorreo.FillWeight = 160F;
         colCorreo.HeaderText = "Correo";
+        colCorreo.MinimumWidth = 160;
         colCorreo.Name = "colCorreo";
         colCorreo.ReadOnly = true;
+        colCorreo.SortMode = DataGridViewColumnSortMode.NotSortable;
         // 
         // colTelefono
         // 
-        colTelefono.FillWeight = 85F;
         colTelefono.HeaderText = "Teléfono";
+        colTelefono.MinimumWidth = 100;
         colTelefono.Name = "colTelefono";
         colTelefono.ReadOnly = true;
-        // 
-        // grpCadenas
-        // 
-        grpCadenas.BackColor = Color.FromArgb(245, 247, 250);
-        grpCadenas.Controls.Add(lblCadenaEntrada);
-        grpCadenas.Controls.Add(lblLongitud);
-        grpCadenas.Controls.Add(lblMayusculas);
-        grpCadenas.Controls.Add(lblMinusculas);
-        grpCadenas.Controls.Add(lblPrimeraLetra);
-        grpCadenas.Controls.Add(lblUltimaLetra);
-        grpCadenas.Controls.Add(lblSubcadena);
-        grpCadenas.Controls.Add(lblInvertido);
-        grpCadenas.Controls.Add(lblSinEspacios);
-        grpCadenas.Controls.Add(lblReemplazo);
-        grpCadenas.Controls.Add(lblVocales);
-        grpCadenas.Controls.Add(txtCadenaEntrada);
-        grpCadenas.Controls.Add(txtLongitud);
-        grpCadenas.Controls.Add(txtMayusculas);
-        grpCadenas.Controls.Add(txtMinusculas);
-        grpCadenas.Controls.Add(txtPrimeraLetra);
-        grpCadenas.Controls.Add(txtUltimaLetra);
-        grpCadenas.Controls.Add(txtSubcadena);
-        grpCadenas.Controls.Add(txtInvertido);
-        grpCadenas.Controls.Add(txtSinEspacios);
-        grpCadenas.Controls.Add(txtReemplazo);
-        grpCadenas.Controls.Add(txtVocales);
-        grpCadenas.Controls.Add(btnProcesar);
-        grpCadenas.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        grpCadenas.ForeColor = Color.FromArgb(31, 55, 82);
-        grpCadenas.Location = new Point(450, 420);
-        grpCadenas.Name = "grpCadenas";
-        grpCadenas.Size = new Size(650, 480);
-        grpCadenas.TabIndex = 3;
-        grpCadenas.TabStop = false;
-        grpCadenas.Text = "  Cadenas de caracteres  ";
-        // 
-        // lblCadenaEntrada
-        // 
-        lblCadenaEntrada.Font = new Font("Segoe UI", 9.5F);
-        lblCadenaEntrada.ForeColor = Color.FromArgb(32, 47, 67);
-        lblCadenaEntrada.Location = new Point(20, 38);
-        lblCadenaEntrada.Name = "lblCadenaEntrada";
-        lblCadenaEntrada.Size = new Size(195, 24);
-        lblCadenaEntrada.TabIndex = 0;
-        lblCadenaEntrada.Text = "Texto de entrada:";
-        lblCadenaEntrada.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblLongitud
-        // 
-        lblLongitud.Font = new Font("Segoe UI", 9.5F);
-        lblLongitud.ForeColor = Color.FromArgb(32, 47, 67);
-        lblLongitud.Location = new Point(20, 71);
-        lblLongitud.Name = "lblLongitud";
-        lblLongitud.Size = new Size(195, 24);
-        lblLongitud.TabIndex = 1;
-        lblLongitud.Text = "Longitud:";
-        lblLongitud.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblMayusculas
-        // 
-        lblMayusculas.Font = new Font("Segoe UI", 9.5F);
-        lblMayusculas.ForeColor = Color.FromArgb(32, 47, 67);
-        lblMayusculas.Location = new Point(20, 104);
-        lblMayusculas.Name = "lblMayusculas";
-        lblMayusculas.Size = new Size(195, 24);
-        lblMayusculas.TabIndex = 2;
-        lblMayusculas.Text = "Mayúsculas:";
-        lblMayusculas.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblMinusculas
-        // 
-        lblMinusculas.Font = new Font("Segoe UI", 9.5F);
-        lblMinusculas.ForeColor = Color.FromArgb(32, 47, 67);
-        lblMinusculas.Location = new Point(20, 137);
-        lblMinusculas.Name = "lblMinusculas";
-        lblMinusculas.Size = new Size(195, 24);
-        lblMinusculas.TabIndex = 3;
-        lblMinusculas.Text = "Minúsculas:";
-        lblMinusculas.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblPrimeraLetra
-        // 
-        lblPrimeraLetra.Font = new Font("Segoe UI", 9.5F);
-        lblPrimeraLetra.ForeColor = Color.FromArgb(32, 47, 67);
-        lblPrimeraLetra.Location = new Point(20, 170);
-        lblPrimeraLetra.Name = "lblPrimeraLetra";
-        lblPrimeraLetra.Size = new Size(195, 24);
-        lblPrimeraLetra.TabIndex = 4;
-        lblPrimeraLetra.Text = "Primera letra:";
-        lblPrimeraLetra.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblUltimaLetra
-        // 
-        lblUltimaLetra.Font = new Font("Segoe UI", 9.5F);
-        lblUltimaLetra.ForeColor = Color.FromArgb(32, 47, 67);
-        lblUltimaLetra.Location = new Point(20, 203);
-        lblUltimaLetra.Name = "lblUltimaLetra";
-        lblUltimaLetra.Size = new Size(195, 24);
-        lblUltimaLetra.TabIndex = 5;
-        lblUltimaLetra.Text = "Última letra:";
-        lblUltimaLetra.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblSubcadena
-        // 
-        lblSubcadena.Font = new Font("Segoe UI", 9.5F);
-        lblSubcadena.ForeColor = Color.FromArgb(32, 47, 67);
-        lblSubcadena.Location = new Point(20, 236);
-        lblSubcadena.Name = "lblSubcadena";
-        lblSubcadena.Size = new Size(195, 24);
-        lblSubcadena.TabIndex = 6;
-        lblSubcadena.Text = "Subcadena (1-5):";
-        lblSubcadena.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblInvertido
-        // 
-        lblInvertido.Font = new Font("Segoe UI", 9.5F);
-        lblInvertido.ForeColor = Color.FromArgb(32, 47, 67);
-        lblInvertido.Location = new Point(20, 269);
-        lblInvertido.Name = "lblInvertido";
-        lblInvertido.Size = new Size(195, 24);
-        lblInvertido.TabIndex = 7;
-        lblInvertido.Text = "Texto invertido:";
-        lblInvertido.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblSinEspacios
-        // 
-        lblSinEspacios.Font = new Font("Segoe UI", 9.5F);
-        lblSinEspacios.ForeColor = Color.FromArgb(32, 47, 67);
-        lblSinEspacios.Location = new Point(20, 302);
-        lblSinEspacios.Name = "lblSinEspacios";
-        lblSinEspacios.Size = new Size(195, 24);
-        lblSinEspacios.TabIndex = 8;
-        lblSinEspacios.Text = "Sin espacios:";
-        lblSinEspacios.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblReemplazo
-        // 
-        lblReemplazo.Font = new Font("Segoe UI", 9.5F);
-        lblReemplazo.ForeColor = Color.FromArgb(32, 47, 67);
-        lblReemplazo.Location = new Point(20, 335);
-        lblReemplazo.Name = "lblReemplazo";
-        lblReemplazo.Size = new Size(195, 24);
-        lblReemplazo.TabIndex = 9;
-        lblReemplazo.Text = "Reemplazar mundo → C#:";
-        lblReemplazo.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // lblVocales
-        // 
-        lblVocales.Font = new Font("Segoe UI", 9.5F);
-        lblVocales.ForeColor = Color.FromArgb(32, 47, 67);
-        lblVocales.Location = new Point(20, 368);
-        lblVocales.Name = "lblVocales";
-        lblVocales.Size = new Size(195, 24);
-        lblVocales.TabIndex = 10;
-        lblVocales.Text = "Cantidad de vocales:";
-        lblVocales.TextAlign = ContentAlignment.MiddleLeft;
-        // 
-        // txtCadenaEntrada
-        // 
-        txtCadenaEntrada.BorderStyle = BorderStyle.FixedSingle;
-        txtCadenaEntrada.Font = new Font("Segoe UI", 9.5F);
-        txtCadenaEntrada.Location = new Point(220, 38);
-        txtCadenaEntrada.Name = "txtCadenaEntrada";
-        txtCadenaEntrada.Size = new Size(400, 24);
-        txtCadenaEntrada.TabIndex = 11;
-        // 
-        // txtLongitud
-        // 
-        txtLongitud.BackColor = Color.FromArgb(248, 250, 252);
-        txtLongitud.BorderStyle = BorderStyle.FixedSingle;
-        txtLongitud.Font = new Font("Segoe UI", 9.5F);
-        txtLongitud.Location = new Point(220, 71);
-        txtLongitud.Name = "txtLongitud";
-        txtLongitud.ReadOnly = true;
-        txtLongitud.Size = new Size(400, 24);
-        txtLongitud.TabIndex = 12;
-        // 
-        // txtMayusculas
-        // 
-        txtMayusculas.BackColor = Color.FromArgb(248, 250, 252);
-        txtMayusculas.BorderStyle = BorderStyle.FixedSingle;
-        txtMayusculas.Font = new Font("Segoe UI", 9.5F);
-        txtMayusculas.Location = new Point(220, 104);
-        txtMayusculas.Name = "txtMayusculas";
-        txtMayusculas.ReadOnly = true;
-        txtMayusculas.Size = new Size(400, 24);
-        txtMayusculas.TabIndex = 13;
-        // 
-        // txtMinusculas
-        // 
-        txtMinusculas.BackColor = Color.FromArgb(248, 250, 252);
-        txtMinusculas.BorderStyle = BorderStyle.FixedSingle;
-        txtMinusculas.Font = new Font("Segoe UI", 9.5F);
-        txtMinusculas.Location = new Point(220, 137);
-        txtMinusculas.Name = "txtMinusculas";
-        txtMinusculas.ReadOnly = true;
-        txtMinusculas.Size = new Size(400, 24);
-        txtMinusculas.TabIndex = 14;
-        // 
-        // txtPrimeraLetra
-        // 
-        txtPrimeraLetra.BackColor = Color.FromArgb(248, 250, 252);
-        txtPrimeraLetra.BorderStyle = BorderStyle.FixedSingle;
-        txtPrimeraLetra.Font = new Font("Segoe UI", 9.5F);
-        txtPrimeraLetra.Location = new Point(220, 170);
-        txtPrimeraLetra.Name = "txtPrimeraLetra";
-        txtPrimeraLetra.ReadOnly = true;
-        txtPrimeraLetra.Size = new Size(400, 24);
-        txtPrimeraLetra.TabIndex = 15;
-        // 
-        // txtUltimaLetra
-        // 
-        txtUltimaLetra.BackColor = Color.FromArgb(248, 250, 252);
-        txtUltimaLetra.BorderStyle = BorderStyle.FixedSingle;
-        txtUltimaLetra.Font = new Font("Segoe UI", 9.5F);
-        txtUltimaLetra.Location = new Point(220, 203);
-        txtUltimaLetra.Name = "txtUltimaLetra";
-        txtUltimaLetra.ReadOnly = true;
-        txtUltimaLetra.Size = new Size(400, 24);
-        txtUltimaLetra.TabIndex = 16;
-        // 
-        // txtSubcadena
-        // 
-        txtSubcadena.BackColor = Color.FromArgb(248, 250, 252);
-        txtSubcadena.BorderStyle = BorderStyle.FixedSingle;
-        txtSubcadena.Font = new Font("Segoe UI", 9.5F);
-        txtSubcadena.Location = new Point(220, 236);
-        txtSubcadena.Name = "txtSubcadena";
-        txtSubcadena.ReadOnly = true;
-        txtSubcadena.Size = new Size(400, 24);
-        txtSubcadena.TabIndex = 17;
-        // 
-        // txtInvertido
-        // 
-        txtInvertido.BackColor = Color.FromArgb(248, 250, 252);
-        txtInvertido.BorderStyle = BorderStyle.FixedSingle;
-        txtInvertido.Font = new Font("Segoe UI", 9.5F);
-        txtInvertido.Location = new Point(220, 269);
-        txtInvertido.Name = "txtInvertido";
-        txtInvertido.ReadOnly = true;
-        txtInvertido.Size = new Size(400, 24);
-        txtInvertido.TabIndex = 18;
-        // 
-        // txtSinEspacios
-        // 
-        txtSinEspacios.BackColor = Color.FromArgb(248, 250, 252);
-        txtSinEspacios.BorderStyle = BorderStyle.FixedSingle;
-        txtSinEspacios.Font = new Font("Segoe UI", 9.5F);
-        txtSinEspacios.Location = new Point(220, 302);
-        txtSinEspacios.Name = "txtSinEspacios";
-        txtSinEspacios.ReadOnly = true;
-        txtSinEspacios.Size = new Size(400, 24);
-        txtSinEspacios.TabIndex = 19;
-        // 
-        // txtReemplazo
-        // 
-        txtReemplazo.BackColor = Color.FromArgb(248, 250, 252);
-        txtReemplazo.BorderStyle = BorderStyle.FixedSingle;
-        txtReemplazo.Font = new Font("Segoe UI", 9.5F);
-        txtReemplazo.Location = new Point(220, 335);
-        txtReemplazo.Name = "txtReemplazo";
-        txtReemplazo.ReadOnly = true;
-        txtReemplazo.Size = new Size(400, 24);
-        txtReemplazo.TabIndex = 20;
-        // 
-        // txtVocales
-        // 
-        txtVocales.BackColor = Color.FromArgb(248, 250, 252);
-        txtVocales.BorderStyle = BorderStyle.FixedSingle;
-        txtVocales.Font = new Font("Segoe UI", 9.5F);
-        txtVocales.Location = new Point(220, 368);
-        txtVocales.Name = "txtVocales";
-        txtVocales.ReadOnly = true;
-        txtVocales.Size = new Size(400, 24);
-        txtVocales.TabIndex = 21;
-        // 
-        // btnProcesar
-        // 
-        btnProcesar.BackColor = Color.FromArgb(41, 98, 144);
-        btnProcesar.Cursor = Cursors.Hand;
-        btnProcesar.FlatAppearance.BorderSize = 0;
-        btnProcesar.FlatStyle = FlatStyle.Flat;
-        btnProcesar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        btnProcesar.ForeColor = Color.White;
-        btnProcesar.Location = new Point(220, 405);
-        btnProcesar.Name = "btnProcesar";
-        btnProcesar.Size = new Size(400, 48);
-        btnProcesar.TabIndex = 22;
-        btnProcesar.Text = "⚙   Procesar cadena";
-        btnProcesar.UseVisualStyleBackColor = false;
-        btnProcesar.Click += btnProcesar_Click;
-        // 
-        // grpBuscar
-        // 
-        grpBuscar.BackColor = Color.FromArgb(245, 247, 250);
-        grpBuscar.Controls.Add(lblBuscarNombre);
-        grpBuscar.Controls.Add(txtBuscar);
-        grpBuscar.Controls.Add(btnBuscar);
-        grpBuscar.Controls.Add(lstResultados);
-        grpBuscar.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        grpBuscar.ForeColor = Color.FromArgb(31, 55, 82);
-        grpBuscar.Location = new Point(1120, 420);
-        grpBuscar.Name = "grpBuscar";
-        grpBuscar.Size = new Size(402, 255);
-        grpBuscar.TabIndex = 4;
-        grpBuscar.TabStop = false;
-        grpBuscar.Text = "  Buscar por nombre  ";
-        // 
-        // lblBuscarNombre
-        // 
-        lblBuscarNombre.Font = new Font("Segoe UI", 9.5F);
-        lblBuscarNombre.ForeColor = Color.FromArgb(32, 47, 67);
-        lblBuscarNombre.Location = new Point(20, 42);
-        lblBuscarNombre.Name = "lblBuscarNombre";
-        lblBuscarNombre.Size = new Size(150, 24);
-        lblBuscarNombre.TabIndex = 0;
-        lblBuscarNombre.Text = "Ingrese nombre:";
-        // 
-        // txtBuscar
-        // 
-        txtBuscar.BorderStyle = BorderStyle.FixedSingle;
-        txtBuscar.Font = new Font("Segoe UI", 9.5F);
-        txtBuscar.Location = new Point(20, 72);
-        txtBuscar.Name = "txtBuscar";
-        txtBuscar.Size = new Size(260, 24);
-        txtBuscar.TabIndex = 1;
-        // 
-        // btnBuscar
-        // 
-        btnBuscar.BackColor = Color.FromArgb(41, 98, 144);
-        btnBuscar.FlatAppearance.BorderSize = 0;
-        btnBuscar.FlatStyle = FlatStyle.Flat;
-        btnBuscar.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
-        btnBuscar.ForeColor = Color.White;
-        btnBuscar.Location = new Point(290, 70);
-        btnBuscar.Name = "btnBuscar";
-        btnBuscar.Size = new Size(90, 31);
-        btnBuscar.TabIndex = 2;
-        btnBuscar.Text = "Buscar";
-        btnBuscar.UseVisualStyleBackColor = false;
-        btnBuscar.Click += btnBuscar_Click;
-        // 
-        // lstResultados
-        // 
-        lstResultados.BorderStyle = BorderStyle.FixedSingle;
-        lstResultados.Font = new Font("Segoe UI", 9F);
-        lstResultados.FormattingEnabled = true;
-        lstResultados.ItemHeight = 15;
-        lstResultados.Location = new Point(20, 115);
-        lstResultados.Name = "lstResultados";
-        lstResultados.Size = new Size(360, 107);
-        lstResultados.TabIndex = 3;
-        // 
-        // grpInfo
-        // 
-        grpInfo.BackColor = Color.FromArgb(245, 247, 250);
-        grpInfo.Controls.Add(lblTotalTexto);
-        grpInfo.Controls.Add(lblCarreraTexto);
-        grpInfo.Controls.Add(lblMedicinaTexto);
-        grpInfo.Controls.Add(lblTotalValor);
-        grpInfo.Controls.Add(lblCarreraValor);
-        grpInfo.Controls.Add(lblMedicinaValor);
-        grpInfo.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
-        grpInfo.ForeColor = Color.FromArgb(31, 55, 82);
-        grpInfo.Location = new Point(1120, 695);
-        grpInfo.Name = "grpInfo";
-        grpInfo.Size = new Size(402, 205);
-        grpInfo.TabIndex = 5;
-        grpInfo.TabStop = false;
-        grpInfo.Text = "  Información  ";
-        // 
-        // lblTotalTexto
-        // 
-        lblTotalTexto.Font = new Font("Segoe UI", 9.5F);
-        lblTotalTexto.ForeColor = Color.FromArgb(32, 47, 67);
-        lblTotalTexto.Location = new Point(20, 45);
-        lblTotalTexto.Name = "lblTotalTexto";
-        lblTotalTexto.Size = new Size(200, 25);
-        lblTotalTexto.TabIndex = 0;
-        lblTotalTexto.Text = "Total de estudiantes:";
-        // 
-        // lblCarreraTexto
-        // 
-        lblCarreraTexto.Font = new Font("Segoe UI", 9.5F);
-        lblCarreraTexto.ForeColor = Color.FromArgb(32, 47, 67);
-        lblCarreraTexto.Location = new Point(20, 95);
-        lblCarreraTexto.Name = "lblCarreraTexto";
-        lblCarreraTexto.Size = new Size(200, 25);
-        lblCarreraTexto.TabIndex = 1;
-        lblCarreraTexto.Text = "Carrera más común:";
-        // 
-        // lblMedicinaTexto
-        // 
-        lblMedicinaTexto.Font = new Font("Segoe UI", 9.5F);
-        lblMedicinaTexto.ForeColor = Color.FromArgb(32, 47, 67);
-        lblMedicinaTexto.Location = new Point(20, 145);
-        lblMedicinaTexto.Name = "lblMedicinaTexto";
-        lblMedicinaTexto.Size = new Size(200, 25);
-        lblMedicinaTexto.TabIndex = 2;
-        lblMedicinaTexto.Text = "Estudiantes Medicina:";
-        // 
-        // lblTotalValor
-        // 
-        lblTotalValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-        lblTotalValor.Location = new Point(300, 45);
-        lblTotalValor.Name = "lblTotalValor";
-        lblTotalValor.Size = new Size(60, 25);
-        lblTotalValor.TabIndex = 3;
-        lblTotalValor.Text = "0";
-        lblTotalValor.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblCarreraValor
-        // 
-        lblCarreraValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-        lblCarreraValor.Location = new Point(245, 95);
-        lblCarreraValor.Name = "lblCarreraValor";
-        lblCarreraValor.Size = new Size(115, 25);
-        lblCarreraValor.TabIndex = 4;
-        lblCarreraValor.Text = "-";
-        lblCarreraValor.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblMedicinaValor
-        // 
-        lblMedicinaValor.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
-        lblMedicinaValor.Location = new Point(300, 145);
-        lblMedicinaValor.Name = "lblMedicinaValor";
-        lblMedicinaValor.Size = new Size(60, 25);
-        lblMedicinaValor.TabIndex = 5;
-        lblMedicinaValor.Text = "0";
-        lblMedicinaValor.TextAlign = ContentAlignment.MiddleCenter;
+        colTelefono.SortMode = DataGridViewColumnSortMode.NotSortable;
+        // 
+        // colFecha
+        // 
+        colFecha.FillWeight = 130F;
+        colFecha.HeaderText = "Fecha de creación";
+        colFecha.MinimumWidth = 130;
+        colFecha.Name = "colFecha";
+        colFecha.ReadOnly = true;
+        colFecha.SortMode = DataGridViewColumnSortMode.NotSortable;
+        // 
+        // acciones
+        // 
+        acciones.Controls.Add(btnModificar);
+        acciones.Controls.Add(btnEliminar);
+        acciones.Dock = DockStyle.Fill;
+        acciones.Location = new Point(19, 447);
+        acciones.Name = "acciones";
+        acciones.Size = new Size(918, 48);
+        acciones.TabIndex = 3;
+        // 
+        // btnModificar
+        // 
+        btnModificar.AutoSize = true;
+        btnModificar.BackColor = Color.FromArgb(41, 98, 144);
+        btnModificar.Cursor = Cursors.Hand;
+        btnModificar.Enabled = false;
+        btnModificar.FlatStyle = FlatStyle.Flat;
+        btnModificar.ForeColor = Color.White;
+        btnModificar.Location = new Point(0, 4);
+        btnModificar.Margin = new Padding(0, 4, 10, 4);
+        btnModificar.MinimumSize = new Size(110, 36);
+        btnModificar.Name = "btnModificar";
+        btnModificar.Padding = new Padding(8, 2, 8, 2);
+        btnModificar.Size = new Size(141, 36);
+        btnModificar.TabIndex = 0;
+        btnModificar.Text = "Guardar cambios";
+        btnModificar.UseVisualStyleBackColor = false;
+        btnModificar.Click += btnModificar_Click;
+        // 
+        // btnEliminar
+        // 
+        btnEliminar.AutoSize = true;
+        btnEliminar.BackColor = Color.White;
+        btnEliminar.Cursor = Cursors.Hand;
+        btnEliminar.Enabled = false;
+        btnEliminar.FlatStyle = FlatStyle.Flat;
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(151, 4);
+        btnEliminar.Margin = new Padding(0, 4, 10, 4);
+        btnEliminar.MinimumSize = new Size(110, 36);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Padding = new Padding(8, 2, 8, 2);
+        btnEliminar.Size = new Size(166, 36);
+        btnEliminar.TabIndex = 1;
+        btnEliminar.Text = "Eliminar seleccionado";
+        btnEliminar.UseVisualStyleBackColor = false;
+        btnEliminar.Click += btnEliminar_Click;
+        // 
+        // lblResultados
+        // 
+        lblResultados.Dock = DockStyle.Fill;
+        lblResultados.ForeColor = Color.DimGray;
+        lblResultados.Location = new Point(19, 498);
+        lblResultados.Name = "lblResultados";
+        lblResultados.Size = new Size(918, 48);
+        lblResultados.TabIndex = 4;
         // 
         // FrmGestionEstudiantes
         // 
         AutoScaleDimensions = new SizeF(7F, 17F);
         AutoScaleMode = AutoScaleMode.Font;
-        BackColor = Color.FromArgb(224, 230, 237);
-        ClientSize = new Size(1548, 930);
-        Controls.Add(grpInfo);
-        Controls.Add(grpBuscar);
-        Controls.Add(grpCadenas);
-        Controls.Add(dgvEstudiantes);
-        Controls.Add(grpDatos);
-        Controls.Add(pnlHeader);
-        Font = new Font("Segoe UI", 9.5F);
-        MinimumSize = new Size(1280, 800);
+        BackColor = Color.FromArgb(237, 242, 247);
+        ClientSize = new Size(1320, 790);
+        Controls.Add(root);
+        Font = new Font("Segoe UI", 10F);
+        MinimumSize = new Size(1050, 720);
         Name = "FrmGestionEstudiantes";
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "Manejo de Cadenas y Arreglos Paralelos";
+        Text = "Gestión de estudiantes";
         Load += FrmGestionEstudiantes_Load;
-        pnlHeader.ResumeLayout(false);
-        grpDatos.ResumeLayout(false);
-        grpDatos.PerformLayout();
+        root.ResumeLayout(false);
+        indicadores.ResumeLayout(false);
+        pnlTotal.ResumeLayout(false);
+        pnlCupos.ResumeLayout(false);
+        pnlCarrera.ResumeLayout(false);
+        contenido.ResumeLayout(false);
+        editor.ResumeLayout(false);
+        editor.PerformLayout();
+        listado.ResumeLayout(false);
+        busqueda.ResumeLayout(false);
+        busqueda.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)dgvEstudiantes).EndInit();
-        grpCadenas.ResumeLayout(false);
-        grpCadenas.PerformLayout();
-        grpBuscar.ResumeLayout(false);
-        grpBuscar.PerformLayout();
-        grpInfo.ResumeLayout(false);
+        acciones.ResumeLayout(false);
+        acciones.PerformLayout();
         ResumeLayout(false);
     }
+
 }

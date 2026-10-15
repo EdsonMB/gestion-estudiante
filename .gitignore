@@ -1,0 +1,15 @@
+﻿# Prototipos y documentacion local
+/doc/
+
+# Archivos generados al compilar .NET
+[Bb]in/
+[Oo]bj/
+
+# Cache y preferencias locales de Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Resultados de pruebas
+TestResults/

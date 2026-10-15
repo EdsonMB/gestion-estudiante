@@ -7,4 +7,15 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="FrmGestionEstudiantes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmGestionEstudiantes.Designer.cs">
+      <DependentUpon>FrmGestionEstudiantes.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="FrmGestionEstudiantes.resx">
+      <DependentUpon>FrmGestionEstudiantes.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

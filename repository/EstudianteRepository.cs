@@ -1,99 +1,147 @@
-using GestionEstudiante.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GestionEstudiante.model;
 
-namespace GestionEstudiante.repository
+namespace GestionEstudiante.repository;
+
+public class EstudianteRepository
 {
-    public class EstudianteRepository
+    public const int Capacidad = 10;
+    // Cada posición guarda un estudiante; null representa un espacio disponible.
+    // El arreglo vive en memoria: sus datos se pierden al cerrar la aplicación.
+    private readonly Estudiante?[] estudiantes = new Estudiante?[Capacidad];
+    private int siguienteId = 1;
+
+    // Buscamos un lugar libre en el arreglo y asignamos los datos del nuevo registro.
+    // El ID sigue aumentando aunque eliminemos estudiantes, para no repetir códigos.
+    public void Agregar(Estudiante estudiante)
     {
-
-        private const int MAX_ESTUDIANTES = 10;
-        private Estudiante[] estudiantes = new Estudiante[MAX_ESTUDIANTES];//BASE DE DATOS
-
-
-        private int ObtenerPosicion()
+        int posicion = ObtenerPosicion();
+        if (posicion < 0)
         {
-            int conteo = 0;
-            for (int i = 0; i < estudiantes.Length; i++)
-            {
-                if (estudiantes[i] != null)
-                {
-                    conteo++;
-                }
-            }
-
-            return conteo +1;
+            // Si el arreglo está lleno, no intentamos guardar fuera de sus límites.
+            return;
         }
+        estudiante.id = siguienteId++;
+        estudiante.codigo = GenerarCodigo(estudiante.id);
+        estudiante.fechaCreacion = DateTime.Now;
+        estudiantes[posicion] = estudiante;
+    }
 
-        private string GenerarCodigo()
+    // Buscamos el primer espacio libre; -1 indica que el arreglo está lleno.
+    private int ObtenerPosicion()
+    {
+        for (int i = 0; i < estudiantes.Length; i++)
         {
-            int posicion = ObtenerPosicion(); // 1
-            return "E"+ posicion.ToString("000000"); // "E" + "000010"
-        }
-
-        private void ReOrdenar() //ordenamiento burbuja
-        {
-            for (int i = 0; i < estudiantes.Length - 1; i++)
+            if (estudiantes[i] == null)
             {
-                for (int j = 0; j < estudiantes.Length - 1 - i; j++)
-                {
-                    if (estudiantes[j] == null && estudiantes[j + 1] != null)
-                    {
-                        Estudiante aux = estudiantes[j];
-                        estudiantes[j] = estudiantes[j+1];
-                        estudiantes[j + 1] = aux;
-                    }
-                }
+                return i;
             }
         }
+        return -1;
+    }
 
-        public void Agregar(Estudiante estudiante)
+    // Formamos el código con el ID y seis dígitos, por ejemplo E000001.
+    private string GenerarCodigo(int id)
+    {
+        return "E" + id.ToString("000000");
+    }
+
+    // Localizamos por ID, porque la posición en el arreglo no es el identificador.
+    // Conservamos la fecha original: editar no equivale a crear de nuevo.
+    public void Modificar(Estudiante estudiante)
+    {
+        int posicion = BuscarPosicionPorId(estudiante.id);
+        if (posicion < 0)
         {
-            int posicion = ObtenerPosicion(); // 1
-            estudiante.codigo = GenerarCodigo(); // E000001
-            estudiante.id = posicion; //1
-            //lo guardamos en la posicion 0 = posicion(1) - 1
-            this.estudiantes[posicion - 1] = estudiante;
+            return;
         }
+        estudiante.fechaCreacion = estudiantes[posicion]!.fechaCreacion;
+        estudiantes[posicion] = estudiante;
+    }
 
-        public void Modificar(Estudiante estudiante) 
+    // Quitamos al estudiante y juntamos los registros para no dejar huecos entre ellos.
+    public void Eliminar(int id)
+    {
+        int posicion = BuscarPosicionPorId(id);
+        if (posicion < 0)
         {
-            this.estudiantes[estudiante.id-1] = estudiante;
+            return;
         }
+        estudiantes[posicion] = null;
+        ReOrdenar();
+    }
 
-
-        public void Eliminar(int id)
+    // Movemos los espacios vacíos al final intercambiando posiciones vecinas.
+    // Los estudiantes conservan sus IDs aunque cambien de posición en el arreglo.
+    private void ReOrdenar()
+    {
+        for (int i = 0; i < estudiantes.Length - 1; i++)
         {
-            this.estudiantes[id-1] = null;
-            ReOrdenar();
-        }
-
-        public Estudiante ObtenerPorId(int id)
-        {
-            Estudiante estudiante = null;
-            for (int i = 0; i < this.estudiantes.Length; i++)
+            for (int j = 0; j < estudiantes.Length - 1 - i; j++)
             {
-                if (estudiantes[i] != null && estudiantes[i].id == id)
+                if (estudiantes[j] == null && estudiantes[j + 1] != null)
                 {
-                    estudiante = this.estudiantes[i];
+                    Estudiante? auxiliar = estudiantes[j];
+                    estudiantes[j] = estudiantes[j + 1];
+                    estudiantes[j + 1] = auxiliar;
                 }
             }
-
-            return estudiante;
         }
+    }
 
-        public Estudiante[] Listar() // te devuelve todo el arreglo
+    // Recorremos el arreglo hasta encontrar el ID; -1 significa que no existe.
+    private int BuscarPosicionPorId(int id)
+    {
+        for (int i = 0; i < estudiantes.Length; i++)
         {
-            return this.estudiantes;
+            Estudiante? actual = estudiantes[i];
+            if (actual != null && actual.id == id)
+            {
+                return i;
+            }
         }
+        return -1;
+    }
 
-        public int Conteo() // obtiene la cantida de estudiantes del arreglo
+    // Devolvemos el estudiante encontrado o null cuando el ID no existe.
+    public Estudiante? ObtenerPorId(int id)
+    {
+        int posicion = BuscarPosicionPorId(id);
+        if (posicion == -1)
         {
-            return ObtenerPosicion() - 1;
+            return null;
         }
+        return estudiantes[posicion];
+    }
 
+    // Copiamos los registros ocupados en el orden en que están guardados.
+    // ReOrdenar se encarga de juntar los registros después de eliminar.
+    public Estudiante[] Listar()
+    {
+        Estudiante[] listado = new Estudiante[Conteo()];
+        int posicion = 0;
+        for (int i = 0; i < estudiantes.Length; i++)
+        {
+            Estudiante? actual = estudiantes[i];
+            if (actual != null)
+            {
+                listado[posicion] = actual;
+                posicion++;
+            }
+        }
+        return listado;
+    }
+
+    // Contamos registros ocupados, no el tamaño total del arreglo.
+    public int Conteo()
+    {
+        int cantidad = 0;
+        for (int i = 0; i < estudiantes.Length; i++)
+        {
+            if (estudiantes[i] != null)
+            {
+                cantidad++;
+            }
+        }
+        return cantidad;
     }
 }
