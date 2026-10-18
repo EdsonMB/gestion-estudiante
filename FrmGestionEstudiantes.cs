@@ -327,14 +327,14 @@ public partial class FrmGestionEstudiantes : Form
         dgvEstudiantes.Rows[fila].Tag = registro;
     }
 
-    // Indicamos cuántos registros se ven y recordamos que los datos solo duran esta sesión.
+    // Indicamos cuántos registros se ven.
     private void ActualizarResumenResultados()
     {
         string resumen = dgvEstudiantes.Rows.Count == 0
             ? "Sin resultados"
             : $"Mostrando {dgvEstudiantes.Rows.Count} de {servicioEstudiantes.Conteo()} estudiantes";
 
-        lblResultados.Text = resumen + "\nLos datos se conservan únicamente durante esta sesión.";
+        lblResultados.Text = resumen;
     }
 
     // Los indicadores consideran todos los registros, incluso al filtrar la tabla.
