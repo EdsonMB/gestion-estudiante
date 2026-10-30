@@ -1,5 +1,4 @@
-#if REDISENO_VISUAL
-namespace GestionEstudiante.RedisenoVisual;
+namespace GestionEstudiante;
 
 public partial class FrmInicioVisual : Form
 {
@@ -81,4 +80,3 @@ public partial class FrmInicioVisual : Form
         Close();
     }
 }
-#endif

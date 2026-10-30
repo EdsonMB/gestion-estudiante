@@ -1,5 +1,4 @@
-#if REDISENO_VISUAL
-namespace GestionEstudiante.RedisenoVisual;
+namespace GestionEstudiante;
 
 public partial class FrmAccesoVisual : Form
 {
@@ -21,4 +20,3 @@ public partial class FrmAccesoVisual : Form
         txtUsuario.Focus();
     }
 }
-#endif

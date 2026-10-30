@@ -17,5 +17,17 @@
     <EmbeddedResource Update="FrmGestionEstudiantes.resx">
       <DependentUpon>FrmGestionEstudiantes.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Update="FrmAccesoVisual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmAccesoVisual.Designer.cs">
+      <DependentUpon>FrmAccesoVisual.cs</DependentUpon>
+    </Compile>
+    <Compile Update="FrmInicioVisual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmInicioVisual.Designer.cs">
+      <DependentUpon>FrmInicioVisual.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

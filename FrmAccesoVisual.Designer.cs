@@ -1,5 +1,4 @@
-#if REDISENO_VISUAL
-namespace GestionEstudiante.RedisenoVisual;
+namespace GestionEstudiante;
 
 partial class FrmAccesoVisual
 {
@@ -132,4 +131,3 @@ partial class FrmAccesoVisual
         ResumeLayout(false);
     }
 }
-#endif

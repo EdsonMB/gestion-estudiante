@@ -1,7 +1,0 @@
-<Project>
-  <PropertyGroup>
-    <!-- Mantiene los archivos generados fuera de las fuentes del proyecto original. -->
-    <BaseIntermediateOutputPath>../obj/RedisenoVisual/</BaseIntermediateOutputPath>
-    <BaseOutputPath>../bin/RedisenoVisual/</BaseOutputPath>
-  </PropertyGroup>
-</Project>
