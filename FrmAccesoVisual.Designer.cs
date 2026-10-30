@@ -36,11 +36,11 @@ partial class FrmAccesoVisual
 
         // panelAcceso
         panelAcceso.Name = "panelAcceso";
-        panelAcceso.Location = new Point(230, 65);
+        panelAcceso.Location = new Point(0, 0);
         panelAcceso.Size = new Size(440, 470);
         panelAcceso.BackColor = Color.White;
-        panelAcceso.BorderStyle = BorderStyle.FixedSingle;
-        panelAcceso.Anchor = AnchorStyles.None;
+        panelAcceso.BorderStyle = BorderStyle.None;
+        panelAcceso.Dock = DockStyle.Fill;
         Controls.Add(panelAcceso);
 
         // lblMarca
@@ -120,12 +120,13 @@ partial class FrmAccesoVisual
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         Font = new Font("Segoe UI", 9F);
-        ClientSize = new Size(900, 600);
-        MinimumSize = new Size(700, 590);
+        ClientSize = new Size(440, 470);
+        FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
         Name = "FrmAccesoVisual";
         StartPosition = FormStartPosition.CenterScreen;
         Text = "Acceso - Gestión Escolar";
-        BackColor = SystemColors.Control;
+        BackColor = Color.White;
         AcceptButton = btnIngresar;
         btnIngresar.Click += btnIngresar_Click;
         ResumeLayout(false);
