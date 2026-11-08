@@ -1,0 +1,42 @@
+{
+  "secuencias": {
+    "siguienteIdEstudiante": 2,
+    "siguienteIdAula": 1,
+    "siguienteIdMatricula": 1,
+    "siguienteIdAsistencia": 1
+  },
+  "estudiantes": [
+    {
+      "id": 1,
+      "codigo": "E000001",
+      "nombre": "Ana",
+      "apellidos": "Torres Ramírez",
+      "apoderado": "Rosa Ramírez",
+      "correo": "rosa@example.com",
+      "telefono": "900000001",
+      "fechaCreacion": "2026-03-02T09:00:00",
+      "activo": true
+    }
+  ],
+  "aulas": [],
+  "matriculas": [],
+  "asistencias": [],
+  "catalogos": {
+    "niveles": [
+      "Inicial",
+      "Primaria",
+      "Secundaria"
+    ],
+    "estadosMatricula": [
+      "Activa",
+      "Retirada",
+      "Anulada"
+    ],
+    "estadosAsistencia": [
+      "Presente",
+      "Tardanza",
+      "Falta",
+      "Justificada"
+    ]
+  }
+}

@@ -8,26 +8,36 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="FrmGestionEstudiantes.cs">
+    <Compile Remove="tmp\**\*.cs" />
+    <Compile Remove="tests\**\*.cs" />
+    <EmbeddedResource Remove="tests\**\*" />
+    <EmbeddedResource Remove="tmp\**\*" />
+    <Compile Update="ui\FrmEstudiante.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="ui\FrmArchivos.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="ui\FrmEstudiante.Designer.cs"><DependentUpon>FrmEstudiante.cs</DependentUpon></Compile>
+    <Compile Update="ui\FrmArchivos.Designer.cs"><DependentUpon>FrmArchivos.cs</DependentUpon></Compile>
+    <EmbeddedResource Update="ui\FrmEstudiante.resx"><DependentUpon>FrmEstudiante.cs</DependentUpon></EmbeddedResource>
+    <EmbeddedResource Update="ui\FrmArchivos.resx"><DependentUpon>FrmArchivos.cs</DependentUpon></EmbeddedResource>
+    <Compile Update="ui\FrmGestionEstudiantes.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmGestionEstudiantes.Designer.cs">
+    <Compile Update="ui\FrmGestionEstudiantes.Designer.cs">
       <DependentUpon>FrmGestionEstudiantes.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Update="FrmGestionEstudiantes.resx">
+    <EmbeddedResource Update="ui\FrmGestionEstudiantes.resx">
       <DependentUpon>FrmGestionEstudiantes.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Update="FrmAccesoVisual.cs">
+    <Compile Update="ui\FrmAcceso.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmAccesoVisual.Designer.cs">
-      <DependentUpon>FrmAccesoVisual.cs</DependentUpon>
+    <Compile Update="ui\FrmAcceso.Designer.cs">
+      <DependentUpon>FrmAcceso.cs</DependentUpon>
     </Compile>
-    <Compile Update="FrmInicioVisual.cs">
+    <Compile Update="ui\FrmInicio.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmInicioVisual.Designer.cs">
-      <DependentUpon>FrmInicioVisual.cs</DependentUpon>
+    <Compile Update="ui\FrmInicio.Designer.cs">
+      <DependentUpon>FrmInicio.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
