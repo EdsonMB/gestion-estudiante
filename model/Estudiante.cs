@@ -1,16 +1,35 @@
-﻿namespace GestionEstudiante.model;
+namespace GestionEstudiante.model;
 
-// Agrupa los datos de un estudiante; el formulario permite ingresarlos y consultarlos.
+// Datos personales del estudiante y contacto de su apoderado.
 public class Estudiante
 {
-    // El repositorio asigna el identificador numérico y el código visible, por ejemplo E000001.
+    // Identificación asignada por el repositorio.
     public int id { get; set; }
-    public string codigo { get; set; } = "";
-    public string nombre { get; set; } = "";
-    public string carrera { get; set; } = "";
-    // Correo y teléfono pueden quedar vacíos porque son datos opcionales.
-    public string correo { get; set; } = "";
-    public string telefono { get; set; } = "";
-    // Se asigna al registrar y se conserva cuando se modifican los demás datos.
-    public DateTime fechaCreacion { get; internal set; }
+    public string codigo { get; set; }
+
+    // Datos personales.
+    public string nombre { get; set; }
+    public string apellidos { get; set; }
+
+    // Contacto del apoderado; solo el correo es opcional.
+    public string apoderado { get; set; }
+    public string telefono { get; set; }
+    public string correo { get; set; }
+
+    // La baja cambia el estado; la fecha de registro se conserva al editar.
+    public bool activo { get; set; }
+    public DateTime fechaCreacion { get; set; }
+
+    public Estudiante()
+    {
+        id = 0;
+        codigo = "";
+        nombre = "";
+        apellidos = "";
+        apoderado = "";
+        telefono = "";
+        correo = "";
+        activo = true;
+        fechaCreacion = DateTime.MinValue;
+    }
 }

@@ -1,60 +1,119 @@
+using System.Net.Mail;
 using GestionEstudiante.model;
 using GestionEstudiante.repository;
 
 namespace GestionEstudiante.service;
-
 public class EstudianteService
 {
-    // El formulario pasa por este servicio para trabajar con los datos.
-    // Normalizamos los textos antes de agregar o modificar un registro.
-    private readonly EstudianteRepository repository = new();
-    public int Capacidad
+    private readonly EstudianteRepository repository;
+    public EstudianteService(string? ruta = null)
     {
-        get
-        {
-            return EstudianteRepository.Capacidad;
-        }
+        repository = new EstudianteRepository(ruta);
     }
-    // Enviamos el nuevo estudiante al repositorio, donde se asignan código y fecha.
-    public void Agregar(Estudiante estudiante)
+
+    public EstudianteService(EstudianteRepository repository)
     {
-        NormalizarDatos(estudiante);
-        repository.Agregar(estudiante);
+        this.repository = repository;
     }
-    // Actualizamos un registro existente usando su identificador.
-    public void Modificar(Estudiante estudiante)
-    {
-        NormalizarDatos(estudiante);
-        repository.Modificar(estudiante);
-    }
-    // Aplicamos la misma regla de almacenamiento al registrar y al editar, incluido el correo.
-    // Trim quita espacios de los extremos y ToUpperInvariant convierte el texto a mayúsculas.
-    private static void NormalizarDatos(Estudiante estudiante)
-    {
-        estudiante.codigo = estudiante.codigo.Trim().ToUpperInvariant();
-        estudiante.nombre = estudiante.nombre.Trim().ToUpperInvariant();
-        estudiante.carrera = estudiante.carrera.Trim().ToUpperInvariant();
-        estudiante.correo = estudiante.correo.Trim().ToUpperInvariant();
-        estudiante.telefono = estudiante.telefono.Trim().ToUpperInvariant();
-    }
-    // Indicamos qué estudiante debe retirarse del almacenamiento.
-    public void Eliminar(int id)
-    {
-        repository.Eliminar(id);
-    }
-    // Pedimos los estudiantes registrados, sin incluir los espacios vacíos del arreglo.
+
     public Estudiante[] Listar()
     {
         return repository.Listar();
     }
-    // Buscamos un estudiante concreto; el resultado puede ser null si no existe.
-    public Estudiante? ObtenerPorId(int id)
+
+    // Estado: 0 = todos, 1 = activos, 2 = inactivos.
+    public Estudiante[] Buscar(string texto, int estado)
     {
-        return repository.ObtenerPorId(id);
+        texto = texto.Trim();
+        Estudiante[] estudiantes = repository.Listar();
+        Estudiante[] encontrados = new Estudiante[estudiantes.Length];
+        int cantidad = 0;
+        foreach (Estudiante estudiante in estudiantes)
+        {
+            bool coincide = estudiante.codigo.Contains(texto, StringComparison.OrdinalIgnoreCase) || (estudiante.nombre + " " + estudiante.apellidos).Contains(texto, StringComparison.OrdinalIgnoreCase);
+            bool mostrarEstado = estado == 0 || (estado == 1 && estudiante.activo) || (estado == 2 && !estudiante.activo);
+            if (coincide && mostrarEstado)
+            {
+                encontrados[cantidad] = estudiante;
+                cantidad++;
+            }
+        }
+
+        Estudiante[] resultado = new Estudiante[cantidad];
+        Array.Copy(encontrados, resultado, cantidad);
+        return resultado;
     }
-    // Consultamos cuántos estudiantes hay para el total y los cupos disponibles.
-    public int Conteo()
+
+    public void Guardar(Estudiante estudiante)
     {
-        return repository.Conteo();
+        Estudiante copia = new Estudiante();
+        copia.id = estudiante.id;
+        copia.nombre = estudiante.nombre.Trim();
+        copia.apellidos = estudiante.apellidos.Trim();
+        copia.apoderado = estudiante.apoderado.Trim();
+        copia.telefono = estudiante.telefono.Trim();
+        copia.correo = estudiante.correo.Trim();
+        copia.activo = estudiante.activo;
+        ValidarEstudiante(copia);
+        repository.Guardar(copia);
+    }
+
+    public void DarDeBaja(Estudiante estudiante)
+    {
+        // TODO: comprobar matrícula activa cuando se implemente el módulo de matrículas.
+        if (!estudiante.activo)
+        {
+            throw new InvalidOperationException("El estudiante ya está inactivo.");
+        }
+
+        Estudiante copia = new Estudiante();
+        copia.id = estudiante.id;
+        copia.nombre = estudiante.nombre;
+        copia.apellidos = estudiante.apellidos;
+        copia.apoderado = estudiante.apoderado;
+        copia.telefono = estudiante.telefono;
+        copia.correo = estudiante.correo;
+        copia.activo = false;
+        Guardar(copia);
+    }
+
+    private static void ValidarEstudiante(Estudiante estudiante)
+    {
+        if (string.IsNullOrWhiteSpace(estudiante.nombre) || string.IsNullOrWhiteSpace(estudiante.apellidos) || string.IsNullOrWhiteSpace(estudiante.apoderado))
+        {
+            throw new ArgumentException("Complete nombres, apellidos y nombre del apoderado.");
+        }
+
+        if (estudiante.nombre.Length > 80 || estudiante.apellidos.Length > 100 || estudiante.apoderado.Length > 120)
+        {
+            throw new ArgumentException("Use hasta 80 caracteres en nombres, 100 en apellidos y 120 en apoderado.");
+        }
+
+        if (estudiante.telefono == null || estudiante.telefono.Length != 9)
+        {
+            throw new ArgumentException("El teléfono del apoderado debe tener 9 dígitos.");
+        }
+
+        foreach (char digito in estudiante.telefono)
+        {
+            if (digito < '0' || digito > '9')
+            {
+                throw new ArgumentException("El teléfono solo admite dígitos.");
+            }
+        }
+
+        if (estudiante.correo == null)
+        {
+            throw new ArgumentException("Deje el correo vacío si no lo conoce.");
+        }
+
+        if (estudiante.correo.Length > 0)
+        {
+            MailAddress? direccion;
+            if (!MailAddress.TryCreate(estudiante.correo, out direccion) || direccion.Address != estudiante.correo)
+            {
+                throw new ArgumentException("Ingrese un correo válido o deje el campo vacío.");
+            }
+        }
     }
 }
