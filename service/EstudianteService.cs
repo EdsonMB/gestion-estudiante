@@ -6,11 +6,6 @@ namespace GestionEstudiante.service;
 public class EstudianteService
 {
     private readonly EstudianteRepository repository;
-    public EstudianteService(string? ruta = null)
-    {
-        repository = new EstudianteRepository(ruta);
-    }
-
     public EstudianteService(EstudianteRepository repository)
     {
         this.repository = repository;

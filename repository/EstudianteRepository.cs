@@ -1,41 +1,23 @@
-using GestionEstudiante.archivos;
 using GestionEstudiante.model;
 
 namespace GestionEstudiante.repository;
 public class EstudianteRepository
 {
-    private readonly ArchivoBaseDatos archivo;
-    private BaseDatosEscolar datos;
-    public string Ruta
-    {
-        get
-        {
-            return archivo.Ruta;
-        }
-    }
+    private readonly GestorBaseDatos gestor;
 
-    public EstudianteRepository(string? ruta = null)
+    public EstudianteRepository(GestorBaseDatos gestor)
     {
-        datos = new BaseDatosEscolar();
-        archivo = new ArchivoBaseDatos(ruta);
-        if (archivo.Existe())
-        {
-            datos = archivo.Leer(Ruta);
-        }
+        this.gestor = gestor;
     }
 
     public Estudiante[] Listar()
     {
-        return datos.estudiantes;
-    }
-
-    public BaseDatosEscolar LeerArchivo(string ruta)
-    {
-        return archivo.Leer(ruta);
+        return gestor.Datos.estudiantes;
     }
 
     public void Guardar(Estudiante estudiante)
     {
+        BaseDatosEscolar datos = gestor.Datos;
         int posicion = -1;
         for (int i = 0; i < datos.estudiantes.Length; i++)
         {
@@ -78,39 +60,6 @@ public class EstudianteRepository
             nuevos.secuencias.siguienteIdEstudiante++;
         }
 
-        archivo.Guardar(Ruta, nuevos);
-        datos = nuevos;
-    }
-
-    public void GuardarArchivo()
-    {
-        archivo.Guardar(Ruta, datos);
-    }
-
-    public void CrearCopia(string ruta)
-    {
-        archivo.Guardar(ruta, datos);
-    }
-
-    public void Usar(string ruta, BaseDatosEscolar nuevos)
-    {
-        archivo.Usar(ruta);
-        datos = nuevos;
-    }
-
-    public void Mover(string destino)
-    {
-        if (!archivo.Existe())
-        {
-            GuardarArchivo();
-        }
-
-        archivo.Mover(destino);
-    }
-
-    public void Recuperar(string ruta, BaseDatosEscolar nuevos)
-    {
-        archivo.Copiar(ruta, Ruta);
-        datos = nuevos;
+        gestor.Guardar(nuevos);
     }
 }

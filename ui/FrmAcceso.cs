@@ -5,6 +5,8 @@ namespace GestionEstudiante;
 
 public partial class FrmAcceso : Form
 {
+    private GestorBaseDatos? gestor;
+
     public FrmAcceso()
     {
         InitializeComponent();
@@ -17,9 +19,14 @@ public partial class FrmAcceso : Form
         ArchivoService servicioArchivos;
         try
         {
-            EstudianteRepository repositorio = new EstudianteRepository();
+            if (gestor == null)
+            {
+                gestor = new GestorBaseDatos();
+            }
+
+            EstudianteRepository repositorio = new EstudianteRepository(gestor);
             servicio = new EstudianteService(repositorio);
-            servicioArchivos = new ArchivoService(repositorio);
+            servicioArchivos = new ArchivoService(gestor);
         }
         catch (Exception error)
         {

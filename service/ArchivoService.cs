@@ -1,28 +1,27 @@
-using GestionEstudiante.model;
 using GestionEstudiante.repository;
 
 namespace GestionEstudiante.service;
 
 public class ArchivoService
 {
-    private readonly EstudianteRepository repository;
+    private readonly GestorBaseDatos gestor;
 
-    public ArchivoService(EstudianteRepository repository)
+    public ArchivoService(GestorBaseDatos gestor)
     {
-        this.repository = repository;
+        this.gestor = gestor;
     }
 
     public string Ruta
     {
         get
         {
-            return repository.Ruta;
+            return gestor.Ruta;
         }
     }
 
     public string ObtenerResumenArchivo()
     {
-        return repository.Listar().Length + " estudiantes";
+        return gestor.Datos.estudiantes.Length + " estudiantes";
     }
 
     public void CrearCopia(string ruta)
@@ -32,24 +31,22 @@ public class ArchivoService
             throw new ArgumentException("Elija una ubicación distinta al archivo principal.");
         }
 
-        repository.CrearCopia(ruta);
+        gestor.CrearCopia(ruta);
     }
 
     public void CargarUsar(string ruta)
     {
-        BaseDatosEscolar datos = repository.LeerArchivo(ruta);
-        repository.Usar(ruta, datos);
+        gestor.CargarUsar(ruta);
     }
 
     public void MoverArchivo(string destino)
     {
-        repository.Mover(destino);
+        gestor.Mover(destino);
     }
 
     public void Recuperar(string ruta)
     {
-        BaseDatosEscolar datos = repository.LeerArchivo(ruta);
-        repository.Recuperar(ruta, datos);
+        gestor.Recuperar(ruta);
     }
 
 }

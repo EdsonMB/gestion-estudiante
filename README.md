@@ -36,7 +36,11 @@ Aulas, matrículas, asistencia y reportes conservan sus espacios reservados en e
 | `ui` | Formularios con sus archivos .cs, .Designer.cs y .resx. |
 | `util` | Constantes de versión, nombre del centro y año escolar. |
 
-`FrmGestionEstudiantes` y `FrmEstudiante` usan `EstudianteService`. `FrmArchivos` usa únicamente `ArchivoService`. Ambos servicios comparten el mismo repositorio creado al ingresar.
+`FrmGestionEstudiantes` y `FrmEstudiante` usan `EstudianteService`. `FrmArchivos` usa únicamente `ArchivoService`.
+
+`FrmAcceso` crea una sola instancia de `GestorBaseDatos` al ingresar por primera vez y la conserva al cerrar sesión. Ese gestor reúne la ruta activa, los datos cargados y las operaciones generales de archivo. El repositorio de estudiantes y el servicio de archivos reciben esa misma instancia mediante sus constructores.
+
+`EstudianteRepository` se ocupa solamente de consultar y guardar estudiantes a través del gestor. `ArchivoService` solicita al gestor cargar, mover, respaldar y recuperar. Así, cambiar de archivo actualiza los datos que ven las pantallas y los repositorios, sin crear otra base en memoria. Los demás módulos siguen pendientes.
 
 Las validaciones de los campos están en `EstudianteService` y se aplican al registrar o editar. La carga del archivo y el inicio no revisan esos campos. La estructura e identificadores del JSON se revisan en métodos privados de `ArchivoBaseDatos`. No hay clases adicionales dedicadas a validaciones.
 
