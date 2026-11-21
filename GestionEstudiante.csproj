@@ -8,10 +8,24 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Guna.UI2.WinForms" Version="2.0.4.6" />
     <Compile Update="ui\FrmMatriculas.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="ui\FrmMatriculas.Designer.cs">
+      <DependentUpon>FrmMatriculas.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="ui\FrmMatriculas.resx">
+      <DependentUpon>FrmMatriculas.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="ui\FrmMatricula.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="ui\FrmMatricula.Designer.cs">
+      <DependentUpon>FrmMatricula.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="ui\FrmMatricula.resx">
+      <DependentUpon>FrmMatricula.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Update="ui\FormAsistencia.cs">
       <SubType>Form</SubType>
     </Compile>

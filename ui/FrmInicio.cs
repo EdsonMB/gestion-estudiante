@@ -6,8 +6,8 @@ public partial class FrmInicio : Form
 {
     private FrmGestionEstudiantes? estudiantes;
     private FrmArchivos? archivos;
-    private Panel? matriculas;
-    private Panel? asistencia;
+    private FrmMatriculas? matriculas;
+    private FormAsistencia? asistencia;
     private readonly EstudianteService servicio = null!;
     private readonly ArchivoService servicioArchivos = null!;
     public FrmInicio()
@@ -100,55 +100,40 @@ public partial class FrmInicio : Form
 
     private void btnMatriculas_Click(object? sender, EventArgs e)
     {
-        matriculas ??= IntegrarFormulario(new GestionEscolar.Matriculas.FrmMatriculas());
+        if (matriculas == null)
+        {
+            matriculas = new FrmMatriculas();
+            IntegrarFormulario(matriculas);
+        }
+
         MostrarFormulario(matriculas, "Matrículas");
     }
 
     private void btnAsistencia_Click(object? sender, EventArgs e)
     {
-        asistencia ??= IntegrarFormulario(new GestionEscolar.FormAsistencia());
+        if (asistencia == null)
+        {
+            asistencia = new FormAsistencia();
+            IntegrarFormulario(asistencia);
+        }
+
         MostrarFormulario(asistencia, "Asistencia");
     }
 
-    private Panel IntegrarFormulario(Form formulario)
+    private void IntegrarFormulario(Form formulario)
     {
-        formulario.SuspendLayout();
-        foreach (Control control in formulario.Controls)
-        {
-            if (control.Dock == DockStyle.Left || control.Dock == DockStyle.Top)
-            {
-                control.Hide();
-            }
-            else if (control.Dock == DockStyle.Fill)
-            {
-                // Matrículas coloca su encabezado dentro del panel de contenido.
-                foreach (Control hijo in control.Controls)
-                {
-                    if (hijo.Dock == DockStyle.Top)
-                    {
-                        hijo.Hide();
-                    }
-                }
-            }
-        }
-
-        Panel vista = new Panel { Dock = DockStyle.Fill, Visible = false };
         formulario.TopLevel = false;
         formulario.FormBorderStyle = FormBorderStyle.None;
         formulario.Dock = DockStyle.Fill;
-        vista.Controls.Add(formulario);
-        panelContenido.Controls.Add(vista);
-        formulario.ResumeLayout();
-        formulario.Show();
-        return vista;
+        panelContenido.Controls.Add(formulario);
     }
 
-    private void MostrarFormulario(Panel vista, string titulo)
+    private void MostrarFormulario(Form formulario, string titulo)
     {
         OcultarPantallas();
         lblCabecera.Text = titulo;
-        vista.Show();
-        vista.BringToFront();
+        formulario.Show();
+        formulario.BringToFront();
     }
 
     private void btnReportes_Click(object? sender, EventArgs e)
