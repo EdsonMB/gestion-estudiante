@@ -14,7 +14,9 @@ Ingrese con usuario admin y contraseña 987987. La validación usa las constante
 - Inicio muestra la cantidad de estudiantes activos y permite navegar a los módulos.
 - Estudiantes permite registrar, editar, buscar por código, nombres o apellidos y filtrar por estado. Dar de baja cambia el estado a inactivo y conserva el registro. Al editar se conservan el código, la fecha y el estado.
 - Archivos permite cargar y usar una carpeta de datos. La carpeta activa se recuerda al reiniciar.
-- Aulas, Matrículas, Asistencia y Reportes están pendientes de integración. También queda pendiente la consulta de matrícula activa al dar de baja a un estudiante.
+- Matrículas muestra el formulario del equipo dentro de Inicio y mantiene sus datos de demostración mientras dura la sesión.
+- Asistencia muestra el formulario del equipo dentro de Inicio con controles de Windows Forms y el estilo de Estudiantes. Los eventos de registro y guardado siguen pendientes.
+- Aulas y Reportes están pendientes de integración. También quedan pendientes la persistencia de Matrículas y Asistencia y la consulta de matrícula activa al dar de baja a un estudiante.
 
 ## Archivos de datos
 
