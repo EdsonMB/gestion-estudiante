@@ -1,5 +1,6 @@
 using GestionEstudiante.repository;
 using GestionEstudiante.service;
+using GestionEstudiante.util;
 
 namespace GestionEstudiante;
 
@@ -12,9 +13,17 @@ public partial class FrmAcceso : Form
         InitializeComponent();
     }
 
-    // Acceso de demostración: los campos todavía no autentican usuarios.
     private void btnIngresar_Click(object? sender, EventArgs e)
     {
+        if (txtUsuario.Text.Trim() != Constantes.UsuarioAdministrador || txtClave.Text != Constantes.ClaveAdministrador)
+        {
+            MessageBox.Show(this, "El usuario o la contraseña son incorrectos.", "Acceso denegado",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtClave.Clear();
+            txtClave.Focus();
+            return;
+        }
+
         EstudianteService servicio;
         ArchivoService servicioArchivos;
         try
@@ -30,7 +39,7 @@ public partial class FrmAcceso : Form
         }
         catch (Exception error)
         {
-            MessageBox.Show(this, "No se pudo leer el archivo de datos. " + error.Message, "Archivo inválido");
+            MessageBox.Show(this, "No se pudo abrir la carpeta de datos. " + error.Message, "Archivo inválido");
             return;
         }
 

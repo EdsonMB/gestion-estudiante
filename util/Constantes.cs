@@ -6,5 +6,8 @@ public static class Constantes
     public const string Version = "1.0";
     public const string NombreCentroEducativo = "Centro Educativo Jul";
     public const int AnioEscolar = 2026;
+    public const string UsuarioAdministrador = "admin";
+    public const string ClaveAdministrador = "987987";
+    public const string InstanciaAplicacion = "GestionEstudiante.App";
     public const string CarpetaDatos = "C:/gestion-estudiante";
 }
