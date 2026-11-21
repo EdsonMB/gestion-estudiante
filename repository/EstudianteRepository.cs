@@ -13,7 +13,7 @@ public class EstudianteRepository
         this.gestor = gestor;
     }
 
-    public IReadOnlyList<Estudiante> Listar()
+    public List<Estudiante> Listar()
     {
         return gestor.Datos.estudiantes;
     }

@@ -11,7 +11,7 @@ public class EstudianteService
         this.repository = repository;
     }
 
-    public IReadOnlyList<Estudiante> Listar()
+    public List<Estudiante> Listar()
     {
         return repository.Listar();
     }
