@@ -9,34 +9,20 @@ public class GestorBaseDatos
     private readonly ArchivoBaseDatos archivo;
 
     public BaseDatosEscolar Datos { get; private set; }
-
     public string Ruta
     {
-        get
-        {
-            return archivo.Ruta;
-        }
+        get { return archivo.Ruta; }
     }
 
     public GestorBaseDatos(string? ruta = null)
     {
         archivo = new ArchivoBaseDatos(ruta);
-        Datos = new BaseDatosEscolar();
-        if (archivo.Existe())
-        {
-            Datos = archivo.Leer(Ruta);
-        }
+        Datos = archivo.Existe() ? archivo.Leer(Ruta) : new BaseDatosEscolar();
     }
 
-    public void Guardar(BaseDatosEscolar nuevos)
+    public void Guardar<T>(string nombreArchivo, List<T> registros, Func<T, string[]> obtenerCampos)
     {
-        archivo.Guardar(Ruta, nuevos);
-        Datos = nuevos;
-    }
-
-    public void CrearCopia(string ruta)
-    {
-        archivo.Guardar(ruta, Datos);
+        archivo.Guardar(nombreArchivo, registros, obtenerCampos);
     }
 
     public void CargarUsar(string ruta)
@@ -48,18 +34,6 @@ public class GestorBaseDatos
 
     public void Mover(string destino)
     {
-        if (!archivo.Existe())
-        {
-            archivo.Guardar(Ruta, Datos);
-        }
-
         archivo.Mover(destino);
-    }
-
-    public void Recuperar(string ruta)
-    {
-        BaseDatosEscolar nuevos = archivo.Leer(ruta);
-        archivo.Copiar(ruta, Ruta);
-        Datos = nuevos;
     }
 }

@@ -11,35 +11,35 @@ public class EstudianteService
         this.repository = repository;
     }
 
-    public Estudiante[] Listar()
+    public IReadOnlyList<Estudiante> Listar()
     {
         return repository.Listar();
     }
 
     // Estado: 0 = todos, 1 = activos, 2 = inactivos.
-    public Estudiante[] Buscar(string texto, int estado)
+    public List<Estudiante> Buscar(string texto, int estado)
     {
         texto = texto.Trim();
-        Estudiante[] estudiantes = repository.Listar();
-        Estudiante[] encontrados = new Estudiante[estudiantes.Length];
-        int cantidad = 0;
-        foreach (Estudiante estudiante in estudiantes)
+        List<Estudiante> encontrados = new List<Estudiante>();
+        foreach (Estudiante estudiante in repository.Listar())
         {
             bool coincide = estudiante.codigo.Contains(texto, StringComparison.OrdinalIgnoreCase) || (estudiante.nombre + " " + estudiante.apellidos).Contains(texto, StringComparison.OrdinalIgnoreCase);
             bool mostrarEstado = estado == 0 || (estado == 1 && estudiante.activo) || (estado == 2 && !estudiante.activo);
             if (coincide && mostrarEstado)
             {
-                encontrados[cantidad] = estudiante;
-                cantidad++;
+                encontrados.Add(estudiante);
             }
         }
 
-        Estudiante[] resultado = new Estudiante[cantidad];
-        Array.Copy(encontrados, resultado, cantidad);
-        return resultado;
+        return encontrados;
     }
 
     public void Guardar(Estudiante estudiante)
+    {
+        GuardarDatos(estudiante, estudiante.activo);
+    }
+
+    private void GuardarDatos(Estudiante estudiante, bool activo)
     {
         Estudiante copia = new Estudiante();
         copia.id = estudiante.id;
@@ -48,7 +48,7 @@ public class EstudianteService
         copia.apoderado = estudiante.apoderado.Trim();
         copia.telefono = estudiante.telefono.Trim();
         copia.correo = estudiante.correo.Trim();
-        copia.activo = estudiante.activo;
+        copia.activo = activo;
         ValidarEstudiante(copia);
         repository.Guardar(copia);
     }
@@ -61,15 +61,7 @@ public class EstudianteService
             throw new InvalidOperationException("El estudiante ya está inactivo.");
         }
 
-        Estudiante copia = new Estudiante();
-        copia.id = estudiante.id;
-        copia.nombre = estudiante.nombre;
-        copia.apellidos = estudiante.apellidos;
-        copia.apoderado = estudiante.apoderado;
-        copia.telefono = estudiante.telefono;
-        copia.correo = estudiante.correo;
-        copia.activo = false;
-        Guardar(copia);
+        GuardarDatos(estudiante, false);
     }
 
     private static void ValidarEstudiante(Estudiante estudiante)

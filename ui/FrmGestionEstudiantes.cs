@@ -29,7 +29,7 @@ public partial class FrmGestionEstudiantes : Form
     public void ActualizarListado()
     {
         dgvEstudiantes.Rows.Clear();
-        Estudiante[] estudiantes = servicio.Buscar(txtBuscar.Text, cboEstado.SelectedIndex);
+        List<Estudiante> estudiantes = servicio.Buscar(txtBuscar.Text, cboEstado.SelectedIndex);
         foreach (Estudiante estudiante in estudiantes)
         {
             int fila = dgvEstudiantes.Rows.Add(estudiante.codigo, estudiante.nombre + " " + estudiante.apellidos, estudiante.apoderado, estudiante.telefono, estudiante.activo ? "Activo" : "Inactivo", "Editar", estudiante.activo ? "Dar de baja" : "");

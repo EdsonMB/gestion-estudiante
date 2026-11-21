@@ -1,170 +1,324 @@
-using System.Text.Json;
+using System.Globalization;
+using System.Text;
 using GestionEstudiante.model;
 using GestionEstudiante.util;
 
 namespace GestionEstudiante.archivos;
+
 public class ArchivoBaseDatos
 {
+    private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false, true);
     private readonly string? archivoUbicacion;
     public string Ruta { get; private set; }
 
-    public ArchivoBaseDatos(string? ruta = null, string? ubicacion = null)
+    public ArchivoBaseDatos(string? ruta = null)
     {
         if (ruta == null)
         {
-            string carpeta = Constantes.CarpetaDatos;
-            archivoUbicacion = ubicacion;
-            if (archivoUbicacion == null)
-            {
-                archivoUbicacion = Path.Combine(carpeta, "ubicacion.txt");
-            }
-
-            ruta = Path.Combine(carpeta, "gestion-escolar.json");
+            archivoUbicacion = Path.Combine(Constantes.CarpetaAplicacion, Constantes.ArchivoUbicacion);
+            ruta = Constantes.CarpetaDatos;
             if (File.Exists(archivoUbicacion))
             {
-                string guardada = File.ReadAllText(archivoUbicacion).Trim();
-                if (guardada.Length > 0)
+                ruta = File.ReadAllText(archivoUbicacion, Utf8).Trim();
+                if (!Path.IsPathFullyQualified(ruta) || !Directory.Exists(ruta))
                 {
-                    ruta = guardada;
+                    throw new InvalidDataException("La carpeta de datos guardada ya no está disponible. Revise " + archivoUbicacion);
                 }
             }
         }
 
-        Ruta = Path.GetFullPath(ruta);
+        Ruta = Normalizar(ruta);
     }
 
     public bool Existe()
     {
-        return File.Exists(Ruta);
+        return Directory.Exists(Ruta) || File.Exists(Ruta);
     }
 
     public void Usar(string ruta)
     {
-        ruta = Path.GetFullPath(ruta);
-        GuardarUbicacion(ruta);
+        ruta = Normalizar(ruta);
+        if (archivoUbicacion != null)
+        {
+            Escribir(archivoUbicacion, ruta);
+        }
+
         Ruta = ruta;
-    }
-
-    public void Mover(string destino)
-    {
-        destino = Path.GetFullPath(destino);
-        if (destino.Equals(Ruta, StringComparison.OrdinalIgnoreCase))
-        {
-            return;
-        }
-
-        Directory.CreateDirectory(Path.GetDirectoryName(destino)!);
-        File.Move(Ruta, destino);
-        try
-        {
-            GuardarUbicacion(destino);
-        }
-        catch
-        {
-            File.Move(destino, Ruta);
-            throw;
-        }
-
-        Ruta = destino;
-    }
-
-    private void GuardarUbicacion(string ruta)
-    {
-        // Las rutas explícitas de las pruebas no cambian la ubicación del usuario.
-        if (archivoUbicacion == null)
-        {
-            return;
-        }
-
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(archivoUbicacion))!);
-        File.WriteAllText(archivoUbicacion, ruta);
     }
 
     public BaseDatosEscolar Leer(string ruta)
     {
-        string texto;
-        using (StreamReader lector = new StreamReader(ruta))
+        BaseDatosEscolar datos = new BaseDatosEscolar();
+        string archivo = Constantes.ArchivoEstudiantes;
+        //estudiantes
+        datos.estudiantes = LeerArchivo(ruta, archivo, Constantes.EstudiantesColumnas, (indice, campos, ids, codigos) =>
         {
-            texto = lector.ReadToEnd();
-        }
+            int numero = indice + 1;
+            if (!LeerEnteroPositivo(campos[0], out int id) || campos[1].Length == 0
+                || !DateTime.TryParseExact(campos[7], Constantes.FormatoFecha, CultureInfo.InvariantCulture,
+                    DateTimeStyles.RoundtripKind, out DateTime fecha)
+                || !bool.TryParse(campos[8], out bool activo))
+            {
+                throw ErrorFila(archivo, numero);
+            }
 
-        // Por ahora solo se convierte el JSON al modelo, sin revisar sus datos.
-        BaseDatosEscolar? datos = JsonSerializer.Deserialize<BaseDatosEscolar>(texto);
-        if (datos == null)
-        {
-            throw new InvalidDataException("No se pudo leer el archivo.");
-        }
+            if (!ids.Add(id) || !codigos.Add(campos[1]))
+            {
+                throw new InvalidDataException("Identificador o código repetido en " + archivo + ", línea " + numero + ".");
+            }
 
+            return new Estudiante
+            {
+                id = id,
+                codigo = campos[1],
+                nombre = campos[2],
+                apellidos = campos[3],
+                apoderado = campos[4],
+                telefono = campos[5],
+                correo = campos[6],
+                fechaCreacion = fecha,
+                activo = activo
+            };
+        });
         return datos;
     }
 
-    public void Guardar(string ruta, BaseDatosEscolar datos)
+    private static List<T> LeerArchivo<T>(
+        string ruta, string archivo, int columnas,
+        Func<int, string[], HashSet<int>, HashSet<string>, T> funcion)
     {
-        string original = "{}";
+        string[] filas = File.ReadAllLines(Path.Combine(ruta, archivo), Utf8);
+        HashSet<int> ids = new HashSet<int>();
+        HashSet<string> codigos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        List<T> entidades = new List<T>();
+
+        for (int i = 0; i < filas.Length; i++)
+        {
+            string[] campos = LeerCampos(filas[i], archivo, i + 1, columnas);
+            entidades.Add(funcion(i, campos, ids, codigos));
+        }
+
+        return entidades;
+    }
+
+    public void Guardar<T>(string archivo, List<T> registros, Func<T, string[]> obtenerCampos)
+    {
+        StringBuilder texto = new StringBuilder();
+        foreach (T registro in registros)
+        {
+            texto.AppendLine(Fila(obtenerCampos(registro)));
+        }
+
+        GuardarContenido(archivo, texto.ToString());
+    }
+
+    private void GuardarContenido(string archivo, string contenido)
+    {
         if (Existe())
         {
-            original = File.ReadAllText(Ruta);
+            Escribir(Path.Combine(Ruta, archivo), contenido);
+            return;
         }
 
-        // Se copian las secciones originales, sin modelos ni operaciones de otros módulos.
-        string contenido = "{\n";
-        string secuencias = "{";
-        using (JsonDocument documento = JsonDocument.Parse(original))
-        {
-            foreach (JsonProperty campo in documento.RootElement.EnumerateObject())
-            {
-                if (campo.Name != "estudiantes" && campo.Name != "secuencias")
-                {
-                    contenido += JsonSerializer.Serialize(campo.Name) + ": " + campo.Value.GetRawText() + ",\n";
-                }
-            }
-
-            JsonElement contadores;
-            if (documento.RootElement.TryGetProperty("secuencias", out contadores))
-            {
-                foreach (JsonProperty contador in contadores.EnumerateObject())
-                {
-                    if (contador.Name != "siguienteIdEstudiante")
-                    {
-                        secuencias += JsonSerializer.Serialize(contador.Name) + ": " + contador.Value.GetRawText() + ",";
-                    }
-                }
-            }
-        }
-
-        secuencias += "\"siguienteIdEstudiante\": " + datos.secuencias.siguienteIdEstudiante + "}";
-        contenido += "\"secuencias\": " + secuencias + ",\n";
-        contenido += "\"estudiantes\": " + JsonSerializer.Serialize(datos.estudiantes) + "\n}";
-        Escribir(ruta, contenido);
-    }
-
-    public void Copiar(string origen, string destino)
-    {
-        // Recupera el contenido completo, incluidas las secciones de otros módulos.
-        Escribir(destino, File.ReadAllText(origen));
-    }
-
-    private void Escribir(string ruta, string contenido)
-    {
-        ruta = Path.GetFullPath(ruta);
-        Directory.CreateDirectory(Path.GetDirectoryName(ruta)!);
-        string temporal = ruta + ".tmp";
+        string temporal = RutaTemporal(Ruta);
         try
         {
-            using (StreamWriter escritor = new StreamWriter(temporal))
-            {
-                escritor.Write(contenido);
-            }
+            Escribir(Path.Combine(temporal, archivo), contenido);
+            Directory.Move(temporal, Ruta);
+        }
+        finally
+        {
+            LimpiarTemporal(temporal);
+        }
+    }
 
+    private void PrepararTraslado(string destino)
+    {
+        string temporal = RutaTemporal(destino);
+        try
+        {
+            CopiarConjunto(Ruta, temporal);
+            Directory.Move(temporal, destino);
+        }
+        finally
+        {
+            LimpiarTemporal(temporal);
+        }
+    }
+
+    public void Mover(string destino)
+    {
+        destino = Normalizar(destino);
+        ValidarDestino(destino);
+        if (!Existe())
+        {
+            GuardarContenido(Constantes.ArchivoEstudiantes, string.Empty);
+        }
+
+        Directory.CreateDirectory(Path.GetDirectoryName(destino)!);
+        string origen = Ruta;
+        if (!Path.GetPathRoot(origen)!.Equals(Path.GetPathRoot(destino), StringComparison.OrdinalIgnoreCase))
+        {
+            TrasladarEntreUnidades(origen, destino);
+            return;
+        }
+
+        Directory.Move(origen, destino);
+        try
+        {
+            Usar(destino);
+        }
+        catch
+        {
+            Directory.Move(destino, origen);
+            throw;
+        }
+    }
+
+    private void TrasladarEntreUnidades(string origen, string destino)
+    {
+        ValidarCarpetaDedicada(origen);
+        PrepararTraslado(destino);
+        string anterior = RutaTemporal(origen);
+        try
+        {
+            Directory.Move(origen, anterior);
+            try
+            {
+                Usar(destino);
+            }
+            catch
+            {
+                Directory.Move(anterior, origen);
+                throw;
+            }
+        }
+        catch
+        {
+            LimpiarTemporal(destino);
+            throw;
+        }
+
+        LimpiarTemporal(anterior);
+    }
+
+    private static void ValidarCarpetaDedicada(string ruta)
+    {
+        if (Directory.GetDirectories(ruta).Length != 0)
+        {
+            throw new IOException("La carpeta activa contiene subcarpetas. Use una carpeta dedicada a los datos.");
+        }
+
+        foreach (string archivo in Directory.GetFiles(ruta))
+        {
+            if (!Path.GetExtension(archivo).Equals(".txt", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new IOException("La carpeta activa contiene otros archivos. Use una carpeta dedicada a los datos.");
+            }
+        }
+    }
+
+    private void ValidarDestino(string destino)
+    {
+        if (Relacionadas(Ruta, destino) || Directory.Exists(destino) || File.Exists(destino))
+        {
+            throw new ArgumentException("Elija una carpeta nueva fuera de la carpeta de datos activa.");
+        }
+    }
+
+    private void CopiarConjunto(string origen, string destino)
+    {
+        Directory.CreateDirectory(destino);
+        foreach (string ruta in Directory.GetFiles(origen, "*.txt"))
+        {
+            File.Copy(ruta, Path.Combine(destino, Path.GetFileName(ruta)));
+        }
+
+        Leer(destino);
+    }
+
+    private static bool Relacionadas(string primera, string segunda)
+    {
+        return primera.Equals(segunda, StringComparison.OrdinalIgnoreCase)
+            || primera.StartsWith(Path.EndsInDirectorySeparator(segunda) ? segunda : segunda + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase)
+            || segunda.StartsWith(Path.EndsInDirectorySeparator(primera) ? primera : primera + Path.DirectorySeparatorChar,
+                StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string Normalizar(string ruta)
+    {
+        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(ruta));
+    }
+
+    private static string RutaTemporal(string ruta)
+    {
+        return ruta + "." + Guid.NewGuid().ToString("N") + ".tmp";
+    }
+
+    private static void LimpiarTemporal(string ruta)
+    {
+        try
+        {
+            if (Directory.Exists(ruta))
+            {
+                foreach (string archivo in Directory.GetFiles(ruta))
+                {
+                    File.Delete(archivo);
+                }
+                Directory.Delete(ruta);
+            }
+        }
+        catch (IOException) { }
+        catch (UnauthorizedAccessException) { }
+    }
+
+    private static string Fila(params string[] campos)
+    {
+        string[] codificados = new string[campos.Length];
+        for (int i = 0; i < campos.Length; i++)
+        {
+            codificados[i] = campos[i].Replace("\\", "\\\\").Replace(Constantes.Separador.ToString(), "\\p")
+                .Replace("\r", "\\r").Replace("\n", "\\n");
+        }
+
+        return string.Join(Constantes.Separador, codificados);
+    }
+
+    private static string[] LeerCampos(string linea, string archivo, int numero, int cantidad)
+    {
+        string[] campos = linea.Split(Constantes.Separador);
+        if (campos.Length != cantidad)
+        {
+            throw ErrorFila(archivo, numero);
+        }
+
+        return campos;
+    }
+
+
+    private static bool LeerEnteroPositivo(string campo, out int valor)
+    {
+        return int.TryParse(campo, NumberStyles.None, CultureInfo.InvariantCulture, out valor) && valor > 0;
+    }
+
+    private static InvalidDataException ErrorFila(string archivo, int numero)
+    {
+        return new InvalidDataException("Registro inválido en " + archivo + ", línea " + numero + ".");
+    }
+
+    private static void Escribir(string ruta, string contenido)
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(ruta)!);
+        string temporal = RutaTemporal(ruta);
+        try
+        {
+            File.WriteAllText(temporal, contenido, Utf8);
             File.Move(temporal, ruta, true);
         }
         finally
         {
-            if (File.Exists(temporal))
-            {
-                File.Delete(temporal);
-            }
+            File.Delete(temporal);
         }
     }
-
 }

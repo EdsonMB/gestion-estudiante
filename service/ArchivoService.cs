@@ -21,17 +21,7 @@ public class ArchivoService
 
     public string ObtenerResumenArchivo()
     {
-        return gestor.Datos.estudiantes.Length + " estudiantes";
-    }
-
-    public void CrearCopia(string ruta)
-    {
-        if (Path.GetFullPath(ruta).Equals(Path.GetFullPath(Ruta), StringComparison.OrdinalIgnoreCase))
-        {
-            throw new ArgumentException("Elija una ubicación distinta al archivo principal.");
-        }
-
-        gestor.CrearCopia(ruta);
+        return gestor.Datos.estudiantes.Count + " estudiantes";
     }
 
     public void CargarUsar(string ruta)
@@ -42,11 +32,6 @@ public class ArchivoService
     public void MoverArchivo(string destino)
     {
         gestor.Mover(destino);
-    }
-
-    public void Recuperar(string ruta)
-    {
-        gestor.Recuperar(ruta);
     }
 
 }

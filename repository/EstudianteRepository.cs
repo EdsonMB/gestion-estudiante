@@ -1,6 +1,9 @@
+using System.Globalization;
 using GestionEstudiante.model;
+using GestionEstudiante.util;
 
 namespace GestionEstudiante.repository;
+
 public class EstudianteRepository
 {
     private readonly GestorBaseDatos gestor;
@@ -10,56 +13,62 @@ public class EstudianteRepository
         this.gestor = gestor;
     }
 
-    public Estudiante[] Listar()
+    public IReadOnlyList<Estudiante> Listar()
     {
         return gestor.Datos.estudiantes;
     }
 
     public void Guardar(Estudiante estudiante)
     {
-        BaseDatosEscolar datos = gestor.Datos;
-        int posicion = -1;
-        for (int i = 0; i < datos.estudiantes.Length; i++)
+        // Se publica la lista nueva solo cuando se guarda el archivo.
+        List<Estudiante> registros = new List<Estudiante>(gestor.Datos.estudiantes);
+        if (estudiante.id == 0)
         {
-            if (datos.estudiantes[i].id == estudiante.id)
+            int id = registros.Count + 1;
+            string codigo = Constantes.PrefijoCodigoEstudiante + id.ToString(
+                Constantes.FormatoCodigoEstudiante, CultureInfo.InvariantCulture);
+            foreach (Estudiante existente in registros)
             {
-                posicion = i;
-                break;
+                if (existente.id == id || existente.codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException("El próximo identificador o código ya existe en el archivo de estudiantes.");
+                }
             }
-        }
 
-        bool nuevo = estudiante.id == 0;
-        if (!nuevo && posicion < 0)
-        {
-            throw new InvalidOperationException("Estudiante no encontrado.");
-        }
-
-        Estudiante[] registros = new Estudiante[datos.estudiantes.Length + (nuevo ? 1 : 0)];
-        Array.Copy(datos.estudiantes, registros, datos.estudiantes.Length);
-        // El servicio entrega un objeto nuevo, independiente del registro anterior.
-        if (nuevo)
-        {
-            estudiante.id = datos.secuencias.siguienteIdEstudiante;
-            estudiante.codigo = "E" + estudiante.id.ToString("000000");
+            estudiante.id = id;
+            estudiante.codigo = codigo;
             estudiante.fechaCreacion = DateTime.Now;
             estudiante.activo = true;
-            posicion = registros.Length - 1;
+            registros.Add(estudiante);
         }
         else
         {
-            estudiante.codigo = datos.estudiantes[posicion].codigo;
-            estudiante.fechaCreacion = datos.estudiantes[posicion].fechaCreacion;
+            int posicion = BuscarPosicion(registros, estudiante.id);
+            Estudiante anterior = registros[posicion];
+            estudiante.codigo = anterior.codigo;
+            estudiante.fechaCreacion = anterior.fechaCreacion;
+            registros[posicion] = estudiante;
         }
 
-        registros[posicion] = estudiante;
-        BaseDatosEscolar nuevos = new BaseDatosEscolar();
-        nuevos.estudiantes = registros;
-        nuevos.secuencias.siguienteIdEstudiante = datos.secuencias.siguienteIdEstudiante;
-        if (nuevo)
+        gestor.Guardar(Constantes.ArchivoEstudiantes, registros, ObtenerCampos);
+        gestor.Datos.estudiantes = registros;
+    }
+
+    private static string[] ObtenerCampos(Estudiante estudiante)
+    {
+        return estudiante.ObtenerCampos();
+    }
+
+    private static int BuscarPosicion(List<Estudiante> estudiantes, int id)
+    {
+        for (int i = 0; i < estudiantes.Count; i++)
         {
-            nuevos.secuencias.siguienteIdEstudiante++;
+            if (estudiantes[i].id == id)
+            {
+                return i;
+            }
         }
 
-        gestor.Guardar(nuevos);
+        throw new InvalidOperationException("Estudiante no encontrado.");
     }
 }

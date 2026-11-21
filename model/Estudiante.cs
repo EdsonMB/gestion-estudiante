@@ -1,10 +1,12 @@
+using System.Globalization;
+using GestionEstudiante.util;
+
 namespace GestionEstudiante.model;
 
 // Datos personales del estudiante y contacto de su apoderado.
-public class Estudiante
+public class Estudiante : ModeloBase
 {
     // Identificación asignada por el repositorio.
-    public int id { get; set; }
     public string codigo { get; set; }
 
     // Datos personales.
@@ -31,5 +33,21 @@ public class Estudiante
         correo = "";
         activo = true;
         fechaCreacion = DateTime.MinValue;
+    }
+
+    public override string[] ObtenerCampos()
+    {
+        return new string[]
+       {
+            id.ToString(CultureInfo.InvariantCulture),
+            codigo,
+            nombre,
+            apellidos,
+            apoderado,
+            telefono,
+            correo,
+            fechaCreacion.ToString(Constantes.FormatoFecha, CultureInfo.InvariantCulture),
+            activo ? "true" : "false"
+       };
     }
 }

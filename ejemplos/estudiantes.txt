@@ -1,0 +1,1 @@
+1|E000001|Ana|Torres Ramírez|Rosa Ramírez|900000001|rosa@example.com|2026-03-02T09:00:00.0000000|true

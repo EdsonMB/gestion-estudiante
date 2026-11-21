@@ -1,14 +1,12 @@
 namespace GestionEstudiante.model;
 
-// Contenido del archivo JSON: próximo identificador y estudiantes registrados.
+// Datos activos de la aplicación.
 public class BaseDatosEscolar
 {
-    public Secuencias secuencias { get; set; }
-    public Estudiante[] estudiantes { get; set; }
+    public List<Estudiante> estudiantes { get; set; }
 
     public BaseDatosEscolar()
     {
-        secuencias = new Secuencias();
-        estudiantes = new Estudiante[0];
+        estudiantes = new List<Estudiante>();
     }
 }

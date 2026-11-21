@@ -197,7 +197,7 @@ partial class FrmInicio
         btnArchivos.Name = "btnArchivos";
         btnArchivos.Location = new Point(18, 456);
         btnArchivos.Size = new Size(182, 40);
-        btnArchivos.Text = "Archivos y respaldo";
+        btnArchivos.Text = "Archivos";
         btnArchivos.TabIndex = 6;
         panelMenu.Controls.Add(btnArchivos);
         // btnSalir

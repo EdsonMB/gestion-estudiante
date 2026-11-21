@@ -34,7 +34,7 @@ public partial class FrmInicio : Form
             }
 
         lblValor0.Text = activos.ToString();
-        lblArchivo.Text = "Guardado automático en archivo local.\n" + servicioArchivos.Ruta;
+        lblArchivo.Text = "Guardado automático en archivos TXT.\n" + servicioArchivos.Ruta;
     }
 
     private void OcultarPantallas()
@@ -112,7 +112,7 @@ public partial class FrmInicio : Form
     private void btnArchivos_Click(object? sender, EventArgs e)
     {
         OcultarPantallas();
-        lblCabecera.Text = "Archivos y respaldo";
+        lblCabecera.Text = "Archivos";
         if (archivos == null)
         {
             archivos = new FrmArchivos(servicioArchivos);
