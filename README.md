@@ -15,8 +15,8 @@ Ingrese con usuario admin y contraseña 987987. La validación usa las constante
 - Estudiantes permite registrar, editar, buscar por código, nombres o apellidos y filtrar por estado. Dar de baja cambia el estado a inactivo y conserva el registro. Al editar se conservan el código, la fecha y el estado.
 - Archivos permite cargar y usar una carpeta de datos. La carpeta activa se recuerda al reiniciar.
 - Matrículas incluye el listado y el formulario modal Nueva matrícula. El servicio, los modelos y la conexión con datos quedan pendientes de integración.
-- Asistencia muestra el formulario del equipo dentro de Inicio con controles de Windows Forms y el estilo de Estudiantes. Los eventos de registro y guardado siguen pendientes.
-- Aulas y Reportes están pendientes de integración. También quedan pendientes la persistencia de Matrículas y Asistencia y la consulta de matrícula activa al dar de baja a un estudiante.
+- Asistencia permite marcar y corregir la asistencia de los estudiantes activos por fecha. Guarda los cambios en asistencias.txt. El filtro por aula y la matriz semanal están pendientes.
+- Aulas y Reportes están pendientes de integración. También quedan pendientes la persistencia de Matrículas y la consulta de matrícula activa al dar de baja a un estudiante.
 
 ## Archivos de datos
 
@@ -26,7 +26,8 @@ La ubicación inicial es %LOCALAPPDATA%\GestionEstudiante\datos. Si la carpeta a
 | --- | --- |
 | estudiantes.txt | id, codigo, nombre, apellidos, apoderado, telefono, correo, fechaCreacion, activo |
 | catalogos.txt | nombre de catálogo, valor |
-| aulas.txt, matriculas.txt, asistencias.txt | Archivos vacíos que acompañan al ejemplo. Los módulos correspondientes están pendientes de integración. |
+| asistencias.txt | id, codigoEstudiante, fecha (yyyy-MM-dd), estado |
+| aulas.txt, matriculas.txt | Archivos vacíos que acompañan al ejemplo. Los módulos correspondientes están pendientes de integración. |
 
 Las fechas de estudiantes se escriben en ISO 8601 con formato O. El estado es true o false. Un correo vacío conserva su posición. Los escapes son \\ para barra inversa, \p para el separador, \r para retorno de carro y \n para salto de línea. El id de un alta es la cantidad total de registros de su entidad más uno. En Estudiantes se cuentan los activos y los inactivos porque la baja conserva la fila. Si el id o el código calculado ya existe en un conjunto importado, el alta se detiene y conserva el archivo.
 

@@ -26,6 +26,7 @@ public partial class FrmAcceso : Form
 
         EstudianteService servicio;
         ArchivoService servicioArchivos;
+        AsistenciaService servicioAsistencia;
         try
         {
             if (gestor == null)
@@ -36,6 +37,7 @@ public partial class FrmAcceso : Form
             EstudianteRepository repositorio = new EstudianteRepository(gestor);
             servicio = new EstudianteService(repositorio);
             servicioArchivos = new ArchivoService(gestor);
+            servicioAsistencia = new AsistenciaService(new AsistenciaRepository(gestor));
         }
         catch (Exception error)
         {
@@ -44,7 +46,7 @@ public partial class FrmAcceso : Form
         }
 
         Hide();
-        using (FrmInicio inicio = new FrmInicio(servicio, servicioArchivos))
+        using (FrmInicio inicio = new FrmInicio(servicio, servicioArchivos, servicioAsistencia))
         {
             inicio.ShowDialog();
         }

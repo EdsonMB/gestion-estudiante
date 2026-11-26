@@ -1,30 +1,32 @@
-﻿using GestionEstudiante.util;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GestionEstudiante.util;
 
-namespace GestionEstudiante.model
+namespace GestionEstudiante.model;
+
+public class Asistencia : ModeloBase
 {
-    public class Asistencia: ModeloBase
-    {
-        public int id { get; set; }
-        public string codigoEstudiante { get; set; } = "";
-        public DateTime fecha { get; set; }
-        public string estado { get; set; } = "Sin registro";
+    public const string SinRegistro = "Sin registro";
+    public const string Presente = "Presente";
+    public const string Falta = "Falta";
+    public const string Tardanza = "Tardanza";
 
-        public override string[] ObtenerCampos()
-        {
-            return new string[]
-            {
-                id.ToString(),
-                codigoEstudiante,
-                fecha.ToString("yyyy-MM-dd"),
-                estado
-            };
-        }
+    public string codigoEstudiante { get; set; } = string.Empty;
+    public DateTime fecha { get; set; }
+    public string estado { get; set; } = SinRegistro;
+
+    public static bool EsEstadoValido(string estado)
+    {
+        return estado is Presente or Falta or Tardanza;
     }
-    
+
+    public override string[] ObtenerCampos()
+    {
+        return new string[]
+        {
+            id.ToString(CultureInfo.InvariantCulture),
+            codigoEstudiante,
+            fecha.ToString(Constantes.FormatoFechaAsistencia, CultureInfo.InvariantCulture),
+            estado
+        };
+    }
 }
