@@ -15,7 +15,7 @@ partial class FormAsistencia
     private DataGridViewTextBoxColumn colCodigo = null!;
     private DataGridViewTextBoxColumn colEstudiante = null!;
     private DataGridViewTextBoxColumn colEstado = null!;
-    private DataGridViewTextBoxColumn colAcciones = null!;
+    private DataGridViewButtonColumn colAcciones = null!;
     private Label lblNota = null!;
     private Label lblPresentes = null!;
     private Label lblFaltas = null!;
@@ -45,7 +45,7 @@ partial class FormAsistencia
         colCodigo = new DataGridViewTextBoxColumn();
         colEstudiante = new DataGridViewTextBoxColumn();
         colEstado = new DataGridViewTextBoxColumn();
-        colAcciones = new DataGridViewTextBoxColumn();
+        colAcciones = new DataGridViewButtonColumn();
         lblNota = new Label();
         lblPresentes = new Label();
         lblFaltas = new Label();
@@ -79,6 +79,9 @@ partial class FormAsistencia
         cmbAula.Size = new Size(420, 32);
         cmbAula.DropDownStyle = ComboBoxStyle.DropDownList;
         cmbAula.TabIndex = 0;
+        cmbAula.Items.Add("Todos los estudiantes activos");
+        cmbAula.SelectedIndex = 0;
+        cmbAula.Enabled = false;
 
         // lblFecha
         lblFecha.Name = "lblFecha";
@@ -91,7 +94,7 @@ partial class FormAsistencia
         dtpFecha.Location = new Point(462, 126);
         dtpFecha.Size = new Size(210, 32);
         dtpFecha.Format = DateTimePickerFormat.Short;
-        dtpFecha.Value = new DateTime(2026, 10, 5);
+        dtpFecha.Value = DateTime.Today;
         dtpFecha.TabIndex = 1;
         dtpFecha.ValueChanged += dtpFecha_ValueChanged;
 
@@ -102,6 +105,7 @@ partial class FormAsistencia
         btnGuardar.Text = "Guardar asistencia";
         btnGuardar.UseVisualStyleBackColor = true;
         btnGuardar.TabIndex = 2;
+        btnGuardar.Enabled = false;
         btnGuardar.Click += btnGuardar_Click;
 
         // dgvAsistencia
@@ -142,7 +146,7 @@ partial class FormAsistencia
         lblNota.Name = "lblNota";
         lblNota.Location = new Point(28, 634);
         lblNota.Size = new Size(900, 28);
-        lblNota.Text = "Una fecha sin registro se muestra como Sin registro y no se cuenta como falta.";
+        lblNota.Text = "Filtro por aula pendiente de integración. Una fecha sin registro no se cuenta como falta.";
         lblNota.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
         // lblPresentes
@@ -174,6 +178,7 @@ partial class FormAsistencia
         btnMatrizSemanal.UseVisualStyleBackColor = true;
         btnMatrizSemanal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         btnMatrizSemanal.TabIndex = 4;
+        btnMatrizSemanal.Enabled = false;
 
         // FormAsistencia
         AutoScaleMode = AutoScaleMode.Font;

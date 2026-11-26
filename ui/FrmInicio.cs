@@ -10,15 +10,17 @@ public partial class FrmInicio : Form
     private FormAsistencia? asistencia;
     private readonly EstudianteService servicio = null!;
     private readonly ArchivoService servicioArchivos = null!;
+    private readonly AsistenciaService servicioAsistencia = null!;
     public FrmInicio()
     {
         InitializeComponent();
     }
 
-    public FrmInicio(EstudianteService servicio, ArchivoService servicioArchivos)
+    public FrmInicio(EstudianteService servicio, ArchivoService servicioArchivos, AsistenciaService servicioAsistencia)
     {
         this.servicio = servicio;
         this.servicioArchivos = servicioArchivos;
+        this.servicioAsistencia = servicioAsistencia;
         InitializeComponent();
         ActualizarResumen();
     }
@@ -113,10 +115,11 @@ public partial class FrmInicio : Form
     {
         if (asistencia == null)
         {
-            asistencia = new FormAsistencia();
+            asistencia = new FormAsistencia(servicio, servicioAsistencia);
             IntegrarFormulario(asistencia);
         }
 
+        asistencia.ActualizarAlMostrar();
         MostrarFormulario(asistencia, "Asistencia");
     }
 

@@ -80,7 +80,42 @@ public class ArchivoBaseDatos
                 activo = activo
             };
         });
+        try
+        {
+            datos.asistencias = LeerAsistencias(ruta);
+        }
+        catch (FileNotFoundException)
+        {
+            // Los conjuntos anteriores pueden carecer de este archivo.
+        }
+
         return datos;
+    }
+
+    private static List<Asistencia> LeerAsistencias(string ruta)
+    {
+        string archivo = Constantes.ArchivoAsistencias;
+        return LeerArchivo(ruta, archivo, 4, (indice, campos, ids, claves) =>
+        {
+            if (!LeerEnteroPositivo(campos[0], out int id)
+                || string.IsNullOrWhiteSpace(campos[1])
+                || !DateTime.TryParseExact(campos[2], Constantes.FormatoFechaAsistencia,
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fecha)
+                || !Asistencia.EsEstadoValido(campos[3])
+                || !ids.Add(id)
+                || !claves.Add(campos[1] + Constantes.Separador + campos[2]))
+            {
+                throw ErrorFila(archivo, indice + 1);
+            }
+
+            return new Asistencia
+            {
+                id = id,
+                codigoEstudiante = campos[1],
+                fecha = fecha,
+                estado = campos[3]
+            };
+        });
     }
 
     private static List<T> LeerArchivo<T>(
@@ -293,7 +328,42 @@ public class ArchivoBaseDatos
             throw ErrorFila(archivo, numero);
         }
 
+        for (int i = 0; i < campos.Length; i++)
+        {
+            campos[i] = DecodificarCampo(campos[i], archivo, numero);
+        }
+
         return campos;
+    }
+
+    private static string DecodificarCampo(string campo, string archivo, int numero)
+    {
+        StringBuilder texto = new StringBuilder();
+        for (int i = 0; i < campo.Length; i++)
+        {
+            char caracter = campo[i];
+            if (caracter == '\\')
+            {
+                i++;
+                if (i == campo.Length)
+                {
+                    throw ErrorFila(archivo, numero);
+                }
+
+                caracter = campo[i] switch
+                {
+                    '\\' => '\\',
+                    'p' => Constantes.Separador,
+                    'r' => '\r',
+                    'n' => '\n',
+                    _ => throw ErrorFila(archivo, numero)
+                };
+            }
+
+            texto.Append(caracter);
+        }
+
+        return texto.ToString();
     }
 
 
