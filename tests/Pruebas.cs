@@ -1,4 +1,3 @@
-using System.IO.Compression;
 using GestionEstudiante.archivos;
 using GestionEstudiante.model;
 using GestionEstudiante.repository;
@@ -71,13 +70,25 @@ try
     Comprobar(resultado.Filas[0][6] == "100.0%", "tardanza cuenta como asistencia");
     Comprobar(resultado.Filas[1][6] == "Sin registros" && resultado.Filas[1][3] == "0", "sin registros no cuenta como falta");
     Rechazar(() => reporte.Generar(filtro with { Desde = DateTime.Today.AddDays(1) }), "rango de reporte invertido");
-    reporte.Exportar(Path.Combine(raiz, "reporte.csv"), resultado, false);
-    reporte.Exportar(Path.Combine(raiz, "reporte.json"), resultado, true);
-    Comprobar(File.ReadAllText(Path.Combine(raiz, "reporte.csv")).Contains("\"Ana|"), "CSV con campos escapados");
-    Comprobar(File.ReadAllText(Path.Combine(raiz, "reporte.json")).Contains("Columnas"), "exportación JSON");
-    string copia = Path.Combine(raiz, "respaldo.zip");
+    string rutaReporte = Path.Combine(raiz, "reporte.txt");
+    reporte.Exportar(rutaReporte, resultado);
+    string[] lineasReporte = File.ReadAllLines(rutaReporte);
+    Comprobar(lineasReporte[0] == "Código|Estudiante|Presentes|Faltas|Tardanzas|Registros|% asistencia", "cabecera TXT con palotes");
+    Comprobar(lineasReporte.Length == resultado.Filas.Count + 1 && lineasReporte.All(x => x.Split('|').Length == 7), "una fila física por registro TXT");
+    Comprobar(lineasReporte[1].Contains(@"Ana\p\\p\nLuz Torres"), "palotes, barras y saltos escapados sin perder información");
+    string otroFormato = Path.Combine(raiz, "reporte.csv");
+    File.WriteAllText(otroFormato, "conservar");
+    Rechazar(() => reporte.Exportar(otroFormato, resultado), "exportación con otra extensión");
+    Comprobar(File.ReadAllText(otroFormato) == "conservar", "rechazo de formato conserva archivo existente");
+    Reporte ocupacion = new ReporteOcupacion(escolar);
+    ocupacion.Exportar(Path.Combine(raiz, "ocupacion.txt"), ocupacion.Generar(filtro));
+    Comprobar(File.ReadAllLines(Path.Combine(raiz, "ocupacion.txt"))[0] == "Aula|Capacidad|Matriculados|Cupos disponibles|Estado", "ocupación también exporta TXT");
+    string copia = Path.Combine(raiz, "respaldo");
     archivos.CrearRespaldo(copia);
-    using (var zip = ZipFile.OpenRead(copia)) Comprobar(zip.Entries.Count == 4, "respaldo completo");
+    Comprobar(Directory.GetFiles(copia).Length == 4 && Directory.GetFiles(copia).All(x => Path.GetExtension(x) == ".txt"), "respaldo solo contiene cuatro TXT");
+    Comprobar(File.ReadAllText(Path.Combine(copia, Constantes.ArchivoEstudiantes)) == File.ReadAllText(Path.Combine(gestor.Ruta, Constantes.ArchivoEstudiantes)), "respaldo mantiene formato TXT original");
+    Rechazar(() => archivos.CrearRespaldo(copia), "no sobrescribir respaldo existente");
+    Rechazar(() => archivos.CrearRespaldo(Path.Combine(gestor.Ruta, "respaldo")), "respaldo dentro de los datos activos");
     escolar.Matriculas.Cancelar(1);
     Comprobar(escolar.Aulas.Disponibles(escolar.Aulas.Listar()[0]) == 1, "cancelación libera cupo");
     Comprobar(escolar.Asistencias.Listar().Count == 1, "cancelación conserva historial");
@@ -90,9 +101,14 @@ try
     Comprobar(alumnos.Listar()[0].activo && escolar.Matriculas.Listar()[0].Activa, "servicios existentes ven datos restaurados");
     Comprobar(Directory.Exists(Path.Combine(raiz, "datos")), "restauración conserva carpeta anterior");
     string antes = gestor.Ruta;
-    string malZip = Path.Combine(raiz, "invalido.zip");
-    using (var zip = ZipFile.Open(malZip, ZipArchiveMode.Create)) zip.CreateEntry("../escape.txt");
-    Rechazar(() => archivos.RecuperarRespaldo(malZip), "respaldo inválido");
+    string incompleto = Path.Combine(raiz, "incompleto");
+    Directory.CreateDirectory(incompleto);
+    File.WriteAllText(Path.Combine(incompleto, Constantes.ArchivoEstudiantes), "");
+    Rechazar(() => archivos.RecuperarRespaldo(incompleto), "respaldo incompleto");
+    foreach (string archivo in Directory.GetFiles(copia))
+        File.Copy(archivo, Path.Combine(incompleto, Path.GetFileName(archivo)), true);
+    File.WriteAllText(Path.Combine(incompleto, Constantes.ArchivoAsistencias), "fila inválida");
+    Rechazar(() => archivos.RecuperarRespaldo(incompleto), "respaldo con TXT inválido");
     Comprobar(gestor.Ruta == antes && escolar.Matriculas.Listar()[0].Activa, "recuperación fallida no cambia sesión");
     // Una escritura fallida no debe publicar cambios en memoria.
     string aulasRuta = Path.Combine(gestor.Ruta, "aulas.txt");

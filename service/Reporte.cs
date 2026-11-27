@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Text;
-using System.Text.Json;
+using GestionEstudiante.util;
 using GestionEstudiante.model;
 namespace GestionEstudiante.service;
 
@@ -14,25 +14,21 @@ public abstract class Reporte
     protected Reporte(EscolarService servicio) { this.servicio = servicio; }
     public abstract ResultadoReporte Generar(FiltroReporte filtro);
 
-    public void Exportar(string ruta, ResultadoReporte resultado, bool json)
+    public void Exportar(string ruta, ResultadoReporte resultado)
     {
-        string texto = json ? JsonSerializer.Serialize(resultado, new JsonSerializerOptions { WriteIndented = true })
-            : string.Join(Environment.NewLine, new[] { resultado.Columnas }.Concat(resultado.Filas)
-                .Select(fila => string.Join(",", fila.Select(EscaparCsv))));
+        if (!Path.GetExtension(ruta).Equals(".txt", StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException("El reporte debe guardarse en un archivo .txt.");
+        string texto = string.Join(Environment.NewLine, new[] { resultado.Columnas }.Concat(resultado.Filas)
+            .Select(fila => FormatoTxt.CrearFila(fila)));
         string temporal = ruta + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
-            File.WriteAllText(temporal, texto, new UTF8Encoding(true));
+            File.WriteAllText(temporal, texto, new UTF8Encoding(false));
             File.Move(temporal, ruta, true);
         }
         finally { File.Delete(temporal); }
     }
-    private static string EscaparCsv(string valor)
-    {
-        // Evita que un nombre introducido por el usuario se interprete como una fórmula.
-        if (valor.Length > 0 && "=+-@\t\r\n".Contains(valor[0])) valor = "'" + valor;
-        return "\"" + valor.Replace("\"", "\"\"") + "\"";
-    }
+
 }
 
 public class ReporteOcupacion : Reporte

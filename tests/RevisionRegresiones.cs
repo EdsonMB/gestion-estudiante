@@ -34,8 +34,8 @@ internal static class RevisionRegresiones
             var escolar = new EscolarService(gestor);
             Rechazar(() => escolar.Aulas.Guardar(new Aula { anio = DateTime.Today.Year, seccion = "C" }));
             Exigir(!Directory.Exists(gestor.Ruta) && escolar.Aulas.Listar().Count == 2, "Se recreó la carpeta o se cambió la memoria.");
-            new ArchivoService(gestor).CrearRespaldo(Path.Combine(raiz, "rescate.zip"));
-            Exigir(File.Exists(Path.Combine(raiz, "rescate.zip")), "No se pudo rescatar la sesión.");
+            new ArchivoService(gestor).CrearRespaldo(Path.Combine(raiz, "rescate"));
+            Exigir(Directory.Exists(Path.Combine(raiz, "rescate")), "No se pudo rescatar la sesión.");
         });
         Caso("Una cancelación y alta no comparten día", () =>
         {

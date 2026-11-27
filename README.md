@@ -20,8 +20,8 @@ Acceso local: usuario `admin`, contraseña `987987`. Se mantienen las constantes
 - **Aulas:** alta, edición, filtros por nivel y año, activación y desactivación. No se permite repetir nivel/grado/sección/año, reducir capacidad por debajo de la ocupación ni desactivar un aula ocupada. Un aula con matrículas conserva su identidad; se puede cambiar capacidad y estado.
 - **Matrículas:** registro, filtros y cancelación con conservación del historial. Valida estudiante y aula activos, año, fecha y cupos. Un estudiante solo puede tener una matrícula activa por año. Cancelar libera su cupo.
 - **Asistencia:** selección de aula y fecha, estados Presente/Falta/Tardanza, observación y corrección. Guardar actualiza el día sin duplicados. Seleccionar Sin registro elimina una marca anterior; una fecha sin marca no cuenta como falta. La navegación y el cierre consultan qué hacer con cambios pendientes. Incluye matriz semanal de lunes a domingo.
-- **Reportes:** ocupación y asistencia por estudiante, filtros de año/aula/rango y exportación CSV o JSON. El porcentaje es `(presentes + tardanzas) / registros`; no supone faltas en días sin registro.
-- **Archivos y respaldo:** carga de otra carpeta, traslado, creación y recuperación de copias ZIP. La recuperación valida los cuatro TXT y activa una nueva carpeta, conservando la anterior.
+- **Reportes:** ocupación y asistencia por estudiante, filtros de año/aula/rango y exportación TXT con campos separados por `|`. El porcentaje es `(presentes + tardanzas) / registros`; no supone faltas en días sin registro.
+- **Archivos y respaldo:** carga de otra carpeta, traslado, creación y recuperación de carpetas de respaldo con un TXT por entidad. La recuperación valida los cuatro TXT y activa una nueva carpeta, conservando la anterior.
 
 La matrícula permite asistencia desde su fecha de registro hasta la fecha de cancelación inclusive, dentro del año del aula. Como el día de cancelación conserva su asistencia, una nueva matrícula del mismo estudiante y año debe empezar al día siguiente o después. No se admiten matrículas ni asistencias futuras. Las matrículas canceladas siguen disponibles para consultas históricas.
 
@@ -29,7 +29,7 @@ La matrícula permite asistencia desde su fecha de registro hasta la fecha de ca
 
 La ubicación inicial es `%LOCALAPPDATA%\GestionEstudiante\datos`. La carpeta elegida se recuerda al reiniciar. Cada operación guarda el TXT de su entidad mediante un archivo temporal y después publica los datos en memoria. Si falla la escritura, la sesión conserva los registros anteriores. Si la carpeta activa desaparece, el guardado se bloquea en lugar de recrear un conjunto incompleto; todavía puede crear un respaldo de los datos de la sesión.
 
-Los archivos usan UTF-8, sin cabecera, un registro por línea y `|` como separador:
+Los archivos de entidades usan UTF-8, sin cabecera, un registro por línea y `|` como separador. Los reportes exportados usan el mismo formato e incluyen una primera fila con los nombres de las columnas:
 
 | Archivo | Campos, en orden |
 | --- | --- |

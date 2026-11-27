@@ -85,7 +85,7 @@ partial class FrmArchivos
         lblRespaldo = new Label();
         lblRespaldo.Location = new Point(20, 35);
         lblRespaldo.Size = new Size(970, 50);
-        lblRespaldo.Text = "Guarda una copia ZIP de los archivos TXT. Al recuperarla se conserva la carpeta anterior.";
+        lblRespaldo.Text = "Guarda una carpeta con los archivos TXT separados por |. Al recuperarla se conserva la carpeta anterior.";
         btnCrearCopia = new Button();
         btnCrearCopia.Text = "Crear copia";
         btnCrearCopia.Location = new Point(20, 110);

@@ -125,7 +125,7 @@ public partial class ArchivoBaseDatos
         StringBuilder texto = new StringBuilder();
         foreach (T registro in registros)
         {
-            texto.AppendLine(Fila(obtenerCampos(registro)));
+            texto.AppendLine(FormatoTxt.CrearFila(obtenerCampos(registro)));
         }
 
         GuardarContenido(archivo, texto.ToString());
@@ -295,18 +295,6 @@ public partial class ArchivoBaseDatos
         }
         catch (IOException) { }
         catch (UnauthorizedAccessException) { }
-    }
-
-    private static string Fila(params string[] campos)
-    {
-        string[] codificados = new string[campos.Length];
-        for (int i = 0; i < campos.Length; i++)
-        {
-            codificados[i] = campos[i].Replace("\\", "\\\\").Replace(Constantes.Separador.ToString(), "\\p")
-                .Replace("\r", "\\r").Replace("\n", "\\n");
-        }
-
-        return string.Join(Constantes.Separador, codificados);
     }
 
     private static string[] LeerCampos(string linea, string archivo, int numero, int cantidad)

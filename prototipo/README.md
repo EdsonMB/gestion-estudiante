@@ -12,4 +12,4 @@ Exportaciones PNG del [archivo de Figma](https://www.figma.com/design/GUKACLnLgx
 | Reportes de ocupación | [reportes.png](reportes.png) | 5:1363 |
 | Archivos y respaldo | [archivos.png](archivos.png) | 5:1689 |
 
-La implementación conserva la estructura de navegación, títulos, filtros, tablas y acciones usando controles nativos de WinForms. Los respaldos se adaptan a ZIP con archivos TXT separados; los reportes permiten exportar CSV o JSON.
+La implementación conserva la estructura de navegación, títulos, filtros, tablas y acciones usando controles nativos de WinForms. Los respaldos se guardan en carpetas con archivos TXT por entidad; los reportes se exportan únicamente en TXT. Los campos se separan por `|` en ambos casos.

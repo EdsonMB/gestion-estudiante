@@ -69,12 +69,12 @@ public partial class FrmReportes : Form
     private void btnExportar_Click(object? sender, EventArgs e)
     {
         if (resultado == null) return;
-        using SaveFileDialog dialogo = new SaveFileDialog { Filter = "CSV (*.csv)|*.csv|JSON (*.json)|*.json", FileName = "reporte", AddExtension = true };
+        using SaveFileDialog dialogo = new SaveFileDialog { Filter = "Archivo TXT (*.txt)|*.txt", DefaultExt = "txt", FileName = "reporte.txt", AddExtension = true };
         if (dialogo.ShowDialog(this) != DialogResult.OK) return;
         try
         {
-            reporte.Exportar(dialogo.FileName, resultado, dialogo.FilterIndex == 2);
-            MessageBox.Show(this, "Reporte exportado.", "Reportes");
+            reporte.Exportar(dialogo.FileName, resultado);
+            MessageBox.Show(this, "Reporte TXT exportado con campos separados por |.", "Reportes");
         }
         catch (Exception error) { MessageBox.Show(this, error.Message, "No se pudo exportar", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
     }

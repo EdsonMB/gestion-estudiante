@@ -67,28 +67,26 @@ public partial class FrmArchivos : Form
 
     private void btnCrearCopia_Click(object? sender, EventArgs e)
     {
-        using SaveFileDialog dialogo = new SaveFileDialog
-        {
-            Filter = "Respaldo ZIP (*.zip)|*.zip", FileName = "gestion-escolar-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".zip"
-        };
-        if (dialogo.ShowDialog(this) != DialogResult.OK) return;
+        string? carpeta = ElegirCarpeta("Elija dónde crear la carpeta de respaldo con los archivos TXT.");
+        if (carpeta == null) return;
+        string destino = Path.Combine(carpeta, "respaldo-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-fff"));
         try
         {
-            servicio.CrearRespaldo(dialogo.FileName);
-            MessageBox.Show(this, "Copia creada con los cuatro archivos TXT.", "Respaldo");
+            servicio.CrearRespaldo(destino);
+            MessageBox.Show(this, "Copia creada con los cuatro archivos TXT en " + destino, "Respaldo");
         }
         catch (Exception error) { MostrarError(error); }
     }
 
     private void btnRecuperar_Click(object? sender, EventArgs e)
     {
-        using OpenFileDialog dialogo = new OpenFileDialog { Filter = "Respaldo ZIP (*.zip)|*.zip" };
-        if (dialogo.ShowDialog(this) != DialogResult.OK) return;
+        string? origen = ElegirCarpeta("Seleccione la carpeta del respaldo que contiene los cuatro archivos TXT.");
+        if (origen == null) return;
         if (MessageBox.Show(this, "¿Recuperar esta copia? Se activará una nueva carpeta con el respaldo. La carpeta anterior se conservará.",
             "Recuperar copia", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
         try
         {
-            servicio.RecuperarRespaldo(dialogo.FileName);
+            servicio.RecuperarRespaldo(origen);
             ActualizarInformacion();
             MessageBox.Show(this, "Respaldo recuperado. Los módulos usarán los datos de la nueva carpeta.", "Respaldo");
         }

@@ -41,7 +41,7 @@ partial class FrmReportes
         btnExportar.Name = "btnExportar";
         btnExportar.Location = new Point(870, 24);
         btnExportar.Size = new Size(175, 40);
-        btnExportar.Text = "Exportar reporte";
+        btnExportar.Text = "Exportar TXT";
         btnExportar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         btnExportar.Click += btnExportar_Click;
         lblTipo = new Label();

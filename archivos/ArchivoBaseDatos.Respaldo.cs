@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.IO.Compression;
 using GestionEstudiante.model;
 using GestionEstudiante.util;
 namespace GestionEstudiante.archivos;
@@ -43,24 +42,20 @@ public partial class ArchivoBaseDatos
 
     public void CrearRespaldo(string destino, BaseDatosEscolar datos)
     {
-        string carpeta = Path.Combine(Path.GetTempPath(), "gestion-" + Guid.NewGuid().ToString("N"));
-        string temporal = Path.GetFullPath(destino) + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        destino = Normalizar(destino);
+        ValidarDestino(destino);
+        string temporal = RutaTemporal(destino);
         try
         {
-            ArchivoBaseDatos copia = new ArchivoBaseDatos(carpeta);
+            ArchivoBaseDatos copia = new ArchivoBaseDatos(temporal);
             copia.Guardar(Constantes.ArchivoEstudiantes, datos.estudiantes, x => x.ObtenerCampos());
             copia.Guardar(Constantes.ArchivoAulas, datos.aulas, x => x.ObtenerCampos());
             copia.Guardar(Constantes.ArchivoMatriculas, datos.matriculas, x => x.ObtenerCampos());
             copia.Guardar(Constantes.ArchivoAsistencias, datos.asistencias, x => x.ObtenerCampos());
-            copia.Leer(carpeta);
-            ZipFile.CreateFromDirectory(carpeta, temporal);
-            File.Move(temporal, destino, true);
+            copia.Leer(temporal);
+            Directory.Move(temporal, destino);
         }
-        finally
-        {
-            LimpiarTemporal(carpeta);
-            File.Delete(temporal);
-        }
+        finally { LimpiarTemporal(temporal); }
     }
 
     public BaseDatosEscolar RecuperarRespaldo(string origen)
@@ -70,16 +65,12 @@ public partial class ArchivoBaseDatos
         bool usado = false;
         try
         {
-            using (ZipArchive zip = ZipFile.OpenRead(origen))
-            {
-                if (zip.Entries.Count != Archivos.Length ||
-                    zip.Entries.Select(x => x.FullName).Distinct().Count() != Archivos.Length ||
-                    zip.Entries.Any(x => !Archivos.Contains(x.FullName) || x.Length > 50_000_000))
+            foreach (string archivo in Archivos)
+                if (!File.Exists(Path.Combine(origen, archivo)))
                     throw new InvalidDataException("El respaldo debe contener los cuatro archivos TXT del sistema.");
-                Directory.CreateDirectory(destino);
-                foreach (ZipArchiveEntry entrada in zip.Entries)
-                    entrada.ExtractToFile(Path.Combine(destino, entrada.FullName));
-            }
+            Directory.CreateDirectory(destino);
+            foreach (string archivo in Archivos)
+                File.Copy(Path.Combine(origen, archivo), Path.Combine(destino, archivo));
             BaseDatosEscolar datos = Leer(destino);
             Usar(destino);
             usado = true;
