@@ -26,8 +26,8 @@ public class MatriculaService
             gestor.Datos.aulas.Single(a => a.id == x.aulaId).anio == aula.anio))
             throw new InvalidOperationException("El estudiante ya tiene una matrícula activa en ese año.");
         if (Listar().Any(x => x.estudianteId == estudianteId && !x.Activa &&
-            gestor.Datos.aulas.Single(a => a.id == x.aulaId).anio == aula.anio && x.fechaCancelacion!.Value.Date > fecha.Date))
-            throw new InvalidOperationException("La fecha debe ser posterior o igual a la última cancelación de ese año.");
+            gestor.Datos.aulas.Single(a => a.id == x.aulaId).anio == aula.anio && x.fechaCancelacion!.Value.Date >= fecha.Date))
+            throw new InvalidOperationException("La nueva matrícula debe comenzar después del día de cancelación, porque ese día aún pertenece a la matrícula anterior.");
         if (Listar().Count(x => x.aulaId == aulaId && x.Activa) >= aula.capacidad)
             throw new InvalidOperationException("El aula no tiene cupos disponibles.");
         repositorio.Guardar(new Matricula { estudianteId = estudiante.id, aulaId = aula.id, fecha = fecha.Date });

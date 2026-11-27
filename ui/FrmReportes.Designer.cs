@@ -79,7 +79,7 @@ partial class FrmReportes
         lblDesde = new Label();
         lblDesde.Name = "lblDesde";
         lblDesde.Location = new Point(28, 200);
-        lblDesde.Size = new Size(100, 24);
+        lblDesde.Size = new Size(60, 24);
         lblDesde.Text = "Desde";
         dtpDesde = new DateTimePicker();
         dtpDesde.Name = "dtpDesde";
@@ -89,7 +89,7 @@ partial class FrmReportes
         lblHasta = new Label();
         lblHasta.Name = "lblHasta";
         lblHasta.Location = new Point(330, 200);
-        lblHasta.Size = new Size(100, 24);
+        lblHasta.Size = new Size(60, 24);
         lblHasta.Text = "Hasta";
         dtpHasta = new DateTimePicker();
         dtpHasta.Name = "dtpHasta";

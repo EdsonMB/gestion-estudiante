@@ -12,7 +12,7 @@ public partial class FrmMatrizSemanal : Form
         dgvMatriz.Columns.Add("estudiante", "Estudiante");
         for (int dia = 0; dia < 7; dia++) dgvMatriz.Columns.Add("dia" + dia, lunes.AddDays(dia).ToString("ddd dd/MM"));
         foreach (Matricula matricula in servicio.Matriculas.Listar().Where(x => x.aulaId == aulaId &&
-            x.fecha.Date <= lunes.AddDays(6) && (!x.fechaCancelacion.HasValue || x.fechaCancelacion.Value.Date >= lunes)))
+            Enumerable.Range(0, 7).Any(dia => x.VigenteEn(lunes.AddDays(dia)))))
         {
             object[] valores = new object[8];
             valores[0] = servicio.NombreEstudiante(matricula.estudianteId) + " (" + matricula.Codigo + ")";

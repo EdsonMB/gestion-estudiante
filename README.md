@@ -23,11 +23,11 @@ Acceso local: usuario `admin`, contraseña `987987`. Se mantienen las constantes
 - **Reportes:** ocupación y asistencia por estudiante, filtros de año/aula/rango y exportación CSV o JSON. El porcentaje es `(presentes + tardanzas) / registros`; no supone faltas en días sin registro.
 - **Archivos y respaldo:** carga de otra carpeta, traslado, creación y recuperación de copias ZIP. La recuperación valida los cuatro TXT y activa una nueva carpeta, conservando la anterior.
 
-La matrícula permite asistencia desde su fecha de registro hasta la fecha de cancelación inclusive, dentro del año del aula. No se admiten matrículas ni asistencias futuras. Las matrículas canceladas siguen disponibles para consultas históricas.
+La matrícula permite asistencia desde su fecha de registro hasta la fecha de cancelación inclusive, dentro del año del aula. Como el día de cancelación conserva su asistencia, una nueva matrícula del mismo estudiante y año debe empezar al día siguiente o después. No se admiten matrículas ni asistencias futuras. Las matrículas canceladas siguen disponibles para consultas históricas.
 
 ## Persistencia TXT
 
-La ubicación inicial es `%LOCALAPPDATA%\GestionEstudiante\datos`. La carpeta elegida se recuerda al reiniciar. Cada operación guarda el TXT de su entidad mediante un archivo temporal y después publica los datos en memoria. Si falla la escritura, la sesión conserva los registros anteriores.
+La ubicación inicial es `%LOCALAPPDATA%\GestionEstudiante\datos`. La carpeta elegida se recuerda al reiniciar. Cada operación guarda el TXT de su entidad mediante un archivo temporal y después publica los datos en memoria. Si falla la escritura, la sesión conserva los registros anteriores. Si la carpeta activa desaparece, el guardado se bloquea en lugar de recrear un conjunto incompleto; todavía puede crear un respaldo de los datos de la sesión.
 
 Los archivos usan UTF-8, sin cabecera, un registro por línea y `|` como separador:
 
@@ -42,7 +42,7 @@ Fechas: ISO 8601, formato `O`. Booleanos: `true` o `false`. `fechaCancelacion` v
 
 Aulas admite Inicial (3–5 años), Primaria (1–6) y Secundaria (1–5), años 2000–2100 y capacidad 1–1000. Las observaciones de asistencia admiten 250 caracteres.
 
-Las carpetas antiguas con solo `estudiantes.txt` siguen siendo válidas; los demás conjuntos comienzan vacíos. La carga rechaza identificadores repetidos, referencias inexistentes y datos inconsistentes. `catalogos.txt` se conserva como referencia del ejemplo; los valores admitidos se validan en el código y no se cargan desde ese archivo.
+Las carpetas antiguas con solo `estudiantes.txt` siguen siendo válidas; los demás conjuntos comienzan vacíos. La carga rechaza identificadores repetidos, referencias inexistentes, matrículas con periodos superpuestos y datos inconsistentes. `catalogos.txt` se conserva como referencia del ejemplo; los valores admitidos se validan en el código y no se cargan desde ese archivo.
 
 Estudiantes mantiene su regla anterior de id = cantidad de registros + 1, con comprobación de colisiones. Las entidades nuevas utilizan máximo id + 1. No se eliminan físicamente estudiantes, aulas ni matrículas.
 

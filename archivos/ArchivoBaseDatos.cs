@@ -9,6 +9,7 @@ public partial class ArchivoBaseDatos
 {
     private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false, true);
     private readonly string? archivoUbicacion;
+    private bool carpetaInicializada;
     public string Ruta { get; private set; }
 
     public ArchivoBaseDatos(string? ruta = null)
@@ -28,6 +29,7 @@ public partial class ArchivoBaseDatos
         }
 
         Ruta = Normalizar(ruta);
+        carpetaInicializada = Existe();
     }
 
     public bool Existe()
@@ -44,6 +46,7 @@ public partial class ArchivoBaseDatos
         }
 
         Ruta = ruta;
+        carpetaInicializada = true;
     }
 
     public BaseDatosEscolar Leer(string ruta)
@@ -82,7 +85,7 @@ public partial class ArchivoBaseDatos
         });
         datos.aulas = LeerOpcional<Aula>(ruta, Constantes.ArchivoAulas, 7, c => new Aula
         {
-            id = Entero(c[0]), nivel = c[1], grado = Entero(c[2]), seccion = c[3],
+            id = Entero(c[0]), nivel = c[1], grado = Entero(c[2]), seccion = c[3].Trim().ToUpperInvariant(),
             anio = Entero(c[4]), capacidad = Entero(c[5]), activo = bool.Parse(c[6])
         });
         datos.matriculas = LeerOpcional<Matricula>(ruta, Constantes.ArchivoMatriculas, 5, c => new Matricula
@@ -136,12 +139,16 @@ public partial class ArchivoBaseDatos
             return;
         }
 
+        if (carpetaInicializada)
+            throw new IOException("La carpeta activa ya no está disponible. Recupérela o cree un respaldo de la sesión antes de continuar.");
+
         string temporal = RutaTemporal(Ruta);
         try
         {
             foreach (string nombre in Archivos)
                 Escribir(Path.Combine(temporal, nombre), nombre == archivo ? contenido : "");
             Directory.Move(temporal, Ruta);
+            carpetaInicializada = true;
         }
         finally
         {

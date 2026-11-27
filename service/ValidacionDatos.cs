@@ -21,7 +21,7 @@ public static class ValidacionDatos
         {
             foreach (Estudiante estudiante in datos.estudiantes) EstudianteService.ValidarEstudiante(estudiante);
             foreach (Aula aula in datos.aulas) ValidarAula(aula);
-            if (datos.aulas.GroupBy(x => (x.nivel, x.grado, x.seccion.ToUpperInvariant(), x.anio)).Any(g => g.Count() > 1))
+            if (datos.aulas.GroupBy(x => (x.nivel, x.grado, x.seccion.Trim().ToUpperInvariant(), x.anio)).Any(g => g.Count() > 1))
                 throw new ArgumentException("Hay aulas repetidas para el mismo nivel, grado, sección y año.");
             foreach (Matricula matricula in datos.matriculas)
             {
@@ -38,6 +38,17 @@ public static class ValidacionDatos
             if (datos.matriculas.Where(x => x.Activa).GroupBy(x =>
                 (x.estudianteId, datos.aulas.Single(a => a.id == x.aulaId).anio)).Any(g => g.Count() > 1))
                 throw new ArgumentException("Un estudiante tiene más de una matrícula activa en el mismo año.");
+            foreach (var grupo in datos.matriculas.GroupBy(x => (x.estudianteId, x.fecha.Year)))
+            {
+                var historial = grupo.OrderBy(x => x.fecha).ToList();
+                for (int i = 1; i < historial.Count; i++)
+                {
+                    Matricula anterior = historial[i - 1];
+                    DateTime fin = anterior.fechaCancelacion?.Date ?? new DateTime(anterior.fecha.Year, 12, 31);
+                    if (historial[i].fecha.Date <= fin)
+                        throw new ArgumentException("Las matrículas de un estudiante no pueden compartir días del mismo año escolar.");
+                }
+            }
             foreach (Aula aula in datos.aulas)
                 if (datos.matriculas.Count(x => x.aulaId == aula.id && x.Activa) > aula.capacidad)
                     throw new ArgumentException("La ocupación supera la capacidad de un aula.");

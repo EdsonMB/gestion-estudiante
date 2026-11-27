@@ -123,6 +123,7 @@ try
     Comprobar(new GestorBaseDatos(gestor.Ruta).Datos.matriculas.Count == 3, "traslado mantiene datos");
     new GestorBaseDatos(Path.Combine(args[0], "ejemplos"));
     comprobaciones++;
+    comprobaciones += RevisionRegresiones.Ejecutar(raiz);
     Console.WriteLine($"OK: {comprobaciones} comprobaciones de dominio, persistencia y respaldos.");
 }
 finally { if (Directory.Exists(raiz)) Directory.Delete(raiz, true); }

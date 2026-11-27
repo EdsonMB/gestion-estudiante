@@ -19,9 +19,18 @@ public partial class FrmReportes : Form
         cboTipo.SelectedIndex = 0;
         cboTipo.SelectedIndexChanged += (_, _) => Generar();
         cboAula.SelectedIndexChanged += (_, _) => Generar();
-        numAnio.ValueChanged += (_, _) => ActualizarListado();
+        numAnio.ValueChanged += (_, _) => CambiarAnio();
         dtpDesde.ValueChanged += (_, _) => Generar();
         dtpHasta.ValueChanged += (_, _) => Generar();
+    }
+    private void CambiarAnio()
+    {
+        cargando = true;
+        int anio = (int)numAnio.Value;
+        dtpDesde.Value = new DateTime(anio, 1, 1);
+        dtpHasta.Value = anio == DateTime.Today.Year ? DateTime.Today : new DateTime(anio, 12, 31);
+        cargando = false;
+        ActualizarListado();
     }
     public void ActualizarListado()
     {

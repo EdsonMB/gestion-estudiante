@@ -58,14 +58,20 @@ public class ReporteAsistencia : Reporte
     public override ResultadoReporte Generar(FiltroReporte filtro)
     {
         if (filtro.Desde.Date > filtro.Hasta.Date) throw new ArgumentException("La fecha inicial no puede ser posterior a la final.");
+        DateTime inicioAnio = new DateTime(filtro.Anio, 1, 1);
+        DateTime finAnio = new DateTime(filtro.Anio, 12, 31);
+        DateTime desde = filtro.Desde.Date < inicioAnio ? inicioAnio : filtro.Desde.Date;
+        DateTime hasta = filtro.Hasta.Date > finAnio ? finAnio : filtro.Hasta.Date;
+        string[] columnas = { "Código", "Estudiante", "Presentes", "Faltas", "Tardanzas", "Registros", "% asistencia" };
+        if (desde > hasta) return new ResultadoReporte("Asistencia por estudiante", columnas, new());
         var matriculas = servicio.Matriculas.Listar().Where(x => servicio.Aulas.Listar().Single(a => a.id == x.aulaId).anio == filtro.Anio &&
-            (filtro.AulaId == 0 || x.aulaId == filtro.AulaId) && x.fecha.Date <= filtro.Hasta.Date &&
-            (!x.fechaCancelacion.HasValue || x.fechaCancelacion.Value.Date >= filtro.Desde.Date)).ToList();
+            (filtro.AulaId == 0 || x.aulaId == filtro.AulaId) && x.fecha.Date <= hasta &&
+            (!x.fechaCancelacion.HasValue || x.fechaCancelacion.Value.Date >= desde)).ToList();
         List<string[]> filas = new();
         foreach (var grupo in matriculas.GroupBy(x => x.estudianteId))
         {
             List<Asistencia> registros = servicio.Asistencias.Listar().Where(x => grupo.Any(m => m.id == x.matriculaId) &&
-                x.fecha.Date >= filtro.Desde.Date && x.fecha.Date <= filtro.Hasta.Date).ToList();
+                x.fecha.Date >= desde && x.fecha.Date <= hasta).ToList();
             int presentes = registros.Count(x => x.estado == EstadoAsistencia.Presente);
             int faltas = registros.Count(x => x.estado == EstadoAsistencia.Falta);
             int tardanzas = registros.Count(x => x.estado == EstadoAsistencia.Tardanza);
@@ -74,6 +80,6 @@ public class ReporteAsistencia : Reporte
             filas.Add(new[] { servicio.Estudiantes.Single(x => x.id == grupo.Key).codigo, servicio.NombreEstudiante(grupo.Key),
                 presentes.ToString(), faltas.ToString(), tardanzas.ToString(), registros.Count.ToString(), porcentaje });
         }
-        return new ResultadoReporte("Asistencia por estudiante", new[] { "Código", "Estudiante", "Presentes", "Faltas", "Tardanzas", "Registros", "% asistencia" }, filas);
+        return new ResultadoReporte("Asistencia por estudiante", columnas, filas);
     }
 }

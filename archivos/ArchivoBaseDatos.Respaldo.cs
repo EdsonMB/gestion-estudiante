@@ -22,7 +22,10 @@ public partial class ArchivoBaseDatos
         where T : ModeloBase
     {
         // Compatibilidad con carpetas anteriores que solo tenían estudiantes.txt.
-        if (!File.Exists(Path.Combine(ruta, archivo))) return new List<T>();
+        string rutaArchivo = Path.Combine(ruta, archivo);
+        if (Directory.Exists(rutaArchivo))
+            throw new InvalidDataException("Se esperaba un archivo TXT, pero se encontró una carpeta: " + archivo);
+        if (!File.Exists(rutaArchivo)) return new List<T>();
         return LeerArchivo(ruta, archivo, columnas, (indice, campos, ids, codigos) =>
         {
             try

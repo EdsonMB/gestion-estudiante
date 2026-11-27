@@ -12,3 +12,10 @@ Pendiente de ejecución visual: el desarrollo se compiló y sus reglas se probar
 8. Crear un respaldo ZIP, modificar datos y recuperar la copia. Debe activarse otra carpeta, conservarse la anterior y actualizarse todos los módulos. Un ZIP ajeno o corrupto debe mostrar un error sin cambiar la sesión.
 9. Mover la carpeta activa. Cerrar la aplicación y abrirla: debe usar la nueva ubicación.
 10. Revisar foco con Tab, Enter/Escape en diálogos, redimensionado y escalas 100%/125%/150%. Comprobar que botones, mensajes y tablas sean legibles y no se superpongan.
+
+## Casos incorporados en la segunda revisión
+
+11. Cancelar una matrícula e intentar registrar al mismo estudiante en otra aula con la misma fecha: se rechaza porque ese día pertenece al historial anterior. Una fecha posterior válida debe admitirse.
+12. Consultar una semana que cruce el 31 de diciembre: los días ajenos al año del aula se muestran como — y las semanas completamente fuera del año no muestran alumnos.
+13. En Reportes, cambiar de año: las fechas se ajustan al año elegido. Revisar que las etiquetas Desde/Hasta no tapen los selectores. Un rango completamente fuera del año devuelve un reporte vacío.
+14. Con una copia de prueba, renombrar externamente la carpeta activa durante la sesión. Intentar guardar: se muestra error y no se crea otra carpeta incompleta. Crear una copia ZIP desde Archivos para rescatar los registros de la sesión.

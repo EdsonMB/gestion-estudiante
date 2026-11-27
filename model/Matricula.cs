@@ -10,7 +10,7 @@ public class Matricula : ModeloBase
     public DateTime? fechaCancelacion { get; set; }
     public bool Activa => !fechaCancelacion.HasValue;
     public string Codigo => "M" + id.ToString("000000", CultureInfo.InvariantCulture);
-    public bool VigenteEn(DateTime dia) => fecha.Date <= dia.Date
+    public bool VigenteEn(DateTime dia) => dia.Year == fecha.Year && fecha.Date <= dia.Date
         && (!fechaCancelacion.HasValue || dia.Date <= fechaCancelacion.Value.Date);
     public override string[] ObtenerCampos() => new[]
     {

@@ -15,7 +15,8 @@ with tempfile.TemporaryDirectory(prefix="gestion-pruebas-") as temporal:
     for carpeta in ["model", "repository", "service", "archivos", "util"]:
         for fuente in (raiz / carpeta).glob("*.cs"):
             ET.SubElement(fuentes, "Compile", Include=str(fuente))
-    ET.SubElement(fuentes, "Compile", Include=str(raiz / "tests" / "Pruebas.cs"))
+    for fuente in (raiz / "tests").glob("*.cs"):
+        ET.SubElement(fuentes, "Compile", Include=str(fuente))
     destino = Path(temporal) / "Pruebas.csproj"
     ET.ElementTree(proyecto).write(destino, encoding="utf-8")
     subprocess.run([os.environ.get("DOTNET", "dotnet"), "run", "--project", str(destino), "--", str(raiz)], check=True)
