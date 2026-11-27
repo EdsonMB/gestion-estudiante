@@ -32,6 +32,13 @@ public class GestorBaseDatos
         Datos = nuevos;
     }
 
+    public void CrearRespaldo(string destino) => archivo.CrearRespaldo(destino, Datos);
+
+    public void RecuperarRespaldo(string origen)
+    {
+        Datos = archivo.RecuperarRespaldo(origen);
+    }
+
     public void Mover(string destino)
     {
         archivo.Mover(destino);

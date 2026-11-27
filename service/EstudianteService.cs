@@ -41,6 +41,8 @@ public class EstudianteService
 
     private void GuardarDatos(Estudiante estudiante, bool activo)
     {
+        if (!activo && repository.TieneMatriculaActiva(estudiante.id))
+            throw new InvalidOperationException("Cancele la matrícula activa antes de dar de baja al estudiante.");
         Estudiante copia = new Estudiante();
         copia.id = estudiante.id;
         copia.nombre = estudiante.nombre.Trim();
@@ -55,7 +57,8 @@ public class EstudianteService
 
     public void DarDeBaja(Estudiante estudiante)
     {
-        // TODO: comprobar matrícula activa cuando se implemente el módulo de matrículas.
+        if (repository.TieneMatriculaActiva(estudiante.id))
+            throw new InvalidOperationException("Cancele la matrícula activa antes de dar de baja al estudiante.");
         if (!estudiante.activo)
         {
             throw new InvalidOperationException("El estudiante ya está inactivo.");
@@ -64,7 +67,7 @@ public class EstudianteService
         GuardarDatos(estudiante, false);
     }
 
-    private static void ValidarEstudiante(Estudiante estudiante)
+    internal static void ValidarEstudiante(Estudiante estudiante)
     {
         if (string.IsNullOrWhiteSpace(estudiante.nombre) || string.IsNullOrWhiteSpace(estudiante.apellidos) || string.IsNullOrWhiteSpace(estudiante.apoderado))
         {

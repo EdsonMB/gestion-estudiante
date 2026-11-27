@@ -107,7 +107,7 @@ partial class FrmMatricula
         lblNota.Name = "lblNota";
         lblNota.Location = new Point(28, 414);
         lblNota.Size = new Size(960, 35);
-        lblNota.Text = "El registro de matrículas está pendiente de integración.";
+        lblNota.Text = "Selecciona un estudiante y un aula con cupos.";
 
         // btnCambiarSeleccion
         btnCambiarSeleccion.Name = "btnCambiarSeleccion";

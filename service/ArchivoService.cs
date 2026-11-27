@@ -21,13 +21,17 @@ public class ArchivoService
 
     public string ObtenerResumenArchivo()
     {
-        return gestor.Datos.estudiantes.Count + " estudiantes";
+        return gestor.Datos.estudiantes.Count + " estudiantes · " + gestor.Datos.aulas.Count + " aulas · "
+            + gestor.Datos.matriculas.Count + " matrículas · " + gestor.Datos.asistencias.Count + " asistencias";
     }
 
     public void CargarUsar(string ruta)
     {
         gestor.CargarUsar(ruta);
     }
+
+    public void CrearRespaldo(string destino) => gestor.CrearRespaldo(destino);
+    public void RecuperarRespaldo(string origen) => gestor.RecuperarRespaldo(origen);
 
     public void MoverArchivo(string destino)
     {

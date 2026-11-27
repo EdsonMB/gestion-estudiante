@@ -65,6 +65,47 @@ public partial class FrmArchivos : Form
         return resultado == DialogResult.OK ? dialogo.SelectedPath : null;
     }
 
+    private void btnCrearCopia_Click(object? sender, EventArgs e)
+    {
+        using SaveFileDialog dialogo = new SaveFileDialog
+        {
+            Filter = "Respaldo ZIP (*.zip)|*.zip", FileName = "gestion-escolar-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".zip"
+        };
+        if (dialogo.ShowDialog(this) != DialogResult.OK) return;
+        try
+        {
+            servicio.CrearRespaldo(dialogo.FileName);
+            MessageBox.Show(this, "Copia creada con los cuatro archivos TXT.", "Respaldo");
+        }
+        catch (Exception error) { MostrarError(error); }
+    }
+
+    private void btnRecuperar_Click(object? sender, EventArgs e)
+    {
+        using OpenFileDialog dialogo = new OpenFileDialog { Filter = "Respaldo ZIP (*.zip)|*.zip" };
+        if (dialogo.ShowDialog(this) != DialogResult.OK) return;
+        if (MessageBox.Show(this, "¿Recuperar esta copia? Se activará una nueva carpeta con el respaldo. La carpeta anterior se conservará.",
+            "Recuperar copia", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        try
+        {
+            servicio.RecuperarRespaldo(dialogo.FileName);
+            ActualizarInformacion();
+            MessageBox.Show(this, "Respaldo recuperado. Los módulos usarán los datos de la nueva carpeta.", "Respaldo");
+        }
+        catch (Exception error) { MostrarError(error); }
+    }
+
+    private void btnMover_Click(object? sender, EventArgs e)
+    {
+        string? carpeta = ElegirCarpeta("Elija la carpeta que contendrá la nueva carpeta de datos.");
+        if (carpeta == null) return;
+        string destino = Path.Combine(carpeta, "datos-" + DateTime.Now.ToString("yyyyMMdd-HHmmss"));
+        if (MessageBox.Show(this, "¿Mover los datos a " + destino + "?", "Mover datos",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+        try { servicio.MoverArchivo(destino); ActualizarInformacion(); }
+        catch (Exception error) { MostrarError(error); }
+    }
+
     private void MostrarError(Exception error)
     {
         MessageBox.Show(this, error.Message, "No se pudo procesar la carpeta", MessageBoxButtons.OK, MessageBoxIcon.Warning);

@@ -4,6 +4,9 @@ using GestionEstudiante.util;
 namespace GestionEstudiante;
 public partial class FrmInicio : Form
 {
+    private FrmAulas? aulas;
+    private FrmReportes? reportes;
+    private readonly EscolarService escolar = null!;
     private FrmGestionEstudiantes? estudiantes;
     private FrmArchivos? archivos;
     private FrmMatriculas? matriculas;
@@ -15,12 +18,14 @@ public partial class FrmInicio : Form
         InitializeComponent();
     }
 
-    public FrmInicio(EstudianteService servicio, ArchivoService servicioArchivos)
+    public FrmInicio(EstudianteService servicio, ArchivoService servicioArchivos, EscolarService escolar)
     {
+        this.escolar = escolar;
         this.servicio = servicio;
         this.servicioArchivos = servicioArchivos;
         InitializeComponent();
         ActualizarResumen();
+        FormClosing += (_, e) => { if (!PuedeCambiar()) e.Cancel = true; };
     }
 
     private void ActualizarResumen()
@@ -36,13 +41,30 @@ public partial class FrmInicio : Form
             }
 
         lblValor0.Text = activos.ToString();
+        var actuales = escolar.Aulas.Listar().Where(x => x.activo && x.anio == Constantes.AnioEscolar).ToList();
+        lblValor1.Text = actuales.Sum(x => escolar.Aulas.Ocupados(x.id)).ToString();
+        lblValor2.Text = actuales.Sum(x => escolar.Aulas.Disponibles(x)).ToString();
+        lblValor3.Text = escolar.Asistencias.Listar().Count(x => x.fecha.Year == Constantes.AnioEscolar).ToString();
+        Label[] nombres = { lblAula0, lblAula1, lblAula2 };
+        Label[] cupos = { lblCupo0, lblCupo1, lblCupo2 };
+        ProgressBar[] barras = { barraAula0, barraAula1, barraAula2 };
+        for (int i = 0; i < nombres.Length; i++)
+        {
+            var aula = actuales.ElementAtOrDefault(i);
+            nombres[i].Text = aula?.Descripcion ?? "Sin aula";
+            cupos[i].Text = aula == null ? "—" : escolar.Aulas.Ocupados(aula.id) + " / " + aula.capacidad;
+            barras[i].Value = aula == null ? 0 : (int)(100m * escolar.Aulas.Ocupados(aula.id) / aula.capacidad);
+        }
         lblArchivo.Text = "Guardado automático en archivos TXT.\n" + servicioArchivos.Ruta;
     }
 
+    private bool PuedeCambiar() => asistencia == null || !asistencia.Visible || asistencia.ConfirmarSalida();
+
     private void OcultarPantallas()
     {
+        aulas?.Hide();
+        reportes?.Hide();
         panelInicio.Hide();
-        panelModulo.Hide();
         matriculas?.Hide();
         asistencia?.Hide();
         if (estudiantes != null)
@@ -58,6 +80,7 @@ public partial class FrmInicio : Form
 
     private void btnInicio_Click(object? sender, EventArgs e)
     {
+        if (!PuedeCambiar()) return;
         OcultarPantallas();
         lblCabecera.Text = "Administración académica";
         ActualizarResumen();
@@ -67,6 +90,7 @@ public partial class FrmInicio : Form
 
     private void btnEstudiantes_Click(object? sender, EventArgs e)
     {
+        if (!PuedeCambiar()) return;
         OcultarPantallas();
         lblCabecera.Text = "Estudiantes";
         // Se crea una sola vez para conservar sus registros al cambiar de sección.
@@ -84,39 +108,37 @@ public partial class FrmInicio : Form
         estudiantes.BringToFront();
     }
 
-    private void MostrarModulo(string titulo)
-    {
-        OcultarPantallas();
-        lblCabecera.Text = titulo;
-        lblModulo.Text = titulo;
-        panelModulo.Show();
-        panelModulo.BringToFront();
-    }
-
     private void btnAulas_Click(object? sender, EventArgs e)
     {
-        MostrarModulo("Aulas");
+        if (!PuedeCambiar()) return;
+        if (aulas == null) { aulas = new FrmAulas(escolar); IntegrarFormulario(aulas); }
+        aulas.ActualizarListado();
+        MostrarFormulario(aulas, "Aulas");
     }
 
     private void btnMatriculas_Click(object? sender, EventArgs e)
     {
+        if (!PuedeCambiar()) return;
         if (matriculas == null)
         {
-            matriculas = new FrmMatriculas();
+            matriculas = new FrmMatriculas(escolar);
             IntegrarFormulario(matriculas);
         }
 
+        matriculas.ActualizarListado();
         MostrarFormulario(matriculas, "Matrículas");
     }
 
     private void btnAsistencia_Click(object? sender, EventArgs e)
     {
+        if (!PuedeCambiar()) return;
         if (asistencia == null)
         {
-            asistencia = new FormAsistencia();
+            asistencia = new FormAsistencia(escolar);
             IntegrarFormulario(asistencia);
         }
 
+        asistencia.ActualizarListado();
         MostrarFormulario(asistencia, "Asistencia");
     }
 
@@ -138,11 +160,15 @@ public partial class FrmInicio : Form
 
     private void btnReportes_Click(object? sender, EventArgs e)
     {
-        MostrarModulo("Reportes");
+        if (!PuedeCambiar()) return;
+        if (reportes == null) { reportes = new FrmReportes(escolar); IntegrarFormulario(reportes); }
+        reportes.ActualizarListado();
+        MostrarFormulario(reportes, "Reportes");
     }
 
     private void btnArchivos_Click(object? sender, EventArgs e)
     {
+        if (!PuedeCambiar()) return;
         OcultarPantallas();
         lblCabecera.Text = "Archivos";
         if (archivos == null)
@@ -157,6 +183,18 @@ public partial class FrmInicio : Form
         archivos.ActualizarInformacion();
         archivos.Show();
         archivos.BringToFront();
+    }
+
+    private void btnRegistrarAcceso_Click(object? sender, EventArgs e)
+    {
+        using FrmEstudiante formulario = new FrmEstudiante(servicio, null);
+        if (formulario.ShowDialog(this) == DialogResult.OK) ActualizarResumen();
+    }
+
+    private void btnNuevaMatriculaAcceso_Click(object? sender, EventArgs e)
+    {
+        using FrmMatricula formulario = new FrmMatricula(escolar);
+        if (formulario.ShowDialog(this) == DialogResult.OK) ActualizarResumen();
     }
 
     private void btnSalir_Click(object? sender, EventArgs e)

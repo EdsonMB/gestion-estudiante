@@ -18,6 +18,9 @@ public class EstudianteRepository
         return gestor.Datos.estudiantes;
     }
 
+    public bool TieneMatriculaActiva(int estudianteId) =>
+        gestor.Datos.matriculas.Any(x => x.estudianteId == estudianteId && x.Activa);
+
     public void Guardar(Estudiante estudiante)
     {
         // Se publica la lista nueva solo cuando se guarda el archivo.

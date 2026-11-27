@@ -53,9 +53,6 @@ partial class FrmInicio
     private GroupBox grupoArchivo = null!;
     private Label lblArchivo = null!;
     private Label lblPie = null!;
-    private Panel panelModulo = null!;
-    private Label lblModulo = null!;
-    private Label lblPendiente = null!;
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -118,9 +115,6 @@ partial class FrmInicio
         grupoArchivo = new GroupBox();
         lblArchivo = new Label();
         lblPie = new Label();
-        panelModulo = new Panel();
-        lblModulo = new Label();
-        lblPendiente = new Label();
         SuspendLayout();
         // panelMenu
         panelMenu.Name = "panelMenu";
@@ -450,7 +444,7 @@ partial class FrmInicio
         lblArchivo.Name = "lblArchivo";
         lblArchivo.Location = new Point(18, 30);
         lblArchivo.Size = new Size(1010, 50);
-        lblArchivo.Text = "Indicadores y ocupación pendientes de conectar.\nAbre Estudiantes para usar el registro actual; los demás módulos tienen un espacio reservado.";
+        lblArchivo.Text = "Los cambios se guardan automáticamente en archivos TXT.";
         grupoArchivo.Controls.Add(lblArchivo);
         // lblPie
         lblPie.Name = "lblPie";
@@ -458,26 +452,6 @@ partial class FrmInicio
         lblPie.Size = new Size(1040, 26);
         lblPie.Text = "Gestión Escolar / Registro, matrícula y asistencia";
         panelInicio.Controls.Add(lblPie);
-        // panelModulo
-        panelModulo.Name = "panelModulo";
-        panelModulo.Location = new Point(0, 0);
-        panelModulo.Size = new Size(1100, 728);
-        panelModulo.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        panelModulo.Visible = false;
-        panelContenido.Controls.Add(panelModulo);
-        // lblModulo
-        lblModulo.Name = "lblModulo";
-        lblModulo.Location = new Point(24, 28);
-        lblModulo.Size = new Size(1000, 40);
-        lblModulo.Text = "Módulo";
-        lblModulo.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-        panelModulo.Controls.Add(lblModulo);
-        // lblPendiente
-        lblPendiente.Name = "lblPendiente";
-        lblPendiente.Location = new Point(24, 82);
-        lblPendiente.Size = new Size(1000, 70);
-        lblPendiente.Text = "Espacio reservado para desarrollar este módulo.";
-        panelModulo.Controls.Add(lblPendiente);
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         Font = new Font("Segoe UI", 9F);
@@ -495,8 +469,8 @@ partial class FrmInicio
         btnReportes.Click += btnReportes_Click;
         btnArchivos.Click += btnArchivos_Click;
         btnSalir.Click += btnSalir_Click;
-        btnRegistrar.Click += btnEstudiantes_Click;
-        btnNuevaMatricula.Click += btnMatriculas_Click;
+        btnRegistrar.Click += btnRegistrarAcceso_Click;
+        btnNuevaMatricula.Click += btnNuevaMatriculaAcceso_Click;
         btnTomarAsistencia.Click += btnAsistencia_Click;
         btnConsultarReportes.Click += btnReportes_Click;
         ResumeLayout(false);

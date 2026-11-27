@@ -147,7 +147,7 @@ partial class FrmMatriculas
         lblResultados.Name = "lblResultados";
         lblResultados.Location = new Point(28, 678);
         lblResultados.Size = new Size(900, 30);
-        lblResultados.Text = "Los datos de matrículas están pendientes de integración.";
+        lblResultados.Text = "Sin matrículas.";
         lblResultados.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
 
         // FrmMatriculas

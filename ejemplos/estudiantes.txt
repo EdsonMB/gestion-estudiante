@@ -1,1 +1,6 @@
 1|E000001|Ana|Torres Ramírez|Rosa Ramírez|900000001|rosa@example.com|2026-03-02T09:00:00.0000000|true
+2|E000002|Mateo|Flores Pérez|Julia Pérez|900000002|julia@example.com|2026-03-02T09:10:00.0000000|true
+3|E000003|Luciana|Castro Díaz|Pedro Díaz|900000003||2026-03-02T09:20:00.0000000|true
+4|E000004|Diego|Medina Ruiz|Ana Ruiz|900000004||2026-03-02T09:30:00.0000000|true
+5|E000005|Sofía|Rojas Torres|Juan Torres|900000005||2026-03-02T09:40:00.0000000|true
+6|E000006|Luis|García López|Eva López|900000006||2026-03-02T09:50:00.0000000|false

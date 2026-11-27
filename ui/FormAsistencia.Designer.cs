@@ -14,7 +14,7 @@ partial class FormAsistencia
     private DataGridView dgvAsistencia = null!;
     private DataGridViewTextBoxColumn colCodigo = null!;
     private DataGridViewTextBoxColumn colEstudiante = null!;
-    private DataGridViewTextBoxColumn colEstado = null!;
+    private DataGridViewComboBoxColumn colEstado = null!;
     private DataGridViewTextBoxColumn colAcciones = null!;
     private Label lblNota = null!;
     private Label lblPresentes = null!;
@@ -44,7 +44,7 @@ partial class FormAsistencia
         dgvAsistencia = new DataGridView();
         colCodigo = new DataGridViewTextBoxColumn();
         colEstudiante = new DataGridViewTextBoxColumn();
-        colEstado = new DataGridViewTextBoxColumn();
+        colEstado = new DataGridViewComboBoxColumn();
         colAcciones = new DataGridViewTextBoxColumn();
         lblNota = new Label();
         lblPresentes = new Label();
@@ -108,7 +108,7 @@ partial class FormAsistencia
         dgvAsistencia.Name = "dgvAsistencia";
         dgvAsistencia.Location = new Point(28, 186);
         dgvAsistencia.Size = new Size(1020, 430);
-        dgvAsistencia.ReadOnly = true;
+        dgvAsistencia.ReadOnly = false;
         dgvAsistencia.AllowUserToAddRows = false;
         dgvAsistencia.AllowUserToDeleteRows = false;
         dgvAsistencia.AutoGenerateColumns = false;
@@ -125,18 +125,22 @@ partial class FormAsistencia
         // colCodigo
         colCodigo.Name = "colCodigo";
         colCodigo.HeaderText = "Código";
+        colCodigo.ReadOnly = true;
 
         // colEstudiante
         colEstudiante.Name = "colEstudiante";
         colEstudiante.HeaderText = "Estudiante";
+        colEstudiante.ReadOnly = true;
 
         // colEstado
         colEstado.Name = "colEstado";
         colEstado.HeaderText = "Estado registrado";
+        colEstado.Items.AddRange("Sin registro", "Presente", "Falta", "Tardanza");
 
         // colAcciones
         colAcciones.Name = "colAcciones";
-        colAcciones.HeaderText = "Acciones";
+        colAcciones.HeaderText = "Observación (opcional)";
+        colAcciones.MaxInputLength = 250;
 
         // lblNota
         lblNota.Name = "lblNota";

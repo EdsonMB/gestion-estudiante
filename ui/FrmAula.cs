@@ -1,0 +1,38 @@
+using GestionEstudiante.model;
+using GestionEstudiante.service;
+namespace GestionEstudiante;
+
+public partial class FrmAula : Form
+{
+    private readonly AulaService servicio = null!;
+    private readonly Aula? original;
+    public FrmAula() { InitializeComponent(); }
+    public FrmAula(AulaService servicio, Aula? aula, int anio) : this()
+    {
+        this.servicio = servicio;
+        original = aula;
+        Text = lblTitulo.Text = aula == null ? "Nueva aula" : "Editar aula";
+        cboNivel.SelectedIndexChanged += (_, _) => ActualizarGrados();
+        cboNivel.SelectedItem = aula?.nivel ?? "Primaria";
+        numGrado.Value = aula?.grado ?? 1;
+        txtSeccion.Text = aula?.seccion ?? "A";
+        numAnio.Value = anio;
+        numCapacidad.Value = aula?.capacidad ?? 30;
+    }
+    private void ActualizarGrados()
+    {
+        numGrado.Minimum = cboNivel.Text == "Inicial" ? 3 : 1;
+        numGrado.Maximum = cboNivel.Text == "Primaria" ? 6 : 5;
+    }
+    private void btnGuardar_Click(object? sender, EventArgs e)
+    {
+        try
+        {
+            servicio.Guardar(new Aula { id = original?.id ?? 0, nivel = cboNivel.Text,
+                grado = (int)numGrado.Value, seccion = txtSeccion.Text, anio = (int)numAnio.Value,
+                capacidad = (int)numCapacidad.Value, activo = original?.activo ?? true });
+            DialogResult = DialogResult.OK;
+        }
+        catch (Exception error) { MessageBox.Show(this, error.Message, "Revise los datos", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
+    }
+}

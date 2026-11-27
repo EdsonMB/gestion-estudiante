@@ -1,0 +1,4 @@
+1|Primaria|1|A|2026|4|true
+2|Primaria|1|B|2026|2|true
+3|Secundaria|1|A|2026|3|true
+4|Primaria|2|A|2026|3|false

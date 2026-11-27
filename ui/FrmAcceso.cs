@@ -44,7 +44,7 @@ public partial class FrmAcceso : Form
         }
 
         Hide();
-        using (FrmInicio inicio = new FrmInicio(servicio, servicioArchivos))
+        using (FrmInicio inicio = new FrmInicio(servicio, servicioArchivos, new EscolarService(gestor)))
         {
             inicio.ShowDialog();
         }

@@ -8,6 +8,9 @@ public static class Constantes
     public const string UsuarioAdministrador = "admin";
     public const string ClaveAdministrador = "987987";
     public const char Separador = '|';
+    public const string ArchivoAulas = "aulas.txt";
+    public const string ArchivoMatriculas = "matriculas.txt";
+    public const string ArchivoAsistencias = "asistencias.txt";
     public const string ArchivoEstudiantes = "estudiantes.txt";
     public const string ArchivoUbicacion = "ubicacion-db.txt";
     public const string FormatoFecha = "O";

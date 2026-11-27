@@ -5,7 +5,7 @@ using GestionEstudiante.util;
 
 namespace GestionEstudiante.archivos;
 
-public class ArchivoBaseDatos
+public partial class ArchivoBaseDatos
 {
     private static readonly UTF8Encoding Utf8 = new UTF8Encoding(false, true);
     private readonly string? archivoUbicacion;
@@ -80,6 +80,22 @@ public class ArchivoBaseDatos
                 activo = activo
             };
         });
+        datos.aulas = LeerOpcional<Aula>(ruta, Constantes.ArchivoAulas, 7, c => new Aula
+        {
+            id = Entero(c[0]), nivel = c[1], grado = Entero(c[2]), seccion = c[3],
+            anio = Entero(c[4]), capacidad = Entero(c[5]), activo = bool.Parse(c[6])
+        });
+        datos.matriculas = LeerOpcional<Matricula>(ruta, Constantes.ArchivoMatriculas, 5, c => new Matricula
+        {
+            id = Entero(c[0]), estudianteId = Entero(c[1]), aulaId = Entero(c[2]),
+            fecha = Fecha(c[3]), fechaCancelacion = c[4] == "" ? null : Fecha(c[4])
+        });
+        datos.asistencias = LeerOpcional<Asistencia>(ruta, Constantes.ArchivoAsistencias, 5, c => new Asistencia
+        {
+            id = Entero(c[0]), matriculaId = Entero(c[1]), fecha = Fecha(c[2]),
+            estado = Enum.Parse<EstadoAsistencia>(c[3]), observacion = c[4]
+        });
+        GestionEstudiante.service.ValidacionDatos.Validar(datos);
         return datos;
     }
 
@@ -123,7 +139,8 @@ public class ArchivoBaseDatos
         string temporal = RutaTemporal(Ruta);
         try
         {
-            Escribir(Path.Combine(temporal, archivo), contenido);
+            foreach (string nombre in Archivos)
+                Escribir(Path.Combine(temporal, nombre), nombre == archivo ? contenido : "");
             Directory.Move(temporal, Ruta);
         }
         finally
@@ -293,6 +310,22 @@ public class ArchivoBaseDatos
             throw ErrorFila(archivo, numero);
         }
 
+        for (int i = 0; i < campos.Length; i++)
+        {
+            StringBuilder valor = new StringBuilder();
+            for (int j = 0; j < campos[i].Length; j++)
+            {
+                char c = campos[i][j];
+                if (c != '\\') { valor.Append(c); continue; }
+                if (++j >= campos[i].Length) throw ErrorFila(archivo, numero);
+                valor.Append(campos[i][j] switch
+                {
+                    '\\' => '\\', 'p' => '|', 'r' => '\r', 'n' => '\n',
+                    _ => throw ErrorFila(archivo, numero)
+                });
+            }
+            campos[i] = valor.ToString();
+        }
         return campos;
     }
 

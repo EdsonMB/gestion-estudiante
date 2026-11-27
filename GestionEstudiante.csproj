@@ -60,5 +60,13 @@
     <Compile Update="ui\FrmInicio.Designer.cs">
       <DependentUpon>FrmInicio.cs</DependentUpon>
     </Compile>
+    <Compile Update="ui\FrmAulas.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="ui\FrmAulas.Designer.cs"><DependentUpon>FrmAulas.cs</DependentUpon></Compile>
+    <Compile Update="ui\FrmAula.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="ui\FrmAula.Designer.cs"><DependentUpon>FrmAula.cs</DependentUpon></Compile>
+    <Compile Update="ui\FrmReportes.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="ui\FrmReportes.Designer.cs"><DependentUpon>FrmReportes.cs</DependentUpon></Compile>
+    <Compile Update="ui\FrmMatrizSemanal.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="ui\FrmMatrizSemanal.Designer.cs"><DependentUpon>FrmMatrizSemanal.cs</DependentUpon></Compile>
   </ItemGroup>
 </Project>
