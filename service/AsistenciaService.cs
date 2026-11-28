@@ -18,6 +18,42 @@ public class AsistenciaService
         .Where(x => x.aulaId == aulaId && x.VigenteEn(fecha) &&
             gestor.Datos.aulas.Single(a => a.id == aulaId).anio == fecha.Year).ToList();
 
+    public List<Estudiante> EstudiantesSinAula(DateTime fecha)
+    {
+        List<Asistencia> anteriores = MarcasSinAula(fecha);
+        return gestor.Datos.estudiantes.Where(e => e.activo || BuscarPorCodigo(anteriores, e.codigo) != null).ToList();
+    }
+
+    public void GuardarDiaSinAula(DateTime fecha, List<Asistencia> registros)
+    {
+        if (fecha.Date > DateTime.Today) throw new ArgumentException("No se puede registrar asistencia futura.");
+
+        List<Estudiante> estudiantes = EstudiantesSinAula(fecha);
+        List<Asistencia> anteriores = MarcasSinAula(fecha);
+        List<Asistencia> nuevos = Listar().Where(x => x.matriculaId != 0 || x.fecha.Date != fecha.Date ||
+            !estudiantes.Any(e => e.codigo.Equals(x.codigoEstudiante, StringComparison.OrdinalIgnoreCase))).ToList();
+        int siguiente = repositorio.SiguienteId();
+        foreach (Asistencia registro in registros)
+        {
+            string codigo = registro.codigoEstudiante;
+            if (!Enum.IsDefined(registro.estado) ||
+                !estudiantes.Any(e => e.codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase)) ||
+                BuscarPorCodigo(nuevos.Where(x => x.matriculaId == 0 && x.fecha.Date == fecha.Date), codigo) != null)
+                throw new ArgumentException("Seleccione un estado válido para cada estudiante, sin duplicados.");
+
+            Asistencia? anterior = BuscarPorCodigo(anteriores, codigo);
+            nuevos.Add(new Asistencia { id = anterior?.id ?? siguiente++, codigoEstudiante = anterior?.codigoEstudiante ?? codigo,
+                fecha = fecha.Date, estado = registro.estado });
+        }
+        repositorio.Reemplazar(nuevos);
+    }
+
+    public List<Asistencia> MarcasSinAula(DateTime fecha) =>
+        Listar().Where(x => x.matriculaId == 0 && x.fecha.Date == fecha.Date).ToList();
+
+    private static Asistencia? BuscarPorCodigo(IEnumerable<Asistencia> registros, string codigo) =>
+        registros.FirstOrDefault(x => x.codigoEstudiante.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+
     public void GuardarDia(int aulaId, DateTime fecha, List<Asistencia> registros)
     {
         if (fecha.Date > DateTime.Today) throw new ArgumentException("No se puede registrar asistencia futura.");

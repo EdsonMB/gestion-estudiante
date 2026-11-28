@@ -15,7 +15,7 @@ partial class FormAsistencia
     private DataGridViewTextBoxColumn colCodigo = null!;
     private DataGridViewTextBoxColumn colEstudiante = null!;
     private DataGridViewComboBoxColumn colEstado = null!;
-    private DataGridViewTextBoxColumn colAcciones = null!;
+    private DataGridViewTextBoxColumn colObservacion = null!;
     private Label lblNota = null!;
     private Label lblPresentes = null!;
     private Label lblFaltas = null!;
@@ -45,7 +45,7 @@ partial class FormAsistencia
         colCodigo = new DataGridViewTextBoxColumn();
         colEstudiante = new DataGridViewTextBoxColumn();
         colEstado = new DataGridViewComboBoxColumn();
-        colAcciones = new DataGridViewTextBoxColumn();
+        colObservacion = new DataGridViewTextBoxColumn();
         lblNota = new Label();
         lblPresentes = new Label();
         lblFaltas = new Label();
@@ -118,7 +118,7 @@ partial class FormAsistencia
         dgvAsistencia.BackgroundColor = Color.White;
         dgvAsistencia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvAsistencia.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvAsistencia.Columns.AddRange(colCodigo, colEstudiante, colEstado, colAcciones);
+        dgvAsistencia.Columns.AddRange(colCodigo, colEstudiante, colEstado, colObservacion);
         dgvAsistencia.TabIndex = 3;
         dgvAsistencia.CellContentClick += dgvAsistencia_CellContentClick;
 
@@ -136,10 +136,10 @@ partial class FormAsistencia
         colEstado.Name = "colEstado";
         colEstado.HeaderText = "Estado registrado";
 
-        // colAcciones
-        colAcciones.Name = "colAcciones";
-        colAcciones.HeaderText = "Observación (opcional)";
-        colAcciones.MaxInputLength = 250;
+        // colObservacion
+        colObservacion.Name = "colObservacion";
+        colObservacion.HeaderText = "Observación (opcional)";
+        colObservacion.MaxInputLength = 250;
 
         // lblNota
         lblNota.Name = "lblNota";

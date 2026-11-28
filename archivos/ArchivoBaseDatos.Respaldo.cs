@@ -17,7 +17,8 @@ public partial class ArchivoBaseDatos
     private static DateTime Fecha(string texto) => DateTime.ParseExact(texto,
         Constantes.FormatoFecha, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-    private static List<T> LeerOpcional<T>(string ruta, string archivo, int columnas, Func<string[], T> convertir)
+    private static List<T> LeerOpcional<T>(string ruta, string archivo, int columnas,
+        Func<string[], T> convertir, int? columnasAlternativas = null)
         where T : ModeloBase
     {
         // Compatibilidad con carpetas anteriores que solo tenían estudiantes.txt.
@@ -37,7 +38,7 @@ public partial class ArchivoBaseDatos
             {
                 throw new InvalidDataException($"Registro inválido en {archivo}, línea {indice + 1}.", error);
             }
-        });
+        }, columnasAlternativas);
     }
 
     public void CrearRespaldo(string destino, BaseDatosEscolar datos)

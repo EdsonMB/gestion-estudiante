@@ -5,6 +5,7 @@ namespace GestionEstudiante;
 
 public partial class FormAsistencia : Form
 {
+    private const int SinAula = -1;
     private readonly EscolarService servicio = null!;
     private bool cargando;
     private bool modificado;
@@ -36,7 +37,7 @@ public partial class FormAsistencia : Form
         };
         btnMatrizSemanal.Click += (_, _) =>
         {
-            if (aulaActual == 0 || !ConfirmarSalida()) return;
+            if (aulaActual <= 0 || !ConfirmarSalida()) return;
             using FrmMatrizSemanal matriz = new FrmMatrizSemanal(servicio, aulaActual, fechaActual);
             matriz.ShowDialog(this);
         };
@@ -46,6 +47,8 @@ public partial class FormAsistencia : Form
         cargando = true;
         cmbAula.Items.Clear();
         foreach (Aula aula in servicio.Aulas.Listar()) cmbAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
+        if (cmbAula.Items.Count == 0 || servicio.Asistencias.Listar().Any(x => x.matriculaId == 0))
+            cmbAula.Items.Add(new Opcion(SinAula, Constantes.AsistenciaPorEstudiante));
         int indice = cmbAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == aulaActual);
         cmbAula.SelectedIndex = indice >= 0 ? indice : cmbAula.Items.Count > 0 ? 0 : -1;
         aulaActual = (cmbAula.SelectedItem as Opcion)?.Id ?? 0;
@@ -72,6 +75,42 @@ public partial class FormAsistencia : Form
     {
         cargando = true;
         dgvAsistencia.Rows.Clear();
+        colObservacion.Visible = aulaActual != SinAula;
+        if (aulaActual == SinAula) CargarEstudiantesSinAula();
+        else CargarMatriculas();
+
+        cargando = false;
+        modificado = false;
+        btnGuardar.Enabled = dgvAsistencia.Rows.Count > 0;
+        btnMatrizSemanal.Enabled = aulaActual > 0;
+        if (aulaActual == SinAula)
+        {
+            lblNota.Text = dgvAsistencia.Rows.Count == 0 ? "No hay estudiantes para la fecha seleccionada." :
+                "Edita el estado por estudiante y guarda los cambios. Sin registro no cuenta como falta.";
+        }
+        else
+        {
+            lblNota.Text = dgvAsistencia.Rows.Count == 0 ? "No hay matrículas para el aula y fecha seleccionados." :
+                "Edita el estado y la observación. Sin registro no se cuenta como falta. Guarda los cambios antes de salir.";
+        }
+        ActualizarTotales();
+    }
+
+    private void CargarEstudiantesSinAula()
+    {
+        List<Asistencia> registros = servicio.Asistencias.MarcasSinAula(fechaActual);
+        foreach (Estudiante estudiante in servicio.Asistencias.EstudiantesSinAula(fechaActual))
+        {
+            Asistencia? asistencia = registros.Find(x => x.codigoEstudiante.Equals(
+                estudiante.codigo, StringComparison.OrdinalIgnoreCase));
+            int fila = dgvAsistencia.Rows.Add(estudiante.codigo, estudiante.nombre + " " + estudiante.apellidos,
+                asistencia?.estado.ToString() ?? Constantes.AsistenciaSinRegistro, "");
+            dgvAsistencia.Rows[fila].Tag = estudiante.codigo;
+        }
+    }
+
+    private void CargarMatriculas()
+    {
         List<Estudiante> estudiantes = servicio.Estudiantes;
         List<Asistencia> asistencias = servicio.Asistencias.Listar();
         foreach (Matricula matricula in servicio.Asistencias.MatriculasDelDia(aulaActual, fechaActual))
@@ -82,20 +121,13 @@ public partial class FormAsistencia : Form
                 asistencia?.estado.ToString() ?? Constantes.AsistenciaSinRegistro, asistencia?.observacion ?? "");
             dgvAsistencia.Rows[fila].Tag = matricula.id;
         }
-        cargando = false;
-        modificado = false;
-        btnGuardar.Enabled = dgvAsistencia.Rows.Count > 0;
-        btnMatrizSemanal.Enabled = aulaActual != 0;
-        lblNota.Text = dgvAsistencia.Rows.Count == 0 ? "No hay matrículas para el aula y fecha seleccionados." :
-            "Edita el estado y la observación. Sin registro no se cuenta como falta. Guarda los cambios antes de salir.";
-        ActualizarTotales();
     }
     private void ActualizarTotales()
     {
         var filas = dgvAsistencia.Rows.Cast<DataGridViewRow>().ToList();
-        lblPresentes.Text = filas.Count(x => (string?)x.Cells[2].Value == Constantes.AsistenciaPresente) + " presentes";
-        lblFaltas.Text = filas.Count(x => (string?)x.Cells[2].Value == Constantes.AsistenciaFalta) + " faltas";
-        lblTardanzas.Text = filas.Count(x => (string?)x.Cells[2].Value == Constantes.AsistenciaTardanza) + " tardanzas";
+        lblPresentes.Text = filas.Count(x => (string?)x.Cells[colEstado.Index].Value == Constantes.AsistenciaPresente) + " presentes";
+        lblFaltas.Text = filas.Count(x => (string?)x.Cells[colEstado.Index].Value == Constantes.AsistenciaFalta) + " faltas";
+        lblTardanzas.Text = filas.Count(x => (string?)x.Cells[colEstado.Index].Value == Constantes.AsistenciaTardanza) + " tardanzas";
     }
     public bool ConfirmarSalida()
     {
@@ -116,12 +148,22 @@ public partial class FormAsistencia : Form
             List<Asistencia> registros = new();
             foreach (DataGridViewRow fila in dgvAsistencia.Rows)
             {
-                string estado = (string?)fila.Cells[2].Value ?? Constantes.AsistenciaSinRegistro;
+                string estado = (string?)fila.Cells[colEstado.Index].Value ?? Constantes.AsistenciaSinRegistro;
                 if (estado == Constantes.AsistenciaSinRegistro) continue;
-                registros.Add(new Asistencia { matriculaId = (int)fila.Tag!, estado = Enum.Parse<EstadoAsistencia>(estado),
-                    observacion = fila.Cells[3].Value?.ToString() ?? "" });
+                Asistencia registro = new Asistencia { estado = Enum.Parse<EstadoAsistencia>(estado) };
+                if (fila.Tag is string codigo)
+                {
+                    registro.codigoEstudiante = codigo;
+                }
+                else
+                {
+                    registro.matriculaId = (int)fila.Tag!;
+                    registro.observacion = fila.Cells[colObservacion.Index].Value?.ToString() ?? "";
+                }
+                registros.Add(registro);
             }
-            servicio.Asistencias.GuardarDia(aulaActual, fechaActual, registros);
+            if (aulaActual == SinAula) servicio.Asistencias.GuardarDiaSinAula(fechaActual, registros);
+            else servicio.Asistencias.GuardarDia(aulaActual, fechaActual, registros);
             modificado = false;
             lblNota.Text = "Asistencia guardada. Puedes corregirla y volver a guardar.";
             return true;

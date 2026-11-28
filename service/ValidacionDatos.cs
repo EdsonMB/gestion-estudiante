@@ -53,10 +53,23 @@ public static class ValidacionDatos
             foreach (Aula aula in datos.aulas)
                 if (datos.matriculas.Count(x => x.aulaId == aula.id && x.Activa) > aula.capacidad)
                     throw new ArgumentException("La ocupación supera la capacidad de un aula.");
-            if (datos.asistencias.GroupBy(x => (x.matriculaId, x.fecha.Date)).Any(g => g.Count() > 1))
+            if (datos.asistencias.Where(x => x.matriculaId != 0)
+                .GroupBy(x => (x.matriculaId, x.fecha.Date)).Any(g => g.Count() > 1))
                 throw new ArgumentException("Hay asistencias repetidas para una matrícula y fecha.");
+            foreach (var dia in datos.asistencias.Where(x => x.matriculaId == 0).GroupBy(x => x.fecha.Date))
+            {
+                if (dia.GroupBy(x => x.codigoEstudiante, StringComparer.OrdinalIgnoreCase).Any(g => g.Count() > 1))
+                    throw new ArgumentException("Hay asistencias por estudiante repetidas para una misma fecha.");
+            }
             foreach (Asistencia asistencia in datos.asistencias)
             {
+                if (asistencia.matriculaId == 0)
+                {
+                    if (string.IsNullOrWhiteSpace(asistencia.codigoEstudiante) || !Enum.IsDefined(asistencia.estado))
+                        throw new ArgumentException("La asistencia por estudiante requiere un código y estado válidos.");
+                    continue;
+                }
+
                 Matricula matricula = datos.matriculas.SingleOrDefault(x => x.id == asistencia.matriculaId)
                     ?? throw new ArgumentException("Una asistencia referencia una matrícula inexistente.");
                 Aula aula = datos.aulas.Single(x => x.id == matricula.aulaId);

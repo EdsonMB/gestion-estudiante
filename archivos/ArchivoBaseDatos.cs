@@ -93,18 +93,35 @@ public partial class ArchivoBaseDatos
             id = Entero(c[0]), estudianteId = Entero(c[1]), aulaId = Entero(c[2]),
             fecha = Fecha(c[3]), fechaCancelacion = c[4] == "" ? null : Fecha(c[4])
         });
-        datos.asistencias = LeerOpcional<Asistencia>(ruta, Constantes.ArchivoAsistencias, 5, c => new Asistencia
-        {
-            id = Entero(c[0]), matriculaId = Entero(c[1]), fecha = Fecha(c[2]),
-            estado = Enum.Parse<EstadoAsistencia>(c[3]), observacion = c[4]
-        });
+        datos.asistencias = LeerOpcional(ruta, Constantes.ArchivoAsistencias, 5, LeerAsistencia, 4);
         GestionEstudiante.service.ValidacionDatos.Validar(datos);
         return datos;
     }
 
+    private static Asistencia LeerAsistencia(string[] campos)
+    {
+        Asistencia asistencia = new Asistencia { id = Entero(campos[0]) };
+        asistencia.estado = Enum.Parse<EstadoAsistencia>(campos[3]);
+        if (campos.Length == 4)
+        {
+            if (asistencia.estado.ToString() != campos[3])
+                throw new FormatException("Se esperaba Presente, Falta o Tardanza.");
+            asistencia.codigoEstudiante = campos[1];
+            asistencia.fecha = DateTime.ParseExact(campos[2], Constantes.FormatoFechaAsistencia,
+                CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            asistencia.matriculaId = Entero(campos[1]);
+            asistencia.fecha = Fecha(campos[2]);
+            asistencia.observacion = campos[4];
+        }
+        return asistencia;
+    }
+
     private static List<T> LeerArchivo<T>(
         string ruta, string archivo, int columnas,
-        Func<int, string[], HashSet<int>, HashSet<string>, T> funcion)
+        Func<int, string[], HashSet<int>, HashSet<string>, T> funcion, int? columnasAlternativas = null)
     {
         string[] filas = File.ReadAllLines(Path.Combine(ruta, archivo), Utf8);
         HashSet<int> ids = new HashSet<int>();
@@ -113,7 +130,7 @@ public partial class ArchivoBaseDatos
 
         for (int i = 0; i < filas.Length; i++)
         {
-            string[] campos = LeerCampos(filas[i], archivo, i + 1, columnas);
+            string[] campos = LeerCampos(filas[i], archivo, i + 1, columnas, columnasAlternativas);
             entidades.Add(funcion(i, campos, ids, codigos));
         }
 
@@ -297,33 +314,41 @@ public partial class ArchivoBaseDatos
         catch (UnauthorizedAccessException) { }
     }
 
-    private static string[] LeerCampos(string linea, string archivo, int numero, int cantidad)
+    private static string[] LeerCampos(string linea, string archivo, int numero, int cantidad, int? cantidadAlternativa)
     {
         string[] campos = linea.Split(Constantes.Separador);
-        if (campos.Length != cantidad)
+        if (campos.Length != cantidad && campos.Length != cantidadAlternativa)
         {
             throw ErrorFila(archivo, numero);
         }
 
         for (int i = 0; i < campos.Length; i++)
         {
-            StringBuilder valor = new StringBuilder();
-            for (int j = 0; j < campos[i].Length; j++)
-            {
-                char c = campos[i][j];
-                if (c != '\\') { valor.Append(c); continue; }
-                if (++j >= campos[i].Length) throw ErrorFila(archivo, numero);
-                valor.Append(campos[i][j] switch
-                {
-                    '\\' => '\\', 'p' => '|', 'r' => '\r', 'n' => '\n',
-                    _ => throw ErrorFila(archivo, numero)
-                });
-            }
-            campos[i] = valor.ToString();
+            campos[i] = DecodificarCampo(campos[i], archivo, numero);
         }
         return campos;
     }
 
+    private static string DecodificarCampo(string campo, string archivo, int numero)
+    {
+        StringBuilder texto = new StringBuilder();
+        for (int i = 0; i < campo.Length; i++)
+        {
+            char caracter = campo[i];
+            if (caracter == '\\')
+            {
+                i++;
+                if (i == campo.Length) throw ErrorFila(archivo, numero);
+                caracter = campo[i] switch
+                {
+                    '\\' => '\\', 'p' => Constantes.Separador, 'r' => '\r', 'n' => '\n',
+                    _ => throw ErrorFila(archivo, numero)
+                };
+            }
+            texto.Append(caracter);
+        }
+        return texto.ToString();
+    }
 
     private static bool LeerEnteroPositivo(string campo, out int valor)
     {

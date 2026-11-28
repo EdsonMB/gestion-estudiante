@@ -1,6 +1,6 @@
 # Gestión de Estudiantes
 
-Aplicación de escritorio en C# con Windows Forms y .NET 8. La rama `completo` integra los módulos sobre el proyecto existente, a partir de `main` (`0753c0d`). Los formularios usan controles nativos de Windows Forms y conservan sus archivos `.Designer.cs`.
+Aplicación de escritorio en C# con Windows Forms y .NET 8. La rama `completo` integra los módulos sobre el proyecto existente e incorpora los cambios de Asistencia de `main`. Los formularios usan controles nativos de Windows Forms y conservan sus archivos `.Designer.cs`.
 
 ## Ejecutar
 
@@ -20,6 +20,7 @@ Acceso local: usuario `admin`, contraseña `987987`. El año mostrado en Inicio 
 - **Aulas:** alta, edición, filtros por nivel y año, activación y desactivación. No se permite repetir nivel/grado/sección/año, reducir capacidad por debajo de la ocupación ni desactivar un aula ocupada. Un aula con matrículas conserva su identidad; se puede cambiar capacidad y estado.
 - **Matrículas:** registro, filtros y cancelación con conservación del historial. Valida estudiante y aula activos, año, fecha y cupos. Un estudiante solo puede tener una matrícula activa por año. Cancelar libera su cupo.
 - **Asistencia:** selección de aula y fecha, estados Presente/Falta/Tardanza, observación y corrección. Guardar actualiza el día sin duplicados. Seleccionar Sin registro elimina una marca anterior; una fecha sin marca no cuenta como falta. La navegación y el cierre consultan qué hacer con cambios pendientes. Incluye matriz semanal de lunes a domingo.
+- **Asistencia por estudiante:** el filtro **Por estudiante (sin aula)** está disponible si la carpeta carece de aulas o contiene registros de `main` asociados al código del estudiante. En ese filtro se consultan y corrigen las marcas por fecha. La matriz semanal y los reportes por aula usan los registros vinculados a matrículas.
 - **Reportes:** ocupación y asistencia por estudiante, filtros de año/aula/rango y exportación TXT con campos separados por `|`. El porcentaje es `(presentes + tardanzas) / registros`; no supone faltas en días sin registro.
 - **Archivos y respaldo:** carga de otra carpeta, traslado, creación y recuperación de carpetas de respaldo con un TXT por entidad. La recuperación valida los cuatro TXT y activa una nueva carpeta, conservando la anterior.
 
@@ -37,6 +38,8 @@ Los archivos de entidades usan UTF-8, sin cabecera, un registro por línea y `|`
 | `aulas.txt` | id, nivel, grado, seccion, anio, capacidad, activo |
 | `matriculas.txt` | id, estudianteId, aulaId, fecha, fechaCancelacion |
 | `asistencias.txt` | id, matriculaId, fecha, estado, observacion |
+
+Las marcas por estudiante conservan en el mismo `asistencias.txt` sus cuatro campos: `id|codigoEstudiante|fecha|estado`, con fecha `yyyy-MM-dd`.
 
 Fechas: ISO 8601, formato `O`. Booleanos: `true` o `false`. `fechaCancelacion` vacía significa matrícula activa. Los escapes reversibles son `\\` para barra inversa, `\p` para `|`, `\r` y `\n` para saltos de línea. No quite las posiciones de campos vacíos.
 

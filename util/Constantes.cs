@@ -14,6 +14,7 @@ public static class Constantes
     public const string ArchivoMatriculas = "matriculas.txt";
     public const string ArchivoAsistencias = "asistencias.txt";
     public const string ArchivoEstudiantes = "estudiantes.txt";
+    public const string FormatoFechaAsistencia = "yyyy-MM-dd";
     public const string ArchivoUbicacion = "ubicacion-db.txt";
     public const string FormatoFecha = "O";
     public const string FormatoCodigoEstudiante = "000000";
@@ -32,6 +33,7 @@ public static class Constantes
     public const string MatriculasSoloActivas = "Solo activas";
     public const string MatriculasSoloCanceladas = "Solo canceladas";
     public const string AsistenciaSinRegistro = "Sin registro";
+    public const string AsistenciaPorEstudiante = "Por estudiante (sin aula)";
     public const string AsistenciaPresente = nameof(EstadoAsistencia.Presente);
     public const string AsistenciaFalta = nameof(EstadoAsistencia.Falta);
     public const string AsistenciaTardanza = nameof(EstadoAsistencia.Tardanza);

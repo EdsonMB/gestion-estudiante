@@ -91,27 +91,26 @@ public partial class FrmInicio : Form
     private void btnEstudiantes_Click(object? sender, EventArgs e)
     {
         if (!PuedeCambiar()) return;
-        OcultarPantallas();
-        lblCabecera.Text = "Estudiantes";
         // Se crea una sola vez para conservar sus registros al cambiar de sección.
         if (estudiantes == null)
         {
             estudiantes = new FrmGestionEstudiantes(servicio);
-            estudiantes.TopLevel = false;
-            estudiantes.FormBorderStyle = FormBorderStyle.None;
-            estudiantes.Dock = DockStyle.Fill;
-            panelContenido.Controls.Add(estudiantes);
+            IntegrarFormulario(estudiantes);
         }
 
         estudiantes.ActualizarListado();
-        estudiantes.Show();
-        estudiantes.BringToFront();
+        MostrarFormulario(estudiantes, "Estudiantes");
     }
 
     private void btnAulas_Click(object? sender, EventArgs e)
     {
         if (!PuedeCambiar()) return;
-        if (aulas == null) { aulas = new FrmAulas(escolar); IntegrarFormulario(aulas); }
+        if (aulas == null)
+        {
+            aulas = new FrmAulas(escolar);
+            IntegrarFormulario(aulas);
+        }
+
         aulas.ActualizarListado();
         MostrarFormulario(aulas, "Aulas");
     }
@@ -161,7 +160,12 @@ public partial class FrmInicio : Form
     private void btnReportes_Click(object? sender, EventArgs e)
     {
         if (!PuedeCambiar()) return;
-        if (reportes == null) { reportes = new FrmReportes(escolar); IntegrarFormulario(reportes); }
+        if (reportes == null)
+        {
+            reportes = new FrmReportes(escolar);
+            IntegrarFormulario(reportes);
+        }
+
         reportes.ActualizarListado();
         MostrarFormulario(reportes, "Reportes");
     }
@@ -169,20 +173,14 @@ public partial class FrmInicio : Form
     private void btnArchivos_Click(object? sender, EventArgs e)
     {
         if (!PuedeCambiar()) return;
-        OcultarPantallas();
-        lblCabecera.Text = "Archivos";
         if (archivos == null)
         {
             archivos = new FrmArchivos(servicioArchivos);
-            archivos.TopLevel = false;
-            archivos.FormBorderStyle = FormBorderStyle.None;
-            archivos.Dock = DockStyle.Fill;
-            panelContenido.Controls.Add(archivos);
+            IntegrarFormulario(archivos);
         }
 
         archivos.ActualizarInformacion();
-        archivos.Show();
-        archivos.BringToFront();
+        MostrarFormulario(archivos, "Archivos");
     }
 
     private void btnRegistrarAcceso_Click(object? sender, EventArgs e)
