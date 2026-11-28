@@ -54,7 +54,11 @@ public class ArchivoBaseDatos
 
     public BaseDatosEscolar AbrirSeleccion(string ruta)
     {
-        if (Directory.Exists(ruta) && !Directory.EnumerateFileSystemEntries(ruta).Any())
+        if (!Directory.Exists(ruta))
+        {
+            throw new DirectoryNotFoundException("La carpeta de datos seleccionada no está disponible.");
+        }
+        if (Directory.GetFileSystemEntries(ruta).Length == 0)
         {
             InicializarCarpeta(ruta);
         }
@@ -93,9 +97,9 @@ public class ArchivoBaseDatos
         ValidarArchivos(ruta);
         BaseDatosEscolar datos = new BaseDatosEscolar();
         //Estudiantes
-        HashSet<string> codigos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         datos.estudiantes = LeerArchivo(ruta, Constantes.ArchivoEstudiantes,
-            Constantes.EstudiantesColumnas, campos => LeerEstudiante(codigos, campos));
+            Constantes.EstudiantesColumnas, LeerEstudiante);
+        ValidarCodigos(datos.estudiantes);
         //Aulas
         datos.aulas = LeerArchivo(ruta, Constantes.ArchivoAulas,
             Constantes.AulasColumnas, LeerAula);
@@ -108,11 +112,23 @@ public class ArchivoBaseDatos
         return datos;
     }
 
-    private Estudiante LeerEstudiante(HashSet<string> codigos, string[] campos)
+    private static void ValidarCodigos(List<Estudiante> estudiantes)
     {
-        if (campos[1].Length == 0 || !codigos.Add(campos[1]))
+        HashSet<string> codigos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        for (int i = 0; i < estudiantes.Count; i++)
         {
-            throw new FormatException("El código del estudiante está vacío o repetido.");
+            if (!codigos.Add(estudiantes[i].codigo))
+            {
+                throw new InvalidDataException($"Código repetido en {Constantes.ArchivoEstudiantes}, línea {i + 1}.");
+            }
+        }
+    }
+
+    private static Estudiante LeerEstudiante(string[] campos)
+    {
+        if (campos[1].Length == 0)
+        {
+            throw new FormatException("El código del estudiante está vacío.");
         }
 
         return new Estudiante
@@ -214,7 +230,7 @@ public class ArchivoBaseDatos
         }
     }
 
-    public void Guardar<T>(string archivo, List<T> registros, Func<T, string[]> obtenerCampos)
+    public void Guardar<T>(string archivo, List<T> registros) where T : ModeloBase
     {
         if (!Directory.Exists(Ruta))
         {
@@ -225,7 +241,7 @@ public class ArchivoBaseDatos
         StringBuilder texto = new StringBuilder();
         foreach (T registro in registros)
         {
-            texto.AppendLine(FormatoTxt.CrearFila(obtenerCampos(registro)));
+            texto.AppendLine(FormatoTxt.CrearFila(registro.ObtenerCampos()));
         }
 
         Escribir(Path.Combine(Ruta, archivo), texto.ToString());
@@ -261,11 +277,14 @@ public class ArchivoBaseDatos
             {
                 i++;
                 if (i == campo.Length) throw ErrorFila(archivo, numero);
-                caracter = campo[i] switch
+                switch (campo[i])
                 {
-                    '\\' => '\\', 'p' => Constantes.Separador, 'r' => '\r', 'n' => '\n',
-                    _ => throw ErrorFila(archivo, numero)
-                };
+                    case '\\': caracter = '\\'; break;
+                    case 'p': caracter = Constantes.Separador; break;
+                    case 'r': caracter = '\r'; break;
+                    case 'n': caracter = '\n'; break;
+                    default: throw ErrorFila(archivo, numero);
+                }
             }
             texto.Append(caracter);
         }
@@ -281,8 +300,10 @@ public class ArchivoBaseDatos
         return valor;
     }
 
-    private static DateTime Fecha(string texto) => DateTime.ParseExact(texto,
-        Constantes.FormatoFecha, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+    private static DateTime Fecha(string texto)
+    {
+        return DateTime.ParseExact(texto, Constantes.FormatoFecha, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+    }
 
     private static InvalidDataException ErrorFila(string archivo, int numero)
     {

@@ -14,6 +14,9 @@ public partial class FrmReportes : Form
     public FrmReportes()
     {
         InitializeComponent();
+        numAnio.Minimum = Constantes.AnioEscolarMinimo;
+        numAnio.Maximum = Constantes.AnioEscolarMaximo;
+
         cboTipo.Items.AddRange(new object[]
         {
             Constantes.ReporteOcupacion,

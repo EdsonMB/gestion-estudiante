@@ -23,7 +23,7 @@ public class AulaRepository
         if (aula.id == 0)
         {
             int id = registros.Count + 1;
-            if (registros.Exists(registro => registro.id == id))
+            if (BuscarPosicion(registros, id) >= 0)
             {
                 throw new InvalidDataException("El próximo identificador de aula ya existe.");
             }
@@ -33,7 +33,7 @@ public class AulaRepository
         }
         else
         {
-            int posicion = registros.FindIndex(registro => registro.id == aula.id);
+            int posicion = BuscarPosicion(registros, aula.id);
             if (posicion < 0)
             {
                 throw new InvalidOperationException("Aula no encontrada.");
@@ -41,7 +41,16 @@ public class AulaRepository
             registros[posicion] = aula;
         }
 
-        gestor.Guardar(Constantes.ArchivoAulas, registros, registro => registro.ObtenerCampos());
+        gestor.Guardar(Constantes.ArchivoAulas, registros);
         gestor.Datos.aulas = registros;
+    }
+
+    private static int BuscarPosicion(List<Aula> registros, int id)
+    {
+        for (int i = 0; i < registros.Count; i++)
+        {
+            if (registros[i].id == id) return i;
+        }
+        return -1;
     }
 }

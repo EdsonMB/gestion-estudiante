@@ -19,26 +19,26 @@ public partial class FrmInicio : Form
     public FrmInicio()
     {
         InitializeComponent();
+        lblCentro.Text = Constantes.NombreCentroEducativo;
+        lblAnio.Text = "AÑO ESCOLAR " + Constantes.AnioEscolar;
+        lblOperador.Text = Constantes.AnioEscolar + " · Operador local";
+        lblDetalle1.Text = "Año escolar " + Constantes.AnioEscolar;
     }
 
     public FrmInicio(EstudianteService servicio, ArchivoService servicioArchivos, AulaService servicioAulas,
-        MatriculaService servicioMatriculas, AsistenciaService servicioAsistencia)
+        MatriculaService servicioMatriculas, AsistenciaService servicioAsistencia) : this()
     {
         this.servicio = servicio;
         this.servicioArchivos = servicioArchivos;
         this.servicioAulas = servicioAulas;
         this.servicioMatriculas = servicioMatriculas;
         this.servicioAsistencia = servicioAsistencia;
-        InitializeComponent();
         ActualizarResumen();
         FormClosing += InicioCerrando;
     }
 
     private void ActualizarResumen()
     {
-        lblCentro.Text = Constantes.NombreCentroEducativo;
-        lblAnio.Text = "AÑO ESCOLAR " + Constantes.AnioEscolar;
-        lblOperador.Text = Constantes.AnioEscolar + " · Operador local";
         int activos = 0;
         foreach (Estudiante estudiante in servicio.Listar())
         {

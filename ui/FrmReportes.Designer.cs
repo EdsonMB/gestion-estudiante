@@ -63,8 +63,6 @@ partial class FrmReportes
         numAnio.Name = "numAnio";
         numAnio.Location = new Point(310, 150);
         numAnio.Size = new Size(110, 32);
-        numAnio.Minimum = 2000;
-        numAnio.Maximum = 2100;
         lblAula = new Label();
         lblAula.Name = "lblAula";
         lblAula.Location = new Point(445, 120);

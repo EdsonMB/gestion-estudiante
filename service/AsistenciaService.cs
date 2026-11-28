@@ -23,13 +23,26 @@ public class AsistenciaService
 
     public List<Matricula> MatriculasDelDia(int aulaId, DateTime fecha)
     {
-        Aula? aula = aulas.Listar().Find(x => x.id == aulaId);
-        if (aula?.anio != fecha.Year)
+        bool aulaDelAnio = false;
+        foreach (Aula aula in aulas.Listar())
         {
-            return new List<Matricula>();
+            if (aula.id == aulaId && aula.anio == fecha.Year)
+            {
+                aulaDelAnio = true;
+                break;
+            }
         }
 
-        return matriculas.Listar().FindAll(x => x.aulaId == aulaId && x.VigenteEn(fecha));
+        List<Matricula> disponibles = new List<Matricula>();
+        if (aulaDelAnio)
+        {
+            foreach (Matricula matricula in matriculas.Listar())
+            {
+                if (matricula.aulaId == aulaId && matricula.VigenteEn(fecha))
+                    disponibles.Add(matricula);
+            }
+        }
+        return disponibles;
     }
 
     public void Guardar(int aulaId, DateTime fecha, List<Asistencia> cambios, List<Asistencia> bajas)
@@ -38,11 +51,15 @@ public class AsistenciaService
 
         List<Asistencia> filas = new List<Asistencia>(cambios);
         filas.AddRange(bajas);
-        List<Matricula> disponibles = MatriculasDelDia(aulaId, fecha);
-        if (filas.Any(x => !disponibles.Exists(matricula => matricula.id == x.matriculaId)) ||
-            filas.GroupBy(x => x.matriculaId).Any(grupo => grupo.Count() > 1))
+        HashSet<int> disponibles = new HashSet<int>();
+        foreach (Matricula matricula in MatriculasDelDia(aulaId, fecha))
         {
-            throw new ArgumentException("La lista de asistencia no corresponde al aula y fecha seleccionadas.");
+            disponibles.Add(matricula.id);
+        }
+        foreach (Asistencia fila in filas)
+        {
+            if (!disponibles.Remove(fila.matriculaId))
+                throw new ArgumentException("La lista de asistencia no corresponde al aula y fecha seleccionadas.");
         }
 
         List<Asistencia> registros = new List<Asistencia>();
@@ -60,27 +77,31 @@ public class AsistenciaService
             });
         }
 
-        List<Asistencia> eliminaciones = bajas.Select(baja => new Asistencia
+        List<Asistencia> eliminaciones = new List<Asistencia>();
+        foreach (Asistencia baja in bajas)
         {
-            matriculaId = baja.matriculaId,
-            fecha = fecha.Date
-        }).ToList();
+            eliminaciones.Add(new Asistencia { matriculaId = baja.matriculaId, fecha = fecha.Date });
+        }
         repositorio.Guardar(registros, eliminaciones);
     }
 
     internal static void ValidarRegistros(List<Asistencia> asistencias, List<Matricula> matriculas)
     {
-        if (asistencias.GroupBy(x => (x.matriculaId, x.fecha.Date)).Any(g => g.Count() > 1))
+        HashSet<(int Matricula, DateTime Fecha)> claves = new();
+        Dictionary<int, Matricula> matriculasPorId = new Dictionary<int, Matricula>();
+        foreach (Matricula matricula in matriculas)
         {
-            throw new ArgumentException("Hay asistencias repetidas para una matrícula y fecha.");
+            matriculasPorId.Add(matricula.id, matricula);
         }
 
         foreach (Asistencia asistencia in asistencias)
         {
+            if (!claves.Add((asistencia.matriculaId, asistencia.fecha.Date)))
+                throw new ArgumentException("Hay asistencias repetidas para una matrícula y fecha.");
             ValidarMarca(asistencia.estado, asistencia.observacion);
             ValidarFecha(asistencia.fecha);
-            Matricula matricula = matriculas.Find(x => x.id == asistencia.matriculaId)
-                ?? throw new ArgumentException("Una asistencia referencia una matrícula inexistente.");
+            if (!matriculasPorId.TryGetValue(asistencia.matriculaId, out Matricula? matricula))
+                throw new ArgumentException("Una asistencia referencia una matrícula inexistente.");
             if (!matricula.VigenteEn(asistencia.fecha))
             {
                 throw new ArgumentException("La fecha de asistencia debe estar dentro de la vigencia de la matrícula.");

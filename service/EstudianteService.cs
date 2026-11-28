@@ -1,6 +1,7 @@
 using System.Net.Mail;
 using GestionEstudiante.model;
 using GestionEstudiante.repository;
+using GestionEstudiante.util;
 
 namespace GestionEstudiante.service;
 public class EstudianteService
@@ -18,8 +19,20 @@ public class EstudianteService
 
     public string NombreEstudiante(int id)
     {
-        Estudiante estudiante = Listar().Single(x => x.id == id);
+        Estudiante estudiante = BuscarPorId(id);
         return estudiante.nombre + " " + estudiante.apellidos;
+    }
+
+    private Estudiante BuscarPorId(int id)
+    {
+        foreach (Estudiante estudiante in Listar())
+        {
+            if (estudiante.id == id)
+            {
+                return estudiante;
+            }
+        }
+        throw new InvalidOperationException("Estudiante no encontrado.");
     }
 
     // Estado: 0 = todos, 1 = activos, 2 = inactivos.
@@ -73,6 +86,26 @@ public class EstudianteService
         GuardarDatos(estudiante, false);
     }
 
+    public void Activar(int id)
+    {
+        Estudiante estudiante = BuscarPorId(id);
+        if (estudiante.activo)
+        {
+            throw new InvalidOperationException("El estudiante ya está activo.");
+        }
+
+        repository.Guardar(new Estudiante
+        {
+            id = estudiante.id,
+            nombre = estudiante.nombre,
+            apellidos = estudiante.apellidos,
+            apoderado = estudiante.apoderado,
+            telefono = estudiante.telefono,
+            correo = estudiante.correo,
+            activo = true
+        });
+    }
+
     internal static void ValidarEstudiante(Estudiante estudiante)
     {
         if (string.IsNullOrWhiteSpace(estudiante.nombre) || string.IsNullOrWhiteSpace(estudiante.apellidos) || string.IsNullOrWhiteSpace(estudiante.apoderado))
@@ -80,14 +113,17 @@ public class EstudianteService
             throw new ArgumentException("Complete nombres, apellidos y nombre del apoderado.");
         }
 
-        if (estudiante.nombre.Length > 80 || estudiante.apellidos.Length > 100 || estudiante.apoderado.Length > 120)
+        if (estudiante.nombre.Length > Constantes.LongitudMaximaNombres ||
+            estudiante.apellidos.Length > Constantes.LongitudMaximaApellidos ||
+            estudiante.apoderado.Length > Constantes.LongitudMaximaApoderado)
         {
-            throw new ArgumentException("Use hasta 80 caracteres en nombres, 100 en apellidos y 120 en apoderado.");
+            throw new ArgumentException($"Use hasta {Constantes.LongitudMaximaNombres} caracteres en nombres, " +
+                $"{Constantes.LongitudMaximaApellidos} en apellidos y {Constantes.LongitudMaximaApoderado} en apoderado.");
         }
 
-        if (estudiante.telefono == null || estudiante.telefono.Length != 9)
+        if (estudiante.telefono == null || estudiante.telefono.Length != Constantes.LongitudTelefono)
         {
-            throw new ArgumentException("El teléfono del apoderado debe tener 9 dígitos.");
+            throw new ArgumentException($"El teléfono del apoderado debe tener {Constantes.LongitudTelefono} dígitos.");
         }
 
         foreach (char digito in estudiante.telefono)

@@ -8,10 +8,12 @@ public partial class FrmMatriculas : Form
     private readonly EstudianteService servicioEstudiantes = null!;
     private readonly AulaService servicioAulas = null!;
     private readonly MatriculaService servicioMatriculas = null!;
+    private DataGridViewButtonColumn colCancelar = null!;
     private bool cargando;
     public FrmMatriculas()
     {
         InitializeComponent();
+        InicializarColumnas();
         cboAula.Items.Add(new Opcion(0, Constantes.TodasLasAulas));
         cboAula.SelectedIndex = 0;
         cboEstado.Items.AddRange(new object[]
@@ -31,6 +33,18 @@ public partial class FrmMatriculas : Form
         cboAula.SelectedIndexChanged += FiltroCambiado;
         cboEstado.SelectedIndexChanged += FiltroCambiado;
         dgvMatriculas.CellContentClick += Cancelar;
+    }
+
+    private void InicializarColumnas()
+    {
+        colCancelar = new DataGridViewButtonColumn { Name = "colCancelar", HeaderText = "Cancelar" };
+        dgvMatriculas.Columns.AddRange(
+            new DataGridViewTextBoxColumn { Name = "colCodigo", HeaderText = "Código" },
+            new DataGridViewTextBoxColumn { Name = "colEstudiante", HeaderText = "Estudiante" },
+            new DataGridViewTextBoxColumn { Name = "colAula", HeaderText = "Aula" },
+            new DataGridViewTextBoxColumn { Name = "colFecha", HeaderText = "Fecha" },
+            new DataGridViewTextBoxColumn { Name = "colEstado", HeaderText = "Estado" },
+            colCancelar);
     }
 
     private void FiltroCambiado(object? sender, EventArgs e)

@@ -2,13 +2,6 @@
 namespace GestionEstudiante;
 partial class FrmGestionEstudiantes
 {
-    private DataGridViewTextBoxColumn colCodigo = null!;
-    private DataGridViewTextBoxColumn colNombre = null!;
-    private DataGridViewTextBoxColumn colApoderado = null!;
-    private DataGridViewTextBoxColumn colTelefono = null!;
-    private DataGridViewTextBoxColumn colEstado = null!;
-    private DataGridViewButtonColumn colEditar = null!;
-    private DataGridViewButtonColumn colBaja = null!;
     private System.ComponentModel.IContainer? components = null;
     private Label lblTitulo = null!;
     private Label lblDescripcion = null!;
@@ -38,27 +31,6 @@ partial class FrmGestionEstudiantes
         btnBuscar = new Button();
         dgvEstudiantes = new DataGridView();
         lblResultados = new Label();
-        colCodigo = new DataGridViewTextBoxColumn();
-        colCodigo.Name = "colCodigo";
-        colCodigo.HeaderText = "Código";
-        colNombre = new DataGridViewTextBoxColumn();
-        colNombre.Name = "colNombre";
-        colNombre.HeaderText = "Estudiante";
-        colApoderado = new DataGridViewTextBoxColumn();
-        colApoderado.Name = "colApoderado";
-        colApoderado.HeaderText = "Apoderado";
-        colTelefono = new DataGridViewTextBoxColumn();
-        colTelefono.Name = "colTelefono";
-        colTelefono.HeaderText = "Teléfono";
-        colEstado = new DataGridViewTextBoxColumn();
-        colEstado.Name = "colEstado";
-        colEstado.HeaderText = "Estado";
-        colEditar = new DataGridViewButtonColumn();
-        colEditar.Name = "colEditar";
-        colEditar.HeaderText = "Editar";
-        colBaja = new DataGridViewButtonColumn();
-        colBaja.Name = "colBaja";
-        colBaja.HeaderText = "Dar de baja";
         ((System.ComponentModel.ISupportInitialize)dgvEstudiantes).BeginInit();
         SuspendLayout();
         // lblTitulo
@@ -125,7 +97,6 @@ partial class FrmGestionEstudiantes
         Font = new Font("Segoe UI", 10F);
         Name = "FrmGestionEstudiantes";
         Text = "Estudiantes";
-        dgvEstudiantes.Columns.AddRange(new DataGridViewColumn[] { colCodigo, colNombre, colApoderado, colTelefono, colEstado, colEditar, colBaja });
         txtBuscar.TextChanged += FiltroCambiado;
         btnNuevo.Click += btnNuevo_Click;
         btnBuscar.Click += btnBuscar_Click;

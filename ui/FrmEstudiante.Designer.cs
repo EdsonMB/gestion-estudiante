@@ -65,7 +65,6 @@ partial class FrmEstudiante
         txtNombres.Name = "txtNombres";
         txtNombres.Location = new Point(28, 136);
         txtNombres.Size = new Size(470, 34);
-        txtNombres.MaxLength = 80;
         txtNombres.PlaceholderText = "Escribe los nombres";
         this.Controls.Add(txtNombres);
         // lblApellidos
@@ -78,7 +77,6 @@ partial class FrmEstudiante
         txtApellidos.Name = "txtApellidos";
         txtApellidos.Location = new Point(530, 136);
         txtApellidos.Size = new Size(470, 34);
-        txtApellidos.MaxLength = 100;
         txtApellidos.PlaceholderText = "Escribe los apellidos";
         this.Controls.Add(txtApellidos);
         // lblApoderado
@@ -91,7 +89,6 @@ partial class FrmEstudiante
         txtApoderado.Name = "txtApoderado";
         txtApoderado.Location = new Point(28, 236);
         txtApoderado.Size = new Size(470, 34);
-        txtApoderado.MaxLength = 120;
         txtApoderado.PlaceholderText = "Escribe el nombre completo";
         this.Controls.Add(txtApoderado);
         // lblTelefono
@@ -160,7 +157,6 @@ partial class FrmEstudiante
         MinimizeBox = false;
         StartPosition = FormStartPosition.CenterParent;
         txtCodigo.ReadOnly = true;
-        txtTelefono.MaxLength = 9;
         AcceptButton = btnGuardar;
         CancelButton = btnCancelar;
         btnGuardar.Click += btnGuardar_Click;

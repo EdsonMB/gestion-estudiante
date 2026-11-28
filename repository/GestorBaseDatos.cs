@@ -35,9 +35,9 @@ public class GestorBaseDatos
         return true;
     }
 
-    public void Guardar<T>(string nombreArchivo, List<T> registros, Func<T, string[]> obtenerCampos)
+    public void Guardar<T>(string nombreArchivo, List<T> registros) where T : ModeloBase
     {
-        archivo.Guardar(nombreArchivo, registros, obtenerCampos);
+        archivo.Guardar(nombreArchivo, registros);
     }
 
     public void CargarUsar(string ruta)

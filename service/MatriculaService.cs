@@ -15,40 +15,71 @@ public class MatriculaService
         this.aulas = aulas;
     }
 
-    public List<Matricula> Listar() => repositorio.Listar();
+    public List<Matricula> Listar()
+    {
+        return repositorio.Listar();
+    }
+
     public void Registrar(int estudianteId, int aulaId, DateTime fecha)
     {
-        Estudiante estudiante = estudiantes.Listar().SingleOrDefault(x => x.id == estudianteId && x.activo)
-            ?? throw new InvalidOperationException("Seleccione un estudiante activo.");
-        Aula aula = aulas.Listar().SingleOrDefault(x => x.id == aulaId && x.activo)
-            ?? throw new InvalidOperationException("Seleccione un aula activa.");
+        Estudiante? estudiante = BuscarEstudiante(estudiantes.Listar(), estudianteId);
+        if (estudiante == null || !estudiante.activo)
+            throw new InvalidOperationException("Seleccione un estudiante activo.");
+        Aula? aula = BuscarAula(aulas.Listar(), aulaId);
+        if (aula == null || !aula.activo)
+            throw new InvalidOperationException("Seleccione un aula activa.");
         Matricula nueva = new Matricula { estudianteId = estudiante.id, aulaId = aula.id, fecha = fecha.Date };
         ValidarFechas(nueva, aula.anio);
-        List<Matricula> matriculas = Listar();
-        if (matriculas.Any(x => x.estudianteId == estudianteId && x.Activa && x.fecha.Year == aula.anio))
-            throw new InvalidOperationException("El estudiante ya tiene una matrícula activa en ese año.");
-        if (matriculas.Any(x => x.estudianteId == estudianteId && !x.Activa &&
-            x.fecha.Year == aula.anio && x.fechaCancelacion!.Value.Date >= fecha.Date))
+        int ocupados = 0;
+        bool coincideConHistorial = false;
+        foreach (Matricula matricula in Listar())
+        {
+            if (matricula.aulaId == aulaId && matricula.Activa)
+            {
+                ocupados++;
+            }
+            if (matricula.estudianteId != estudianteId || matricula.fecha.Year != aula.anio)
+            {
+                continue;
+            }
+            if (matricula.Activa)
+            {
+                throw new InvalidOperationException("El estudiante ya tiene una matrícula activa en ese año.");
+            }
+            if (matricula.fechaCancelacion?.Date >= nueva.fecha)
+            {
+                coincideConHistorial = true;
+            }
+        }
+        if (coincideConHistorial)
             throw new InvalidOperationException("La nueva matrícula debe comenzar después del día de cancelación, porque ese día aún pertenece a la matrícula anterior.");
-        if (matriculas.Count(x => x.aulaId == aulaId && x.Activa) >= aula.capacidad)
+        if (ocupados >= aula.capacidad)
             throw new InvalidOperationException("El aula no tiene cupos disponibles.");
         repositorio.Guardar(nueva);
     }
     public void Cancelar(int id)
     {
-        Matricula anterior = Listar().Single(x => x.id == id);
-        if (!anterior.Activa) throw new InvalidOperationException("La matrícula ya está cancelada.");
-        repositorio.Guardar(new Matricula { id = id, estudianteId = anterior.estudianteId,
-            aulaId = anterior.aulaId, fecha = anterior.fecha, fechaCancelacion = DateTime.Today });
+        foreach (Matricula anterior in Listar())
+        {
+            if (anterior.id == id)
+            {
+                if (!anterior.Activa) throw new InvalidOperationException("La matrícula ya está cancelada.");
+                repositorio.Guardar(new Matricula { id = id, estudianteId = anterior.estudianteId,
+                    aulaId = anterior.aulaId, fecha = anterior.fecha, fechaCancelacion = DateTime.Today });
+                return;
+            }
+        }
+        throw new InvalidOperationException("Matrícula no encontrada.");
     }
 
     internal static void ValidarRegistros(List<Matricula> matriculas, List<Estudiante> estudiantes, List<Aula> aulas)
     {
+        Dictionary<(int Estudiante, int Anio), List<Matricula>> historiales = new();
         foreach (Matricula matricula in matriculas)
         {
-            Estudiante estudiante = estudiantes.Find(x => x.id == matricula.estudianteId)
+            Estudiante estudiante = BuscarEstudiante(estudiantes, matricula.estudianteId)
                 ?? throw new ArgumentException("Una matrícula referencia un estudiante inexistente.");
-            Aula aula = aulas.Find(x => x.id == matricula.aulaId)
+            Aula aula = BuscarAula(aulas, matricula.aulaId)
                 ?? throw new ArgumentException("Una matrícula referencia un aula inexistente.");
 
             ValidarFechas(matricula, aula.anio);
@@ -56,16 +87,28 @@ public class MatriculaService
             {
                 throw new ArgumentException("Una matrícula activa requiere estudiante y aula activos.");
             }
+            var clave = (matricula.estudianteId, matricula.fecha.Year);
+            if (!historiales.TryGetValue(clave, out List<Matricula>? historial))
+            {
+                historial = new List<Matricula>();
+                historiales.Add(clave, historial);
+            }
+            historial.Add(matricula);
         }
 
-        foreach (var grupo in matriculas.GroupBy(x => (x.estudianteId, x.fecha.Year)))
+        foreach (List<Matricula> historial in historiales.Values)
         {
-            if (grupo.Count(x => x.Activa) > 1)
+            int activas = 0;
+            foreach (Matricula matricula in historial)
+            {
+                if (matricula.Activa) activas++;
+            }
+            if (activas > 1)
             {
                 throw new ArgumentException("Un estudiante tiene más de una matrícula activa en el mismo año.");
             }
 
-            List<Matricula> historial = grupo.OrderBy(x => x.fecha).ToList();
+            historial.Sort(CompararFechas);
             for (int i = 1; i < historial.Count; i++)
             {
                 Matricula anterior = historial[i - 1];
@@ -76,6 +119,29 @@ public class MatriculaService
                 }
             }
         }
+    }
+
+    private static int CompararFechas(Matricula primera, Matricula segunda)
+    {
+        return primera.fecha.CompareTo(segunda.fecha);
+    }
+
+    private static Estudiante? BuscarEstudiante(List<Estudiante> estudiantes, int id)
+    {
+        foreach (Estudiante estudiante in estudiantes)
+        {
+            if (estudiante.id == id) return estudiante;
+        }
+        return null;
+    }
+
+    private static Aula? BuscarAula(List<Aula> aulas, int id)
+    {
+        foreach (Aula aula in aulas)
+        {
+            if (aula.id == id) return aula;
+        }
+        return null;
     }
 
     private static void ValidarFechas(Matricula matricula, int anioAula)

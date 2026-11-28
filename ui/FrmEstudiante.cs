@@ -1,5 +1,6 @@
 using GestionEstudiante.model;
 using GestionEstudiante.service;
+using GestionEstudiante.util;
 
 namespace GestionEstudiante;
 
@@ -10,12 +11,15 @@ public partial class FrmEstudiante : Form
     public FrmEstudiante()
     {
         InitializeComponent();
+        txtNombres.MaxLength = Constantes.LongitudMaximaNombres;
+        txtApellidos.MaxLength = Constantes.LongitudMaximaApellidos;
+        txtApoderado.MaxLength = Constantes.LongitudMaximaApoderado;
+        txtTelefono.MaxLength = Constantes.LongitudTelefono;
     }
-    public FrmEstudiante(EstudianteService servicio, Estudiante? original)
+    public FrmEstudiante(EstudianteService servicio, Estudiante? original) : this()
     {
         this.servicio = servicio;
         this.original = original;
-        InitializeComponent();
         if (original == null) { txtCodigo.Text = "Se asignará al guardar"; return; }
         lblTitulo.Text = "Editar estudiante";
         btnGuardar.Text = "Guardar cambios";

@@ -142,7 +142,7 @@ partial class FrmInicio
         lblAnio.Name = "lblAnio";
         lblAnio.Location = new Point(18, 98);
         lblAnio.Size = new Size(184, 25);
-        lblAnio.Text = "AÑO ESCOLAR 2026";
+        lblAnio.Text = "AÑO ESCOLAR";
         lblAnio.ForeColor = Color.DimGray;
         panelMenu.Controls.Add(lblAnio);
         // btnInicio
@@ -220,7 +220,7 @@ partial class FrmInicio
         lblOperador.Name = "lblOperador";
         lblOperador.Location = new Point(850, 26);
         lblOperador.Size = new Size(225, 24);
-        lblOperador.Text = "2026  ·  Operador local";
+        lblOperador.Text = "Operador local";
         lblOperador.TextAlign = ContentAlignment.MiddleRight;
         lblOperador.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         panelCabecera.Controls.Add(lblOperador);
@@ -296,7 +296,7 @@ partial class FrmInicio
         lblDetalle1.Name = "lblDetalle1";
         lblDetalle1.Location = new Point(16, 83);
         lblDetalle1.Size = new Size(215, 25);
-        lblDetalle1.Text = "Año escolar 2026";
+        lblDetalle1.Text = "Año escolar";
         lblDetalle1.ForeColor = Color.DimGray;
         grupoIndicador1.Controls.Add(lblDetalle1);
         // grupoIndicador2
@@ -352,7 +352,7 @@ partial class FrmInicio
         lblAula0.Name = "lblAula0";
         lblAula0.Location = new Point(18, 38);
         lblAula0.Size = new Size(170, 24);
-        lblAula0.Text = "Primaria · 1.º A";
+        lblAula0.Text = "Aula";
         grupoOcupacion.Controls.Add(lblAula0);
         // barraAula0
         barraAula0.Name = "barraAula0";
@@ -370,7 +370,7 @@ partial class FrmInicio
         lblAula1.Name = "lblAula1";
         lblAula1.Location = new Point(18, 86);
         lblAula1.Size = new Size(170, 24);
-        lblAula1.Text = "Primaria · 1.º B";
+        lblAula1.Text = "Aula";
         grupoOcupacion.Controls.Add(lblAula1);
         // barraAula1
         barraAula1.Name = "barraAula1";
@@ -388,7 +388,7 @@ partial class FrmInicio
         lblAula2.Name = "lblAula2";
         lblAula2.Location = new Point(18, 134);
         lblAula2.Size = new Size(170, 24);
-        lblAula2.Text = "Secundaria · 1.º A";
+        lblAula2.Text = "Aula";
         grupoOcupacion.Controls.Add(lblAula2);
         // barraAula2
         barraAula2.Name = "barraAula2";

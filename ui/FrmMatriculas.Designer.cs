@@ -12,12 +12,6 @@ partial class FrmMatriculas
     private ComboBox cboEstado = null!;
     private Button btnNueva = null!;
     private DataGridView dgvMatriculas = null!;
-    private DataGridViewTextBoxColumn colCodigo = null!;
-    private DataGridViewTextBoxColumn colEstudiante = null!;
-    private DataGridViewTextBoxColumn colAula = null!;
-    private DataGridViewTextBoxColumn colFecha = null!;
-    private DataGridViewTextBoxColumn colEstado = null!;
-    private DataGridViewButtonColumn colCancelar = null!;
     private Label lblResultados = null!;
 
     protected override void Dispose(bool disposing)
@@ -40,12 +34,6 @@ partial class FrmMatriculas
         cboEstado = new ComboBox();
         btnNueva = new Button();
         dgvMatriculas = new DataGridView();
-        colCodigo = new DataGridViewTextBoxColumn();
-        colEstudiante = new DataGridViewTextBoxColumn();
-        colAula = new DataGridViewTextBoxColumn();
-        colFecha = new DataGridViewTextBoxColumn();
-        colEstado = new DataGridViewTextBoxColumn();
-        colCancelar = new DataGridViewButtonColumn();
         lblResultados = new Label();
         ((System.ComponentModel.ISupportInitialize)dgvMatriculas).BeginInit();
         SuspendLayout();
@@ -112,32 +100,7 @@ partial class FrmMatriculas
         dgvMatriculas.BackgroundColor = Color.White;
         dgvMatriculas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvMatriculas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvMatriculas.Columns.AddRange(colCodigo, colEstudiante, colAula, colFecha, colEstado, colCancelar);
         dgvMatriculas.TabIndex = 3;
-
-        // colCodigo
-        colCodigo.Name = "colCodigo";
-        colCodigo.HeaderText = "Código";
-
-        // colEstudiante
-        colEstudiante.Name = "colEstudiante";
-        colEstudiante.HeaderText = "Estudiante";
-
-        // colAula
-        colAula.Name = "colAula";
-        colAula.HeaderText = "Aula";
-
-        // colFecha
-        colFecha.Name = "colFecha";
-        colFecha.HeaderText = "Fecha";
-
-        // colEstado
-        colEstado.Name = "colEstado";
-        colEstado.HeaderText = "Estado";
-
-        // colCancelar
-        colCancelar.Name = "colCancelar";
-        colCancelar.HeaderText = "Cancelar";
 
         // lblResultados
         lblResultados.Name = "lblResultados";

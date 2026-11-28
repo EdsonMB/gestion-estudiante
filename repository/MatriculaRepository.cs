@@ -23,7 +23,7 @@ public class MatriculaRepository
         if (matricula.id == 0)
         {
             int id = registros.Count + 1;
-            if (registros.Exists(registro => registro.id == id))
+            if (BuscarPosicion(registros, id) >= 0)
             {
                 throw new InvalidDataException("El próximo identificador de matrícula ya existe.");
             }
@@ -33,7 +33,7 @@ public class MatriculaRepository
         }
         else
         {
-            int posicion = registros.FindIndex(registro => registro.id == matricula.id);
+            int posicion = BuscarPosicion(registros, matricula.id);
             if (posicion < 0)
             {
                 throw new InvalidOperationException("Matrícula no encontrada.");
@@ -41,7 +41,16 @@ public class MatriculaRepository
             registros[posicion] = matricula;
         }
 
-        gestor.Guardar(Constantes.ArchivoMatriculas, registros, registro => registro.ObtenerCampos());
+        gestor.Guardar(Constantes.ArchivoMatriculas, registros);
         gestor.Datos.matriculas = registros;
+    }
+
+    private static int BuscarPosicion(List<Matricula> registros, int id)
+    {
+        for (int i = 0; i < registros.Count; i++)
+        {
+            if (registros[i].id == id) return i;
+        }
+        return -1;
     }
 }

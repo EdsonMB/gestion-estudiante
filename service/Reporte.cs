@@ -16,12 +16,16 @@ public abstract class Reporte
     {
         if (!Path.GetExtension(ruta).Equals(".txt", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("El reporte debe guardarse en un archivo .txt.");
-        string texto = string.Join(Environment.NewLine, new[] { resultado.Columnas }.Concat(resultado.Filas)
-            .Select(fila => FormatoTxt.CrearFila(fila)));
+        StringBuilder texto = new StringBuilder(FormatoTxt.CrearFila(resultado.Columnas));
+        foreach (string[] fila in resultado.Filas)
+        {
+            texto.AppendLine();
+            texto.Append(FormatoTxt.CrearFila(fila));
+        }
         string temporal = ruta + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
-            File.WriteAllText(temporal, texto, new UTF8Encoding(false));
+            File.WriteAllText(temporal, texto.ToString(), new UTF8Encoding(false));
             File.Move(temporal, ruta, true);
         }
         finally { File.Delete(temporal); }
@@ -41,9 +45,10 @@ public class ReporteOcupacion : Reporte
     public override ResultadoReporte Generar(FiltroReporte filtro)
     {
         List<string[]> filas = new();
-        foreach (Aula aula in aulas.Listar().Where(x => x.anio == filtro.Anio &&
-            (filtro.AulaId == 0 || x.id == filtro.AulaId)))
+        foreach (Aula aula in aulas.Listar())
         {
+            if (aula.anio != filtro.Anio || (filtro.AulaId != 0 && aula.id != filtro.AulaId))
+                continue;
             int ocupados = aulas.Ocupados(aula.id);
             filas.Add(new[] { aula.Descripcion, aula.capacidad.ToString(), ocupados.ToString(),
                 (aula.activo ? aula.capacidad - ocupados : 0).ToString(), aula.activo ? "Activa" : "Inactiva" });
@@ -74,24 +79,56 @@ public class ReporteAsistencia : Reporte
         DateTime hasta = filtro.Hasta.Date > finAnio ? finAnio : filtro.Hasta.Date;
         string[] columnas = { "Código", "Estudiante", "Presentes", "Faltas", "Tardanzas", "Registros", "% asistencia" };
         if (desde > hasta) return new ResultadoReporte(Constantes.ReporteAsistencia, columnas, new());
-        var matriculasDelPeriodo = matriculas.Listar().Where(x => x.fecha.Year == filtro.Anio &&
-            (filtro.AulaId == 0 || x.aulaId == filtro.AulaId) && x.fecha.Date <= hasta &&
-            (!x.fechaCancelacion.HasValue || x.fechaCancelacion.Value.Date >= desde)).ToList();
-        List<string[]> filas = new();
-        List<Estudiante> estudiantesDelSistema = estudiantes.Listar();
-        List<Asistencia> asistenciasDelSistema = asistencias.Listar();
-        foreach (var grupo in matriculasDelPeriodo.GroupBy(x => x.estudianteId))
+        Dictionary<int, int> estudiantePorMatricula = new Dictionary<int, int>();
+        Dictionary<int, int[]> conteos = new Dictionary<int, int[]>();
+        List<int> ordenEstudiantes = new List<int>();
+        foreach (Matricula matricula in matriculas.Listar())
         {
-            List<Asistencia> registros = asistenciasDelSistema.Where(x => grupo.Any(m => m.id == x.matriculaId) &&
-                x.fecha.Date >= desde && x.fecha.Date <= hasta).ToList();
-            int presentes = registros.Count(x => x.estado == Constantes.AsistenciaPresente);
-            int faltas = registros.Count(x => x.estado == Constantes.AsistenciaFalta);
-            int tardanzas = registros.Count(x => x.estado == Constantes.AsistenciaTardanza);
-            string porcentaje = registros.Count == 0 ? "Sin registros" :
-                (100m * (presentes + tardanzas) / registros.Count).ToString("0.0", CultureInfo.InvariantCulture) + "%";
-            Estudiante estudiante = estudiantesDelSistema.Single(x => x.id == grupo.Key);
+            if (matricula.fecha.Year != filtro.Anio || (filtro.AulaId != 0 && matricula.aulaId != filtro.AulaId) ||
+                matricula.fecha.Date > hasta || matricula.fechaCancelacion?.Date < desde)
+                continue;
+
+            estudiantePorMatricula.Add(matricula.id, matricula.estudianteId);
+            if (!conteos.ContainsKey(matricula.estudianteId))
+            {
+                conteos.Add(matricula.estudianteId, new int[3]);
+                ordenEstudiantes.Add(matricula.estudianteId);
+            }
+        }
+
+        foreach (Asistencia asistencia in asistencias.Listar())
+        {
+            if (asistencia.fecha.Date < desde || asistencia.fecha.Date > hasta ||
+                !estudiantePorMatricula.TryGetValue(asistencia.matriculaId, out int estudianteId))
+                continue;
+
+            int[] conteo = conteos[estudianteId];
+            switch (asistencia.estado)
+            {
+                case Constantes.AsistenciaPresente: conteo[0]++; break;
+                case Constantes.AsistenciaFalta: conteo[1]++; break;
+                case Constantes.AsistenciaTardanza: conteo[2]++; break;
+            }
+        }
+
+        List<string[]> filas = new List<string[]>();
+        Dictionary<int, Estudiante> estudiantesPorId = new Dictionary<int, Estudiante>();
+        foreach (Estudiante estudiante in estudiantes.Listar())
+        {
+            estudiantesPorId.Add(estudiante.id, estudiante);
+        }
+        foreach (int estudianteId in ordenEstudiantes)
+        {
+            int[] conteo = conteos[estudianteId];
+            int presentes = conteo[0];
+            int faltas = conteo[1];
+            int tardanzas = conteo[2];
+            int total = presentes + faltas + tardanzas;
+            string porcentaje = total == 0 ? "Sin registros" :
+                (100m * (presentes + tardanzas) / total).ToString("0.0", CultureInfo.InvariantCulture) + "%";
+            Estudiante estudiante = estudiantesPorId[estudianteId];
             filas.Add(new[] { estudiante.codigo, estudiante.nombre + " " + estudiante.apellidos,
-                presentes.ToString(), faltas.ToString(), tardanzas.ToString(), registros.Count.ToString(), porcentaje });
+                presentes.ToString(), faltas.ToString(), tardanzas.ToString(), total.ToString(), porcentaje });
         }
         return new ResultadoReporte(Constantes.ReporteAsistencia, columnas, filas);
     }

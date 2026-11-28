@@ -10,6 +10,14 @@ public partial class FrmAula : Form
     public FrmAula()
     {
         InitializeComponent();
+        numGrado.Minimum = Constantes.GradoMinimoPrimariaYSecundaria;
+        numGrado.Maximum = Constantes.GradoMaximoPrimaria;
+        txtSeccion.MaxLength = Constantes.LongitudMaximaSeccion;
+        numAnio.Minimum = Constantes.AnioEscolarMinimo;
+        numAnio.Maximum = Constantes.AnioEscolarMaximo;
+        numCapacidad.Minimum = Constantes.CapacidadMinimaAula;
+        numCapacidad.Maximum = Constantes.CapacidadMaximaAula;
+
         cboNivel.Items.AddRange(new object[]
         {
             Constantes.NivelInicial,
@@ -24,15 +32,17 @@ public partial class FrmAula : Form
         Text = lblTitulo.Text = aula == null ? "Nueva aula" : "Editar aula";
         cboNivel.SelectedIndexChanged += NivelCambiado;
         cboNivel.SelectedItem = aula?.nivel ?? Constantes.NivelPrimaria;
-        numGrado.Value = aula?.grado ?? 1;
+        numGrado.Value = aula?.grado ?? Constantes.GradoMinimoPrimariaYSecundaria;
         txtSeccion.Text = aula?.seccion ?? "A";
         numAnio.Value = anio;
         numCapacidad.Value = aula?.capacidad ?? 30;
     }
     private void NivelCambiado(object? sender, EventArgs e)
     {
-        numGrado.Minimum = cboNivel.Text == Constantes.NivelInicial ? 3 : 1;
-        numGrado.Maximum = cboNivel.Text == Constantes.NivelPrimaria ? 6 : 5;
+        numGrado.Minimum = cboNivel.Text == Constantes.NivelInicial
+            ? Constantes.GradoMinimoInicial : Constantes.GradoMinimoPrimariaYSecundaria;
+        numGrado.Maximum = cboNivel.Text == Constantes.NivelPrimaria
+            ? Constantes.GradoMaximoPrimaria : Constantes.GradoMaximoInicialYSecundaria;
     }
     private void btnGuardar_Click(object? sender, EventArgs e)
     {

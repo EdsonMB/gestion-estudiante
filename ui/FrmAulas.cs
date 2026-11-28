@@ -9,6 +9,10 @@ public partial class FrmAulas : Form
     public FrmAulas()
     {
         InitializeComponent();
+        InicializarColumnas();
+        numAnio.Minimum = Constantes.AnioEscolarMinimo;
+        numAnio.Maximum = Constantes.AnioEscolarMaximo;
+
         cboNivel.Items.AddRange(new object[]
         {
             Constantes.TodosLosNiveles,
@@ -24,6 +28,18 @@ public partial class FrmAulas : Form
         cboNivel.SelectedIndex = 0;
         cboNivel.SelectedIndexChanged += FiltroCambiado;
         numAnio.ValueChanged += FiltroCambiado;
+    }
+
+    private void InicializarColumnas()
+    {
+        dgvAulas.Columns.Add("nivel", "Nivel");
+        dgvAulas.Columns.Add("grado", "Grado");
+        dgvAulas.Columns.Add("seccion", "Sección");
+        dgvAulas.Columns.Add("anio", "Año");
+        dgvAulas.Columns.Add("ocupacion", "Ocupación");
+        dgvAulas.Columns.Add("estado", "Disponibilidad");
+        dgvAulas.Columns.Add(new DataGridViewButtonColumn { Name = "editar", HeaderText = "Editar" });
+        dgvAulas.Columns.Add(new DataGridViewButtonColumn { Name = "estadoAula", HeaderText = "Estado" });
     }
 
     private void FiltroCambiado(object? sender, EventArgs e)

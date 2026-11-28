@@ -10,6 +10,9 @@ public partial class FormAsistencia : Form
     private readonly AsistenciaService servicioAsistencia = null!;
     private readonly AulaService servicioAulas = null!;
     private readonly MatriculaService servicioMatriculas = null!;
+    private DataGridViewComboBoxColumn colEstado = null!;
+    private DataGridViewTextBoxColumn colObservacion = null!;
+    private DataGridViewButtonColumn colAcciones = null!;
     private DateTime fechaListado = DateTime.Today;
     private int aulaListado;
     private bool cargando;
@@ -17,13 +20,7 @@ public partial class FormAsistencia : Form
     public FormAsistencia()
     {
         InitializeComponent();
-        colEstado.Items.AddRange(new object[]
-        {
-            Constantes.AsistenciaSinRegistro,
-            Constantes.AsistenciaPresente,
-            Constantes.AsistenciaFalta,
-            Constantes.AsistenciaTardanza
-        });
+        InicializarColumnas();
         dtpFecha.MaxDate = DateTime.Today;
         dtpFecha.Value = DateTime.Today;
     }
@@ -35,6 +32,35 @@ public partial class FormAsistencia : Form
         this.servicioAsistencia = servicioAsistencia;
         this.servicioAulas = servicioAulas;
         this.servicioMatriculas = servicioMatriculas;
+    }
+
+    private void InicializarColumnas()
+    {
+        colEstado = new DataGridViewComboBoxColumn { Name = "colEstado", HeaderText = "Estado registrado" };
+        colEstado.Items.AddRange(new object[]
+        {
+            Constantes.AsistenciaSinRegistro,
+            Constantes.AsistenciaPresente,
+            Constantes.AsistenciaFalta,
+            Constantes.AsistenciaTardanza
+        });
+        colObservacion = new DataGridViewTextBoxColumn
+        {
+            Name = "colObservacion",
+            HeaderText = "Observación (opcional)",
+            MaxInputLength = 250
+        };
+        colAcciones = new DataGridViewButtonColumn
+        {
+            Name = "colAcciones",
+            HeaderText = "Acciones",
+            Text = "Marcar",
+            UseColumnTextForButtonValue = true
+        };
+        dgvAsistencia.Columns.AddRange(
+            new DataGridViewTextBoxColumn { Name = "colCodigo", HeaderText = "Código", ReadOnly = true },
+            new DataGridViewTextBoxColumn { Name = "colEstudiante", HeaderText = "Estudiante", ReadOnly = true },
+            colEstado, colObservacion, colAcciones);
     }
 
     public void ActualizarAlMostrar()

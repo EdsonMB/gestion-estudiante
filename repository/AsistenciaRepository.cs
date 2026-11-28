@@ -25,6 +25,11 @@ public class AsistenciaRepository
         }
 
         List<Asistencia> registros = Listar();
+        HashSet<int> ids = new HashSet<int>();
+        foreach (Asistencia registro in registros)
+        {
+            ids.Add(registro.id);
+        }
         foreach (Asistencia cambio in cambios)
         {
             int posicion = BuscarPosicion(registros, cambio);
@@ -37,7 +42,7 @@ public class AsistenciaRepository
             {
                 int id = registros.Count + 1;
                 // Las marcas retiradas dejan huecos en los identificadores.
-                while (registros.Exists(registro => registro.id == id))
+                while (!ids.Add(id))
                 {
                     id = checked(id + 1);
                 }
@@ -55,7 +60,7 @@ public class AsistenciaRepository
             }
         }
 
-        gestor.Guardar(Constantes.ArchivoAsistencias, registros, registro => registro.ObtenerCampos());
+        gestor.Guardar(Constantes.ArchivoAsistencias, registros);
         gestor.Datos.asistencias = registros;
     }
 

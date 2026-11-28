@@ -18,8 +18,17 @@ public class EstudianteRepository
         return gestor.Datos.estudiantes;
     }
 
-    public bool TieneMatriculaActiva(int estudianteId) =>
-        gestor.Datos.matriculas.Any(x => x.estudianteId == estudianteId && x.Activa);
+    public bool TieneMatriculaActiva(int estudianteId)
+    {
+        foreach (Matricula matricula in gestor.Datos.matriculas)
+        {
+            if (matricula.estudianteId == estudianteId && matricula.Activa)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void Guardar(Estudiante estudiante)
     {
@@ -53,13 +62,8 @@ public class EstudianteRepository
             registros[posicion] = estudiante;
         }
 
-        gestor.Guardar(Constantes.ArchivoEstudiantes, registros, ObtenerCampos);
+        gestor.Guardar(Constantes.ArchivoEstudiantes, registros);
         gestor.Datos.estudiantes = registros;
-    }
-
-    private static string[] ObtenerCampos(Estudiante estudiante)
-    {
-        return estudiante.ObtenerCampos();
     }
 
     private static int BuscarPosicion(List<Estudiante> estudiantes, int id)

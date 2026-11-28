@@ -57,8 +57,6 @@ partial class FrmAulas
         numAnio.Name = "numAnio";
         numAnio.Location = new Point(350, 150);
         numAnio.Size = new Size(160, 32);
-        numAnio.Minimum = 2000;
-        numAnio.Maximum = 2100;
         dgvAulas = new DataGridView();
         dgvAulas.Name = "dgvAulas";
         dgvAulas.Location = new Point(28, 205);
@@ -79,14 +77,6 @@ partial class FrmAulas
         lblResumen.Location = new Point(28, 678);
         lblResumen.Size = new Size(1020, 40);
         lblResumen.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvAulas.Columns.Add("nivel", "Nivel");
-        dgvAulas.Columns.Add("grado", "Grado");
-        dgvAulas.Columns.Add("seccion", "Sección");
-        dgvAulas.Columns.Add("anio", "Año");
-        dgvAulas.Columns.Add("ocupacion", "Ocupación");
-        dgvAulas.Columns.Add("estado", "Disponibilidad");
-        dgvAulas.Columns.Add(new DataGridViewButtonColumn { Name = "editar", HeaderText = "Editar" });
-        dgvAulas.Columns.Add(new DataGridViewButtonColumn { Name = "estadoAula", HeaderText = "Estado" });
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1100, 750);
         Font = new Font("Segoe UI", 10F);

@@ -49,8 +49,6 @@ partial class FrmAula
         numGrado.Name = "numGrado";
         numGrado.Location = new Point(330, 124);
         numGrado.Size = new Size(270, 32);
-        numGrado.Minimum = 1;
-        numGrado.Maximum = 6;
         lblSeccion = new Label();
         lblSeccion.Name = "lblSeccion";
         lblSeccion.Location = new Point(28, 180);
@@ -60,7 +58,6 @@ partial class FrmAula
         txtSeccion.Name = "txtSeccion";
         txtSeccion.Location = new Point(28, 210);
         txtSeccion.Size = new Size(270, 32);
-        txtSeccion.MaxLength = 10;
         lblAnio = new Label();
         lblAnio.Name = "lblAnio";
         lblAnio.Location = new Point(330, 180);
@@ -70,8 +67,6 @@ partial class FrmAula
         numAnio.Name = "numAnio";
         numAnio.Location = new Point(330, 210);
         numAnio.Size = new Size(270, 32);
-        numAnio.Minimum = 2000;
-        numAnio.Maximum = 2100;
         lblCapacidad = new Label();
         lblCapacidad.Name = "lblCapacidad";
         lblCapacidad.Location = new Point(28, 270);
@@ -81,8 +76,6 @@ partial class FrmAula
         numCapacidad.Name = "numCapacidad";
         numCapacidad.Location = new Point(28, 300);
         numCapacidad.Size = new Size(270, 32);
-        numCapacidad.Minimum = 1;
-        numCapacidad.Maximum = 1000;
         btnCancelar = new Button();
         btnCancelar.Name = "btnCancelar";
         btnCancelar.Location = new Point(330, 370);

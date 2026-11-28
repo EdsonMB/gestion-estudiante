@@ -3,8 +3,21 @@ namespace GestionEstudiante.util;
 public static class Constantes
 {
     public const string Version = "1.0";
-    public const string NombreCentroEducativo = "Centro Educativo Jul";
+    public const string NombreCentroEducativo = "Centro Educativo - Jose Martí";
     public const int AnioEscolar = 2026;
+    public const int AnioEscolarMinimo = 2000;
+    public const int AnioEscolarMaximo = 2100;
+    public const int CapacidadMinimaAula = 1;
+    public const int CapacidadMaximaAula = 40;
+    public const int LongitudMaximaSeccion = 10;
+    public const int GradoMinimoInicial = 3;
+    public const int GradoMinimoPrimariaYSecundaria = 1;
+    public const int GradoMaximoPrimaria = 6;
+    public const int GradoMaximoInicialYSecundaria = 5;
+    public const int LongitudMaximaNombres = 80;
+    public const int LongitudMaximaApellidos = 100;
+    public const int LongitudMaximaApoderado = 120;
+    public const int LongitudTelefono = 9;
     public const string UsuarioAdministrador = "admin";
     public const string ClaveAdministrador = "987987";
     public const char Separador = '|';

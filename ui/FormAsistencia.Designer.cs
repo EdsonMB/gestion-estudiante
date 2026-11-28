@@ -12,11 +12,6 @@ partial class FormAsistencia
     private DateTimePicker dtpFecha = null!;
     private Button btnGuardar = null!;
     private DataGridView dgvAsistencia = null!;
-    private DataGridViewTextBoxColumn colCodigo = null!;
-    private DataGridViewTextBoxColumn colEstudiante = null!;
-    private DataGridViewComboBoxColumn colEstado = null!;
-    private DataGridViewTextBoxColumn colObservacion = null!;
-    private DataGridViewButtonColumn colAcciones = null!;
     private Label lblNota = null!;
     private Label lblPresentes = null!;
     private Label lblFaltas = null!;
@@ -43,11 +38,6 @@ partial class FormAsistencia
         dtpFecha = new DateTimePicker();
         btnGuardar = new Button();
         dgvAsistencia = new DataGridView();
-        colCodigo = new DataGridViewTextBoxColumn();
-        colEstudiante = new DataGridViewTextBoxColumn();
-        colEstado = new DataGridViewComboBoxColumn();
-        colObservacion = new DataGridViewTextBoxColumn();
-        colAcciones = new DataGridViewButtonColumn();
         lblNota = new Label();
         lblPresentes = new Label();
         lblFaltas = new Label();
@@ -120,36 +110,10 @@ partial class FormAsistencia
         dgvAsistencia.BackgroundColor = Color.White;
         dgvAsistencia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvAsistencia.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvAsistencia.Columns.AddRange(colCodigo, colEstudiante, colEstado, colObservacion, colAcciones);
         dgvAsistencia.TabIndex = 3;
         dgvAsistencia.CellContentClick += dgvAsistencia_CellContentClick;
         dgvAsistencia.CellValueChanged += dgvAsistencia_CellValueChanged;
         dgvAsistencia.CurrentCellDirtyStateChanged += dgvAsistencia_CurrentCellDirtyStateChanged;
-
-        // colCodigo
-        colCodigo.Name = "colCodigo";
-        colCodigo.HeaderText = "Código";
-        colCodigo.ReadOnly = true;
-
-        // colEstudiante
-        colEstudiante.Name = "colEstudiante";
-        colEstudiante.HeaderText = "Estudiante";
-        colEstudiante.ReadOnly = true;
-
-        // colEstado
-        colEstado.Name = "colEstado";
-        colEstado.HeaderText = "Estado registrado";
-
-        // colObservacion
-        colObservacion.Name = "colObservacion";
-        colObservacion.HeaderText = "Observación (opcional)";
-        colObservacion.MaxInputLength = 250;
-
-        // colAcciones
-        colAcciones.Name = "colAcciones";
-        colAcciones.HeaderText = "Acciones";
-        colAcciones.Text = "Marcar";
-        colAcciones.UseColumnTextForButtonValue = true;
 
         // lblNota
         lblNota.Name = "lblNota";
