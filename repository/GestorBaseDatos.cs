@@ -1,5 +1,6 @@
 using GestionEstudiante.archivos;
 using GestionEstudiante.model;
+using GestionEstudiante.service;
 
 namespace GestionEstudiante.repository;
 
@@ -17,7 +18,21 @@ public class GestorBaseDatos
     public GestorBaseDatos(string? ruta = null)
     {
         archivo = new ArchivoBaseDatos(ruta);
-        Datos = archivo.Existe() ? archivo.Leer(Ruta) : new BaseDatosEscolar();
+        Datos = ruta == null ? new BaseDatosEscolar() : ValidarDatos(archivo.Leer(Ruta));
+    }
+
+    public bool CargarUbicacionGuardada()
+    {
+        string? ruta = archivo.LeerUbicacionGuardada();
+        if (ruta == null)
+        {
+            return false;
+        }
+
+        BaseDatosEscolar nuevos = ValidarDatos(archivo.Leer(ruta));
+        archivo.Usar(ruta, recordar: false);
+        Datos = nuevos;
+        return true;
     }
 
     public void Guardar<T>(string nombreArchivo, List<T> registros, Func<T, string[]> obtenerCampos)
@@ -27,20 +42,28 @@ public class GestorBaseDatos
 
     public void CargarUsar(string ruta)
     {
-        BaseDatosEscolar nuevos = archivo.Leer(ruta);
-        archivo.Usar(ruta);
+        BaseDatosEscolar nuevos = ValidarDatos(archivo.AbrirSeleccion(ruta));
+        archivo.Usar(ruta, recordar: true);
         Datos = nuevos;
     }
 
-    public void CrearRespaldo(string destino) => archivo.CrearRespaldo(destino, Datos);
-
-    public void RecuperarRespaldo(string origen)
+    private static BaseDatosEscolar ValidarDatos(BaseDatosEscolar datos)
     {
-        Datos = archivo.RecuperarRespaldo(origen);
-    }
+        try
+        {
+            foreach (Estudiante estudiante in datos.estudiantes)
+            {
+                EstudianteService.ValidarEstudiante(estudiante);
+            }
+            AulaService.ValidarRegistros(datos.aulas, datos.matriculas);
+            MatriculaService.ValidarRegistros(datos.matriculas, datos.estudiantes, datos.aulas);
+            AsistenciaService.ValidarRegistros(datos.asistencias, datos.matriculas);
+        }
+        catch (ArgumentException error)
+        {
+            throw new InvalidDataException("La carpeta contiene datos inconsistentes: " + error.Message, error);
+        }
 
-    public void Mover(string destino)
-    {
-        archivo.Mover(destino);
+        return datos;
     }
 }

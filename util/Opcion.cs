@@ -1,4 +1,4 @@
-namespace GestionEstudiante;
+namespace GestionEstudiante.util;
 
 internal class Opcion
 {

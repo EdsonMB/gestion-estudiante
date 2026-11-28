@@ -16,6 +16,12 @@ public class EstudianteService
         return repository.Listar();
     }
 
+    public string NombreEstudiante(int id)
+    {
+        Estudiante estudiante = Listar().Single(x => x.id == id);
+        return estudiante.nombre + " " + estudiante.apellidos;
+    }
+
     // Estado: 0 = todos, 1 = activos, 2 = inactivos.
     public List<Estudiante> Buscar(string texto, int estado)
     {

@@ -1,26 +1,39 @@
 using System.Globalization;
 using GestionEstudiante.util;
-namespace GestionEstudiante.model;
 
-public enum EstadoAsistencia { Presente, Falta, Tardanza }
+namespace GestionEstudiante.model;
 
 public class Asistencia : ModeloBase
 {
     public int matriculaId { get; set; }
-    public string codigoEstudiante { get; set; } = "";
     public DateTime fecha { get; set; }
-    public EstadoAsistencia estado { get; set; }
-    public string observacion { get; set; } = "";
+
+    public string estado { get; set; }
+    public string observacion { get; set; }
+
+    public Asistencia()
+    {
+        id = 0;
+        matriculaId = 0;
+        fecha = DateTime.MinValue;
+        estado = Constantes.AsistenciaSinRegistro;
+        observacion = "";
+    }
+
+    public static bool EsEstadoValido(string? estado)
+    {
+        return estado is Constantes.AsistenciaPresente or Constantes.AsistenciaFalta or Constantes.AsistenciaTardanza;
+    }
+
     public override string[] ObtenerCampos()
     {
-        string identificador = id.ToString(CultureInfo.InvariantCulture);
-        if (matriculaId == 0)
+        return new string[]
         {
-            return new[] { identificador, codigoEstudiante,
-                fecha.ToString(Constantes.FormatoFechaAsistencia, CultureInfo.InvariantCulture), estado.ToString() };
-        }
-
-        return new[] { identificador, matriculaId.ToString(CultureInfo.InvariantCulture),
-            fecha.ToString(Constantes.FormatoFecha, CultureInfo.InvariantCulture), estado.ToString(), observacion };
+            id.ToString(CultureInfo.InvariantCulture),
+            matriculaId.ToString(CultureInfo.InvariantCulture),
+            fecha.ToString(Constantes.FormatoFecha, CultureInfo.InvariantCulture),
+            estado,
+            observacion
+        };
     }
 }

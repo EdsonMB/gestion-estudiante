@@ -10,8 +10,6 @@ public record ResultadoReporte(string Titulo, string[] Columnas, List<string[]> 
 // Abstracción y polimorfismo: el formulario usa Reporte sin conocer cómo calcula cada variante.
 public abstract class Reporte
 {
-    protected readonly EscolarService servicio;
-    protected Reporte(EscolarService servicio) { this.servicio = servicio; }
     public abstract ResultadoReporte Generar(FiltroReporte filtro);
 
     public void Exportar(string ruta, ResultadoReporte resultado)
@@ -33,14 +31,20 @@ public abstract class Reporte
 
 public class ReporteOcupacion : Reporte
 {
-    public ReporteOcupacion(EscolarService servicio) : base(servicio) { }
+    private readonly AulaService aulas;
+
+    public ReporteOcupacion(AulaService aulas)
+    {
+        this.aulas = aulas;
+    }
+
     public override ResultadoReporte Generar(FiltroReporte filtro)
     {
         List<string[]> filas = new();
-        foreach (Aula aula in servicio.Aulas.Listar().Where(x => x.anio == filtro.Anio &&
+        foreach (Aula aula in aulas.Listar().Where(x => x.anio == filtro.Anio &&
             (filtro.AulaId == 0 || x.id == filtro.AulaId)))
         {
-            int ocupados = servicio.Aulas.Ocupados(aula.id);
+            int ocupados = aulas.Ocupados(aula.id);
             filas.Add(new[] { aula.Descripcion, aula.capacidad.ToString(), ocupados.ToString(),
                 (aula.activo ? aula.capacidad - ocupados : 0).ToString(), aula.activo ? "Activa" : "Inactiva" });
         }
@@ -50,7 +54,17 @@ public class ReporteOcupacion : Reporte
 
 public class ReporteAsistencia : Reporte
 {
-    public ReporteAsistencia(EscolarService servicio) : base(servicio) { }
+    private readonly EstudianteService estudiantes;
+    private readonly MatriculaService matriculas;
+    private readonly AsistenciaService asistencias;
+
+    public ReporteAsistencia(EstudianteService estudiantes, MatriculaService matriculas, AsistenciaService asistencias)
+    {
+        this.estudiantes = estudiantes;
+        this.matriculas = matriculas;
+        this.asistencias = asistencias;
+    }
+
     public override ResultadoReporte Generar(FiltroReporte filtro)
     {
         if (filtro.Desde.Date > filtro.Hasta.Date) throw new ArgumentException("La fecha inicial no puede ser posterior a la final.");
@@ -60,23 +74,23 @@ public class ReporteAsistencia : Reporte
         DateTime hasta = filtro.Hasta.Date > finAnio ? finAnio : filtro.Hasta.Date;
         string[] columnas = { "Código", "Estudiante", "Presentes", "Faltas", "Tardanzas", "Registros", "% asistencia" };
         if (desde > hasta) return new ResultadoReporte(Constantes.ReporteAsistencia, columnas, new());
-        List<Aula> aulas = servicio.Aulas.Listar();
-        var matriculas = servicio.Matriculas.Listar().Where(x => aulas.Single(a => a.id == x.aulaId).anio == filtro.Anio &&
+        var matriculasDelPeriodo = matriculas.Listar().Where(x => x.fecha.Year == filtro.Anio &&
             (filtro.AulaId == 0 || x.aulaId == filtro.AulaId) && x.fecha.Date <= hasta &&
             (!x.fechaCancelacion.HasValue || x.fechaCancelacion.Value.Date >= desde)).ToList();
         List<string[]> filas = new();
-        List<Estudiante> estudiantes = servicio.Estudiantes;
-        List<Asistencia> asistencias = servicio.Asistencias.Listar();
-        foreach (var grupo in matriculas.GroupBy(x => x.estudianteId))
+        List<Estudiante> estudiantesDelSistema = estudiantes.Listar();
+        List<Asistencia> asistenciasDelSistema = asistencias.Listar();
+        foreach (var grupo in matriculasDelPeriodo.GroupBy(x => x.estudianteId))
         {
-            List<Asistencia> registros = asistencias.Where(x => grupo.Any(m => m.id == x.matriculaId) &&
+            List<Asistencia> registros = asistenciasDelSistema.Where(x => grupo.Any(m => m.id == x.matriculaId) &&
                 x.fecha.Date >= desde && x.fecha.Date <= hasta).ToList();
-            int presentes = registros.Count(x => x.estado == EstadoAsistencia.Presente);
-            int faltas = registros.Count(x => x.estado == EstadoAsistencia.Falta);
-            int tardanzas = registros.Count(x => x.estado == EstadoAsistencia.Tardanza);
+            int presentes = registros.Count(x => x.estado == Constantes.AsistenciaPresente);
+            int faltas = registros.Count(x => x.estado == Constantes.AsistenciaFalta);
+            int tardanzas = registros.Count(x => x.estado == Constantes.AsistenciaTardanza);
             string porcentaje = registros.Count == 0 ? "Sin registros" :
                 (100m * (presentes + tardanzas) / registros.Count).ToString("0.0", CultureInfo.InvariantCulture) + "%";
-            filas.Add(new[] { estudiantes.Single(x => x.id == grupo.Key).codigo, servicio.NombreEstudiante(grupo.Key),
+            Estudiante estudiante = estudiantesDelSistema.Single(x => x.id == grupo.Key);
+            filas.Add(new[] { estudiante.codigo, estudiante.nombre + " " + estudiante.apellidos,
                 presentes.ToString(), faltas.ToString(), tardanzas.ToString(), registros.Count.ToString(), porcentaje });
         }
         return new ResultadoReporte(Constantes.ReporteAsistencia, columnas, filas);

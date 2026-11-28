@@ -9,11 +9,6 @@ partial class FrmArchivos
     private Label lblRuta = null!;
     private Label lblCantidad = null!;
     private Button btnCargarUsar = null!;
-    private GroupBox grupoRespaldo = null!;
-    private Label lblRespaldo = null!;
-    private Button btnCrearCopia = null!;
-    private Button btnRecuperar = null!;
-    private Button btnMover = null!;
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -37,7 +32,7 @@ partial class FrmArchivos
         lblTitulo.Name = "lblTitulo";
         lblTitulo.Location = new Point(28, 24);
         lblTitulo.Size = new Size(900, 44);
-        lblTitulo.Text = "Archivos y respaldo";
+        lblTitulo.Text = "Archivos";
         lblTitulo.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
         this.Controls.Add(lblTitulo);
         // lblDescripcion
@@ -66,38 +61,9 @@ partial class FrmArchivos
         // btnCargarUsar
         btnCargarUsar.Name = "btnCargarUsar";
         btnCargarUsar.Location = new Point(20, 156);
-        btnCargarUsar.Size = new Size(150, 40);
-        btnCargarUsar.Text = "Cargar / usar";
+        btnCargarUsar.Size = new Size(180, 40);
+        btnCargarUsar.Text = "Seleccionar carpeta";
         grupoArchivo.Controls.Add(btnCargarUsar);
-        btnMover = new Button();
-        btnMover.Name = "btnMover";
-        btnMover.Text = "Mover carpeta";
-        btnMover.Location = new Point(190, 156);
-        btnMover.Size = new Size(150, 40);
-        btnMover.Click += btnMover_Click;
-        grupoArchivo.Controls.Add(btnMover);
-        grupoRespaldo = new GroupBox();
-        grupoRespaldo.Name = "grupoRespaldo";
-        grupoRespaldo.Text = "Copia de seguridad";
-        grupoRespaldo.Location = new Point(28, 375);
-        grupoRespaldo.Size = new Size(1020, 180);
-        grupoRespaldo.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-        lblRespaldo = new Label();
-        lblRespaldo.Location = new Point(20, 35);
-        lblRespaldo.Size = new Size(970, 50);
-        lblRespaldo.Text = "Guarda una carpeta con los archivos TXT separados por |. Al recuperarla se conserva la carpeta anterior.";
-        btnCrearCopia = new Button();
-        btnCrearCopia.Text = "Crear copia";
-        btnCrearCopia.Location = new Point(20, 110);
-        btnCrearCopia.Size = new Size(150, 40);
-        btnCrearCopia.Click += btnCrearCopia_Click;
-        btnRecuperar = new Button();
-        btnRecuperar.Text = "Recuperar copia";
-        btnRecuperar.Location = new Point(190, 110);
-        btnRecuperar.Size = new Size(150, 40);
-        btnRecuperar.Click += btnRecuperar_Click;
-        grupoRespaldo.Controls.AddRange(new Control[] { lblRespaldo, btnCrearCopia, btnRecuperar });
-        Controls.Add(grupoRespaldo);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(1100, 750);
         BackColor = Color.FromArgb(245, 245, 245);

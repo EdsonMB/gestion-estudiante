@@ -1,6 +1,6 @@
 namespace GestionEstudiante.util;
 
-// Formato compartido por los archivos de datos, respaldos y reportes.
+// Formato compartido por los archivos de datos y reportes.
 public static class FormatoTxt
 {
     public static string CrearFila(params string[] campos)

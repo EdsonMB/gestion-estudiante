@@ -29,13 +29,4 @@ public class ArchivoService
     {
         gestor.CargarUsar(ruta);
     }
-
-    public void CrearRespaldo(string destino) => gestor.CrearRespaldo(destino);
-    public void RecuperarRespaldo(string origen) => gestor.RecuperarRespaldo(origen);
-
-    public void MoverArchivo(string destino)
-    {
-        gestor.Mover(destino);
-    }
-
 }

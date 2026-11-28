@@ -1,81 +1,106 @@
 using GestionEstudiante.model;
 using GestionEstudiante.repository;
-using GestionEstudiante.util;
+
 namespace GestionEstudiante.service;
 
 public class AsistenciaService
 {
-    private readonly GestorBaseDatos gestor;
-    private readonly Repositorio<Asistencia> repositorio;
-    public AsistenciaService(GestorBaseDatos gestor)
-    {
-        this.gestor = gestor;
-        repositorio = new Repositorio<Asistencia>(gestor, Constantes.ArchivoAsistencias,
-            d => d.asistencias, (d, lista) => d.asistencias = lista);
-    }
-    public List<Asistencia> Listar() => repositorio.Listar();
-    public List<Matricula> MatriculasDelDia(int aulaId, DateTime fecha) => gestor.Datos.matriculas
-        .Where(x => x.aulaId == aulaId && x.VigenteEn(fecha) &&
-            gestor.Datos.aulas.Single(a => a.id == aulaId).anio == fecha.Year).ToList();
+    private readonly AsistenciaRepository repositorio;
+    private readonly AulaRepository aulas;
+    private readonly MatriculaRepository matriculas;
 
-    public List<Estudiante> EstudiantesSinAula(DateTime fecha)
+    public AsistenciaService(AsistenciaRepository repositorio, AulaRepository aulas, MatriculaRepository matriculas)
     {
-        List<Asistencia> anteriores = MarcasSinAula(fecha);
-        return gestor.Datos.estudiantes.Where(e => e.activo || BuscarPorCodigo(anteriores, e.codigo) != null).ToList();
+        this.repositorio = repositorio;
+        this.aulas = aulas;
+        this.matriculas = matriculas;
     }
 
-    public void GuardarDiaSinAula(DateTime fecha, List<Asistencia> registros)
+    public List<Asistencia> Listar()
     {
-        if (fecha.Date > DateTime.Today) throw new ArgumentException("No se puede registrar asistencia futura.");
+        return repositorio.Listar();
+    }
 
-        List<Estudiante> estudiantes = EstudiantesSinAula(fecha);
-        List<Asistencia> anteriores = MarcasSinAula(fecha);
-        List<Asistencia> nuevos = Listar().Where(x => x.matriculaId != 0 || x.fecha.Date != fecha.Date ||
-            !estudiantes.Any(e => e.codigo.Equals(x.codigoEstudiante, StringComparison.OrdinalIgnoreCase))).ToList();
-        int siguiente = repositorio.SiguienteId();
-        foreach (Asistencia registro in registros)
+    public List<Matricula> MatriculasDelDia(int aulaId, DateTime fecha)
+    {
+        Aula? aula = aulas.Listar().Find(x => x.id == aulaId);
+        if (aula?.anio != fecha.Year)
         {
-            string codigo = registro.codigoEstudiante;
-            if (!Enum.IsDefined(registro.estado) ||
-                !estudiantes.Any(e => e.codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase)) ||
-                BuscarPorCodigo(nuevos.Where(x => x.matriculaId == 0 && x.fecha.Date == fecha.Date), codigo) != null)
-                throw new ArgumentException("Seleccione un estado válido para cada estudiante, sin duplicados.");
-
-            Asistencia? anterior = BuscarPorCodigo(anteriores, codigo);
-            nuevos.Add(new Asistencia { id = anterior?.id ?? siguiente++, codigoEstudiante = anterior?.codigoEstudiante ?? codigo,
-                fecha = fecha.Date, estado = registro.estado });
+            return new List<Matricula>();
         }
-        repositorio.Reemplazar(nuevos);
+
+        return matriculas.Listar().FindAll(x => x.aulaId == aulaId && x.VigenteEn(fecha));
     }
 
-    public List<Asistencia> MarcasSinAula(DateTime fecha) =>
-        Listar().Where(x => x.matriculaId == 0 && x.fecha.Date == fecha.Date).ToList();
-
-    private static Asistencia? BuscarPorCodigo(IEnumerable<Asistencia> registros, string codigo) =>
-        registros.FirstOrDefault(x => x.codigoEstudiante.Equals(codigo, StringComparison.OrdinalIgnoreCase));
-
-    public void GuardarDia(int aulaId, DateTime fecha, List<Asistencia> registros)
+    public void Guardar(int aulaId, DateTime fecha, List<Asistencia> cambios, List<Asistencia> bajas)
     {
-        if (fecha.Date > DateTime.Today) throw new ArgumentException("No se puede registrar asistencia futura.");
-        Aula aula = gestor.Datos.aulas.SingleOrDefault(x => x.id == aulaId)
-            ?? throw new ArgumentException("Seleccione un aula existente.");
-        if (fecha.Year != aula.anio) throw new ArgumentException("La fecha debe pertenecer al año del aula.");
-        List<Matricula> matriculas = MatriculasDelDia(aulaId, fecha);
-        if (registros.Any(x => !matriculas.Any(m => m.id == x.matriculaId)) ||
-            registros.GroupBy(x => x.matriculaId).Any(g => g.Count() > 1))
-            throw new ArgumentException("La lista de asistencia no corresponde al aula y fecha seleccionados.");
-        List<Asistencia> existentes = Listar();
-        List<Asistencia> nuevos = existentes.Where(x => x.fecha.Date != fecha.Date ||
-            !matriculas.Any(m => m.id == x.matriculaId)).ToList();
-        int siguiente = repositorio.SiguienteId();
-        foreach (Asistencia registro in registros)
+        ValidarFecha(fecha);
+
+        List<Asistencia> filas = new List<Asistencia>(cambios);
+        filas.AddRange(bajas);
+        List<Matricula> disponibles = MatriculasDelDia(aulaId, fecha);
+        if (filas.Any(x => !disponibles.Exists(matricula => matricula.id == x.matriculaId)) ||
+            filas.GroupBy(x => x.matriculaId).Any(grupo => grupo.Count() > 1))
         {
-            if (!Enum.IsDefined(registro.estado) || registro.observacion.Trim().Length > 250)
-                throw new ArgumentException("Seleccione un estado válido y una observación de hasta 250 caracteres.");
-            Asistencia? anterior = existentes.SingleOrDefault(x => x.matriculaId == registro.matriculaId && x.fecha.Date == fecha.Date);
-            nuevos.Add(new Asistencia { id = anterior?.id ?? siguiente++, matriculaId = registro.matriculaId,
-                fecha = fecha.Date, estado = registro.estado, observacion = registro.observacion.Trim() });
+            throw new ArgumentException("La lista de asistencia no corresponde al aula y fecha seleccionadas.");
         }
-        repositorio.Reemplazar(nuevos);
+
+        List<Asistencia> registros = new List<Asistencia>();
+        foreach (Asistencia cambio in cambios)
+        {
+            string observacion = cambio.observacion.Trim();
+            ValidarMarca(cambio.estado, observacion);
+
+            registros.Add(new Asistencia
+            {
+                matriculaId = cambio.matriculaId,
+                fecha = fecha.Date,
+                estado = cambio.estado,
+                observacion = observacion
+            });
+        }
+
+        List<Asistencia> eliminaciones = bajas.Select(baja => new Asistencia
+        {
+            matriculaId = baja.matriculaId,
+            fecha = fecha.Date
+        }).ToList();
+        repositorio.Guardar(registros, eliminaciones);
+    }
+
+    internal static void ValidarRegistros(List<Asistencia> asistencias, List<Matricula> matriculas)
+    {
+        if (asistencias.GroupBy(x => (x.matriculaId, x.fecha.Date)).Any(g => g.Count() > 1))
+        {
+            throw new ArgumentException("Hay asistencias repetidas para una matrícula y fecha.");
+        }
+
+        foreach (Asistencia asistencia in asistencias)
+        {
+            ValidarMarca(asistencia.estado, asistencia.observacion);
+            ValidarFecha(asistencia.fecha);
+            Matricula matricula = matriculas.Find(x => x.id == asistencia.matriculaId)
+                ?? throw new ArgumentException("Una asistencia referencia una matrícula inexistente.");
+            if (!matricula.VigenteEn(asistencia.fecha))
+            {
+                throw new ArgumentException("La fecha de asistencia debe estar dentro de la vigencia de la matrícula.");
+            }
+        }
+    }
+
+    private static void ValidarFecha(DateTime fecha)
+    {
+        if (fecha.Date > DateTime.Today)
+        {
+            throw new ArgumentException("No se puede registrar asistencia futura.");
+        }
+    }
+
+    private static void ValidarMarca(string estado, string observacion)
+    {
+        if (!Asistencia.EsEstadoValido(estado) || observacion.Length > 250)
+        {
+            throw new ArgumentException("Seleccione un estado válido y una observación de hasta 250 caracteres.");
+        }
     }
 }

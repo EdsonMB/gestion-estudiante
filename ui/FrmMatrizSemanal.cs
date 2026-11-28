@@ -6,25 +6,59 @@ namespace GestionEstudiante;
 public partial class FrmMatrizSemanal : Form
 {
     public FrmMatrizSemanal() { InitializeComponent(); }
-    public FrmMatrizSemanal(EscolarService servicio, int aulaId, DateTime fecha) : this()
+    public FrmMatrizSemanal(Aula aula, DateTime fecha, EstudianteService estudiantes,
+        MatriculaService matriculas, AsistenciaService asistenciaService) : this()
     {
         DateTime lunes = fecha.Date.AddDays(-((7 + (int)fecha.DayOfWeek - 1) % 7));
-        lblTitulo.Text = servicio.Aulas.Listar().Single(x => x.id == aulaId).Descripcion + " · Semana del " + lunes.ToString("dd/MM/yyyy");
+        lblTitulo.Text = aula.Descripcion + " · Semana del " + lunes.ToString("dd/MM/yyyy");
         dgvMatriz.Columns.Add("estudiante", "Estudiante");
-        for (int dia = 0; dia < 7; dia++) dgvMatriz.Columns.Add("dia" + dia, lunes.AddDays(dia).ToString("ddd dd/MM"));
-        List<Asistencia> asistencias = servicio.Asistencias.Listar();
-        foreach (Matricula matricula in servicio.Matriculas.Listar().Where(x => x.aulaId == aulaId &&
-            Enumerable.Range(0, 7).Any(dia => x.VigenteEn(lunes.AddDays(dia)))))
+        for (int dia = 0; dia < 7; dia++)
         {
+            dgvMatriz.Columns.Add("dia" + dia, lunes.AddDays(dia).ToString("ddd dd/MM"));
+        }
+
+        List<Asistencia> asistencias = asistenciaService.Listar();
+        foreach (Matricula matricula in matriculas.Listar())
+        {
+            if (matricula.aulaId != aula.id)
+            {
+                continue;
+            }
+
             object[] valores = new object[8];
-            valores[0] = servicio.NombreEstudiante(matricula.estudianteId) + " (" + matricula.Codigo + ")";
+            bool vigenteEnSemana = false;
             for (int dia = 0; dia < 7; dia++)
             {
                 DateTime actual = lunes.AddDays(dia);
-                Asistencia? asistencia = asistencias.SingleOrDefault(x => x.matriculaId == matricula.id && x.fecha.Date == actual);
-                valores[dia + 1] = asistencia?.estado.ToString() ?? (matricula.VigenteEn(actual) ? Constantes.AsistenciaSinRegistro : "—");
+                if (matricula.VigenteEn(actual))
+                {
+                    vigenteEnSemana = true;
+                    valores[dia + 1] = BuscarEstado(asistencias, matricula.id, actual);
+                }
+                else
+                {
+                    valores[dia + 1] = "—";
+                }
             }
-            dgvMatriz.Rows.Add(valores);
+
+            if (vigenteEnSemana)
+            {
+                valores[0] = estudiantes.NombreEstudiante(matricula.estudianteId) + " (" + matricula.Codigo + ")";
+                dgvMatriz.Rows.Add(valores);
+            }
         }
+    }
+
+    private static string BuscarEstado(List<Asistencia> asistencias, int matriculaId, DateTime fecha)
+    {
+        foreach (Asistencia asistencia in asistencias)
+        {
+            if (asistencia.matriculaId == matriculaId && asistencia.fecha.Date == fecha)
+            {
+                return asistencia.estado;
+            }
+        }
+
+        return Constantes.AsistenciaSinRegistro;
     }
 }

@@ -5,7 +5,9 @@ namespace GestionEstudiante;
 
 public partial class FrmMatriculas : Form
 {
-    private readonly EscolarService servicio = null!;
+    private readonly EstudianteService servicioEstudiantes = null!;
+    private readonly AulaService servicioAulas = null!;
+    private readonly MatriculaService servicioMatriculas = null!;
     private bool cargando;
     public FrmMatriculas()
     {
@@ -20,34 +22,68 @@ public partial class FrmMatriculas : Form
         });
         cboEstado.SelectedIndex = 0;
     }
-    public FrmMatriculas(EscolarService servicio) : this()
+    public FrmMatriculas(EstudianteService servicioEstudiantes, AulaService servicioAulas,
+        MatriculaService servicioMatriculas) : this()
     {
-        this.servicio = servicio;
-        cboAula.SelectedIndexChanged += (_, _) => { if (!cargando) Listar(); };
-        cboEstado.SelectedIndexChanged += (_, _) => { if (!cargando) Listar(); };
+        this.servicioEstudiantes = servicioEstudiantes;
+        this.servicioAulas = servicioAulas;
+        this.servicioMatriculas = servicioMatriculas;
+        cboAula.SelectedIndexChanged += FiltroCambiado;
+        cboEstado.SelectedIndexChanged += FiltroCambiado;
         dgvMatriculas.CellContentClick += Cancelar;
     }
+
+    private void FiltroCambiado(object? sender, EventArgs e)
+    {
+        if (!cargando)
+        {
+            Listar();
+        }
+    }
+
     public void ActualizarListado()
     {
         int id = (cboAula.SelectedItem as Opcion)?.Id ?? 0;
         cargando = true;
         cboAula.Items.Clear();
         cboAula.Items.Add(new Opcion(0, Constantes.TodasLasAulas));
-        foreach (Aula aula in servicio.Aulas.Listar()) cboAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
-        cboAula.SelectedIndex = Math.Max(0, cboAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == id));
+        int indice = 0;
+        foreach (Aula aula in servicioAulas.Listar())
+        {
+            int posicion = cboAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
+            if (aula.id == id)
+            {
+                indice = posicion;
+            }
+        }
+        cboAula.SelectedIndex = indice;
         cargando = false;
         Listar();
     }
     private void Listar()
     {
         int aulaId = (cboAula.SelectedItem as Opcion)?.Id ?? 0;
+        int filtroEstado = cboEstado.SelectedIndex;
         dgvMatriculas.Rows.Clear();
-        List<Aula> aulas = servicio.Aulas.Listar();
-        foreach (Matricula matricula in servicio.Matriculas.Listar().Where(x => (aulaId == 0 || x.aulaId == aulaId) &&
-            (cboEstado.SelectedIndex == 0 || (cboEstado.SelectedIndex == 1 ? x.Activa : !x.Activa))))
+        Dictionary<int, Aula> aulasPorId = new Dictionary<int, Aula>();
+        foreach (Aula aula in servicioAulas.Listar())
         {
-            Aula aula = aulas.Single(x => x.id == matricula.aulaId);
-            int fila = dgvMatriculas.Rows.Add(matricula.Codigo, servicio.NombreEstudiante(matricula.estudianteId),
+            aulasPorId.Add(aula.id, aula);
+        }
+
+        foreach (Matricula matricula in servicioMatriculas.Listar())
+        {
+            if (aulaId != 0 && matricula.aulaId != aulaId)
+            {
+                continue;
+            }
+            if (filtroEstado != 0 && matricula.Activa != (filtroEstado == 1))
+            {
+                continue;
+            }
+
+            Aula aula = aulasPorId[matricula.aulaId];
+            int fila = dgvMatriculas.Rows.Add(matricula.Codigo, servicioEstudiantes.NombreEstudiante(matricula.estudianteId),
                 aula.Descripcion, matricula.fecha.ToString("dd/MM/yyyy"), matricula.Activa ? "Activa" : "Cancelada", matricula.Activa ? "Cancelar" : "—");
             dgvMatriculas.Rows[fila].Tag = matricula;
         }
@@ -59,12 +95,12 @@ public partial class FrmMatriculas : Form
         Matricula matricula = (Matricula)dgvMatriculas.Rows[e.RowIndex].Tag!;
         if (!matricula.Activa || MessageBox.Show(this, "¿Cancelar esta matrícula? Se conservará su historial.",
             "Cancelar matrícula", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-        try { servicio.Matriculas.Cancelar(matricula.id); Listar(); }
+        try { servicioMatriculas.Cancelar(matricula.id); Listar(); }
         catch (Exception error) { MessageBox.Show(this, error.Message, "No se pudo cancelar", MessageBoxButtons.OK, MessageBoxIcon.Warning); }
     }
     private void btnNueva_Click(object? sender, EventArgs e)
     {
-        using FrmMatricula formulario = new FrmMatricula(servicio);
+        using FrmMatricula formulario = new FrmMatricula(servicioEstudiantes, servicioAulas, servicioMatriculas);
         if (formulario.ShowDialog(this) == DialogResult.OK) ActualizarListado();
     }
 }

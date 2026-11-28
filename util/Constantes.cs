@@ -1,5 +1,3 @@
-using GestionEstudiante.model;
-
 namespace GestionEstudiante.util;
 
 public static class Constantes
@@ -14,7 +12,6 @@ public static class Constantes
     public const string ArchivoMatriculas = "matriculas.txt";
     public const string ArchivoAsistencias = "asistencias.txt";
     public const string ArchivoEstudiantes = "estudiantes.txt";
-    public const string FormatoFechaAsistencia = "yyyy-MM-dd";
     public const string ArchivoUbicacion = "ubicacion-db.txt";
     public const string FormatoFecha = "O";
     public const string FormatoCodigoEstudiante = "000000";
@@ -33,17 +30,17 @@ public static class Constantes
     public const string MatriculasSoloActivas = "Solo activas";
     public const string MatriculasSoloCanceladas = "Solo canceladas";
     public const string AsistenciaSinRegistro = "Sin registro";
-    public const string AsistenciaPorEstudiante = "Por estudiante (sin aula)";
-    public const string AsistenciaPresente = nameof(EstadoAsistencia.Presente);
-    public const string AsistenciaFalta = nameof(EstadoAsistencia.Falta);
-    public const string AsistenciaTardanza = nameof(EstadoAsistencia.Tardanza);
+    public const string AsistenciaPresente = "Presente";
+    public const string AsistenciaFalta = "Falta";
+    public const string AsistenciaTardanza = "Tardanza";
     public const string ReporteOcupacion = "Ocupación de aulas";
     public const string ReporteAsistencia = "Asistencia por estudiante";
 
-    //total de columnas
     public const int EstudiantesColumnas = 9;
+    public const int AulasColumnas = 7;
+    public const int MatriculasColumnas = 5;
+    public const int AsistenciasColumnas = 5;
 
     public static readonly string CarpetaAplicacion = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GestionEstudiante");
-    public static readonly string CarpetaDatos = Path.Combine(CarpetaAplicacion, "datos");
 }

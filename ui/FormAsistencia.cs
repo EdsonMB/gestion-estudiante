@@ -1,16 +1,19 @@
-using GestionEstudiante.util;
 using GestionEstudiante.model;
 using GestionEstudiante.service;
+using GestionEstudiante.util;
+
 namespace GestionEstudiante;
 
 public partial class FormAsistencia : Form
 {
-    private const int SinAula = -1;
-    private readonly EscolarService servicio = null!;
+    private readonly EstudianteService servicioEstudiantes = null!;
+    private readonly AsistenciaService servicioAsistencia = null!;
+    private readonly AulaService servicioAulas = null!;
+    private readonly MatriculaService servicioMatriculas = null!;
+    private DateTime fechaListado = DateTime.Today;
+    private int aulaListado;
     private bool cargando;
-    private bool modificado;
-    private int aulaActual;
-    private DateTime fechaActual = DateTime.Today;
+
     public FormAsistencia()
     {
         InitializeComponent();
@@ -21,150 +24,182 @@ public partial class FormAsistencia : Form
             Constantes.AsistenciaFalta,
             Constantes.AsistenciaTardanza
         });
-    }
-    public FormAsistencia(EscolarService servicio) : this()
-    {
-        this.servicio = servicio;
-        cargando = true;
         dtpFecha.MaxDate = DateTime.Today;
         dtpFecha.Value = DateTime.Today;
-        cargando = false;
-        cmbAula.SelectedIndexChanged += (_, _) => CambiarFiltro();
-        dgvAsistencia.CellValueChanged += (_, _) => { if (!cargando) { modificado = true; ActualizarTotales(); } };
-        dgvAsistencia.CurrentCellDirtyStateChanged += (_, _) =>
-        {
-            if (dgvAsistencia.IsCurrentCellDirty) dgvAsistencia.CommitEdit(DataGridViewDataErrorContexts.Commit);
-        };
-        btnMatrizSemanal.Click += (_, _) =>
-        {
-            if (aulaActual <= 0 || !ConfirmarSalida()) return;
-            using FrmMatrizSemanal matriz = new FrmMatrizSemanal(servicio, aulaActual, fechaActual);
-            matriz.ShowDialog(this);
-        };
     }
-    public void ActualizarListado()
+
+    public FormAsistencia(EstudianteService servicioEstudiantes, AsistenciaService servicioAsistencia,
+        AulaService servicioAulas, MatriculaService servicioMatriculas) : this()
+    {
+        this.servicioEstudiantes = servicioEstudiantes;
+        this.servicioAsistencia = servicioAsistencia;
+        this.servicioAulas = servicioAulas;
+        this.servicioMatriculas = servicioMatriculas;
+    }
+
+    public void ActualizarAlMostrar()
     {
         cargando = true;
         cmbAula.Items.Clear();
-        foreach (Aula aula in servicio.Aulas.Listar()) cmbAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
-        if (cmbAula.Items.Count == 0 || servicio.Asistencias.Listar().Any(x => x.matriculaId == 0))
-            cmbAula.Items.Add(new Opcion(SinAula, Constantes.AsistenciaPorEstudiante));
-        int indice = cmbAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == aulaActual);
-        cmbAula.SelectedIndex = indice >= 0 ? indice : cmbAula.Items.Count > 0 ? 0 : -1;
-        aulaActual = (cmbAula.SelectedItem as Opcion)?.Id ?? 0;
-        fechaActual = dtpFecha.Value.Date;
-        cargando = false;
-        CargarDia();
-    }
-    private void CambiarFiltro()
-    {
-        if (cargando || servicio == null) return;
-        if (!ConfirmarSalida())
+        foreach (Aula aula in servicioAulas.Listar())
         {
-            cargando = true;
-            cmbAula.SelectedIndex = cmbAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == aulaActual);
-            dtpFecha.Value = fechaActual;
-            cargando = false;
-            return;
+            cmbAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
         }
-        aulaActual = (cmbAula.SelectedItem as Opcion)?.Id ?? 0;
-        fechaActual = dtpFecha.Value.Date;
-        CargarDia();
+        if (cmbAula.Items.Count > 0)
+        {
+            cmbAula.SelectedIndex = Math.Max(0, BuscarIndiceAula(aulaListado));
+        }
+        aulaListado = (cmbAula.SelectedItem as Opcion)?.Id ?? 0;
+        fechaListado = dtpFecha.Value.Date;
+        ActualizarListado();
     }
-    private void CargarDia()
+
+    private int BuscarIndiceAula(int aulaId)
+    {
+        for (int indice = 0; indice < cmbAula.Items.Count; indice++)
+        {
+            if (cmbAula.Items[indice] is Opcion opcion && opcion.Id == aulaId)
+            {
+                return indice;
+            }
+        }
+
+        return -1;
+    }
+
+    private void ActualizarListado()
     {
         cargando = true;
         dgvAsistencia.Rows.Clear();
-        colObservacion.Visible = aulaActual != SinAula;
-        if (aulaActual == SinAula) CargarEstudiantesSinAula();
-        else CargarMatriculas();
-
-        cargando = false;
-        modificado = false;
-        btnGuardar.Enabled = dgvAsistencia.Rows.Count > 0;
-        btnMatrizSemanal.Enabled = aulaActual > 0;
-        if (aulaActual == SinAula)
+        Dictionary<int, Asistencia> registrosPorMatricula = new Dictionary<int, Asistencia>();
+        foreach (Asistencia registro in servicioAsistencia.Listar())
         {
-            lblNota.Text = dgvAsistencia.Rows.Count == 0 ? "No hay estudiantes para la fecha seleccionada." :
-                "Edita el estado por estudiante y guarda los cambios. Sin registro no cuenta como falta.";
+            if (registro.fecha.Date == fechaListado)
+            {
+                registrosPorMatricula.Add(registro.matriculaId, registro);
+            }
+        }
+
+        Dictionary<int, Estudiante> estudiantesPorId = new Dictionary<int, Estudiante>();
+        foreach (Estudiante estudiante in servicioEstudiantes.Listar())
+        {
+            estudiantesPorId.Add(estudiante.id, estudiante);
+        }
+
+        foreach (Matricula matricula in servicioAsistencia.MatriculasDelDia(aulaListado, fechaListado))
+        {
+            Estudiante estudiante = estudiantesPorId[matricula.estudianteId];
+            registrosPorMatricula.TryGetValue(matricula.id, out Asistencia? registro);
+            AgregarFila(estudiante, matricula.id, registro);
+        }
+
+        dgvAsistencia.ClearSelection();
+        btnMatrizSemanal.Enabled = aulaListado != 0;
+        if (dgvAsistencia.Rows.Count == 0)
+        {
+            lblNota.Text = aulaListado == 0 ? "Registra un aula para tomar asistencia." :
+                "No hay matrículas para el aula y fecha seleccionados.";
         }
         else
         {
-            lblNota.Text = dgvAsistencia.Rows.Count == 0 ? "No hay matrículas para el aula y fecha seleccionados." :
-                "Edita el estado y la observación. Sin registro no se cuenta como falta. Guarda los cambios antes de salir.";
+            lblNota.Text = "Usa Marcar para cambiar el estado. Sin registro no cuenta como falta.";
         }
-        ActualizarTotales();
+        cargando = false;
+        ActualizarResumen();
     }
 
-    private void CargarEstudiantesSinAula()
+    private void AgregarFila(Estudiante estudiante, int matriculaId, Asistencia? registro)
     {
-        List<Asistencia> registros = servicio.Asistencias.MarcasSinAula(fechaActual);
-        foreach (Estudiante estudiante in servicio.Asistencias.EstudiantesSinAula(fechaActual))
-        {
-            Asistencia? asistencia = registros.Find(x => x.codigoEstudiante.Equals(
-                estudiante.codigo, StringComparison.OrdinalIgnoreCase));
-            int fila = dgvAsistencia.Rows.Add(estudiante.codigo, estudiante.nombre + " " + estudiante.apellidos,
-                asistencia?.estado.ToString() ?? Constantes.AsistenciaSinRegistro, "");
-            dgvAsistencia.Rows[fila].Tag = estudiante.codigo;
-        }
+        string estado = registro?.estado ?? Constantes.AsistenciaSinRegistro;
+        string observacion = registro?.observacion ?? "";
+        int indice = dgvAsistencia.Rows.Add(estudiante.codigo, estudiante.nombre + " " + estudiante.apellidos, estado,
+            observacion);
+        DataGridViewRow fila = dgvAsistencia.Rows[indice];
+        fila.Tag = matriculaId;
+        fila.Cells[colEstado.Index].Tag = estado;
+        fila.Cells[colObservacion.Index].Tag = observacion;
     }
 
-    private void CargarMatriculas()
+    private void FiltroCambiado(object? sender, EventArgs e)
     {
-        List<Estudiante> estudiantes = servicio.Estudiantes;
-        List<Asistencia> asistencias = servicio.Asistencias.Listar();
-        foreach (Matricula matricula in servicio.Asistencias.MatriculasDelDia(aulaActual, fechaActual))
+        if (cargando || cmbAula.SelectedItem is not Opcion opcion)
         {
-            Estudiante estudiante = estudiantes.Single(x => x.id == matricula.estudianteId);
-            Asistencia? asistencia = asistencias.SingleOrDefault(x => x.matriculaId == matricula.id && x.fecha.Date == fechaActual);
-            int fila = dgvAsistencia.Rows.Add(estudiante.codigo, servicio.NombreEstudiante(estudiante.id),
-                asistencia?.estado.ToString() ?? Constantes.AsistenciaSinRegistro, asistencia?.observacion ?? "");
-            dgvAsistencia.Rows[fila].Tag = matricula.id;
+            return;
         }
+
+        if (!ConfirmarSalida())
+        {
+            cargando = true;
+            cmbAula.SelectedIndex = BuscarIndiceAula(aulaListado);
+            dtpFecha.Value = fechaListado;
+            cargando = false;
+            return;
+        }
+
+        aulaListado = opcion.Id;
+        fechaListado = dtpFecha.Value.Date;
+        ActualizarListado();
     }
-    private void ActualizarTotales()
-    {
-        var filas = dgvAsistencia.Rows.Cast<DataGridViewRow>().ToList();
-        lblPresentes.Text = filas.Count(x => (string?)x.Cells[colEstado.Index].Value == Constantes.AsistenciaPresente) + " presentes";
-        lblFaltas.Text = filas.Count(x => (string?)x.Cells[colEstado.Index].Value == Constantes.AsistenciaFalta) + " faltas";
-        lblTardanzas.Text = filas.Count(x => (string?)x.Cells[colEstado.Index].Value == Constantes.AsistenciaTardanza) + " tardanzas";
-    }
+
     public bool ConfirmarSalida()
     {
         dgvAsistencia.EndEdit();
-        if (!modificado) return true;
+        if (!btnGuardar.Enabled)
+        {
+            return true;
+        }
+
         DialogResult respuesta = MessageBox.Show(this, "Hay cambios de asistencia sin guardar. ¿Desea guardarlos?",
             "Asistencia", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-        if (respuesta == DialogResult.Cancel) return false;
-        if (respuesta == DialogResult.Yes) return Guardar();
-        CargarDia();
+        if (respuesta == DialogResult.Cancel)
+        {
+            return false;
+        }
+        if (respuesta == DialogResult.Yes)
+        {
+            return Guardar();
+        }
+        ActualizarListado();
         return true;
     }
+
+    private void btnGuardar_Click(object? sender, EventArgs e)
+    {
+        Guardar();
+    }
+
     private bool Guardar()
     {
         try
         {
             dgvAsistencia.EndEdit();
-            List<Asistencia> registros = new();
+            List<Asistencia> cambios = new List<Asistencia>();
+            List<Asistencia> bajas = new List<Asistencia>();
             foreach (DataGridViewRow fila in dgvAsistencia.Rows)
             {
-                string estado = (string?)fila.Cells[colEstado.Index].Value ?? Constantes.AsistenciaSinRegistro;
-                if (estado == Constantes.AsistenciaSinRegistro) continue;
-                Asistencia registro = new Asistencia { estado = Enum.Parse<EstadoAsistencia>(estado) };
-                if (fila.Tag is string codigo)
+                if (!FilaModificada(fila))
                 {
-                    registro.codigoEstudiante = codigo;
+                    continue;
                 }
-                else
+
+                int matriculaId = (int)fila.Tag!;
+                string estado = (string)fila.Cells[colEstado.Index].Value;
+                if (estado == Constantes.AsistenciaSinRegistro)
                 {
-                    registro.matriculaId = (int)fila.Tag!;
-                    registro.observacion = fila.Cells[colObservacion.Index].Value?.ToString() ?? "";
+                    bajas.Add(new Asistencia { matriculaId = matriculaId });
+                    continue;
                 }
-                registros.Add(registro);
+
+                cambios.Add(new Asistencia
+                {
+                    matriculaId = matriculaId,
+                    estado = estado,
+                    observacion = fila.Cells[colObservacion.Index].Value?.ToString() ?? ""
+                });
             }
-            if (aulaActual == SinAula) servicio.Asistencias.GuardarDiaSinAula(fechaActual, registros);
-            else servicio.Asistencias.GuardarDia(aulaActual, fechaActual, registros);
-            modificado = false;
+
+            servicioAsistencia.Guardar(aulaListado, fechaListado, cambios, bajas);
+            ActualizarListado();
             lblNota.Text = "Asistencia guardada. Puedes corregirla y volver a guardar.";
             return true;
         }
@@ -174,7 +209,98 @@ public partial class FormAsistencia : Form
             return false;
         }
     }
-    private void dtpFecha_ValueChanged(object? sender, EventArgs e) => CambiarFiltro();
-    private void btnGuardar_Click(object? sender, EventArgs e) => Guardar();
-    private void dgvAsistencia_CellContentClick(object? sender, DataGridViewCellEventArgs e) { }
+
+    private void dgvAsistencia_CellContentClick(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (e.RowIndex < 0 || e.ColumnIndex != colAcciones.Index)
+        {
+            return;
+        }
+
+        DataGridViewCell celda = dgvAsistencia.Rows[e.RowIndex].Cells[colEstado.Index];
+        switch (celda.Value)
+        {
+            case Constantes.AsistenciaPresente:
+                celda.Value = Constantes.AsistenciaFalta;
+                break;
+            case Constantes.AsistenciaFalta:
+                celda.Value = Constantes.AsistenciaTardanza;
+                break;
+            default:
+                celda.Value = Constantes.AsistenciaPresente;
+                break;
+        }
+    }
+
+    private void dgvAsistencia_CellValueChanged(object? sender, DataGridViewCellEventArgs e)
+    {
+        if (!cargando && e.RowIndex >= 0)
+        {
+            ActualizarResumen();
+        }
+    }
+
+    private void dgvAsistencia_CurrentCellDirtyStateChanged(object? sender, EventArgs e)
+    {
+        if (dgvAsistencia.IsCurrentCellDirty && dgvAsistencia.CurrentCell is DataGridViewComboBoxCell)
+        {
+            dgvAsistencia.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+    }
+
+    private bool FilaModificada(DataGridViewRow fila)
+    {
+        DataGridViewCell estado = fila.Cells[colEstado.Index];
+        DataGridViewCell observacion = fila.Cells[colObservacion.Index];
+        return !Equals(estado.Tag, estado.Value) ||
+            (!Equals(estado.Value, Constantes.AsistenciaSinRegistro) &&
+             !Equals(observacion.Tag, observacion.Value?.ToString() ?? ""));
+    }
+
+    private void ActualizarResumen()
+    {
+        int presentes = 0;
+        int faltas = 0;
+        int tardanzas = 0;
+        bool hayCambios = false;
+        foreach (DataGridViewRow fila in dgvAsistencia.Rows)
+        {
+            switch (fila.Cells[colEstado.Index].Value)
+            {
+                case Constantes.AsistenciaPresente: presentes++; break;
+                case Constantes.AsistenciaFalta: faltas++; break;
+                case Constantes.AsistenciaTardanza: tardanzas++; break;
+            }
+            if (FilaModificada(fila))
+            {
+                hayCambios = true;
+            }
+        }
+
+        lblPresentes.Text = presentes + " presentes";
+        lblFaltas.Text = faltas + " faltas";
+        lblTardanzas.Text = tardanzas + " tardanzas";
+        btnGuardar.Enabled = hayCambios;
+    }
+
+    private void btnMatrizSemanal_Click(object? sender, EventArgs e)
+    {
+        Aula? aula = null;
+        foreach (Aula item in servicioAulas.Listar())
+        {
+            if (item.id == aulaListado)
+            {
+                aula = item;
+                break;
+            }
+        }
+        if (aula == null || !ConfirmarSalida())
+        {
+            return;
+        }
+
+        using FrmMatrizSemanal matriz = new FrmMatrizSemanal(aula, fechaListado, servicioEstudiantes,
+            servicioMatriculas, servicioAsistencia);
+        matriz.ShowDialog(this);
+    }
 }

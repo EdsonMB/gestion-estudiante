@@ -22,14 +22,14 @@ public partial class FrmAula : Form
         this.servicio = servicio;
         original = aula;
         Text = lblTitulo.Text = aula == null ? "Nueva aula" : "Editar aula";
-        cboNivel.SelectedIndexChanged += (_, _) => ActualizarGrados();
+        cboNivel.SelectedIndexChanged += NivelCambiado;
         cboNivel.SelectedItem = aula?.nivel ?? Constantes.NivelPrimaria;
         numGrado.Value = aula?.grado ?? 1;
         txtSeccion.Text = aula?.seccion ?? "A";
         numAnio.Value = anio;
         numCapacidad.Value = aula?.capacidad ?? 30;
     }
-    private void ActualizarGrados()
+    private void NivelCambiado(object? sender, EventArgs e)
     {
         numGrado.Minimum = cboNivel.Text == Constantes.NivelInicial ? 3 : 1;
         numGrado.Maximum = cboNivel.Text == Constantes.NivelPrimaria ? 6 : 5;

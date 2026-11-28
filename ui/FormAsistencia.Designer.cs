@@ -16,6 +16,7 @@ partial class FormAsistencia
     private DataGridViewTextBoxColumn colEstudiante = null!;
     private DataGridViewComboBoxColumn colEstado = null!;
     private DataGridViewTextBoxColumn colObservacion = null!;
+    private DataGridViewButtonColumn colAcciones = null!;
     private Label lblNota = null!;
     private Label lblPresentes = null!;
     private Label lblFaltas = null!;
@@ -46,6 +47,7 @@ partial class FormAsistencia
         colEstudiante = new DataGridViewTextBoxColumn();
         colEstado = new DataGridViewComboBoxColumn();
         colObservacion = new DataGridViewTextBoxColumn();
+        colAcciones = new DataGridViewButtonColumn();
         lblNota = new Label();
         lblPresentes = new Label();
         lblFaltas = new Label();
@@ -79,6 +81,7 @@ partial class FormAsistencia
         cmbAula.Size = new Size(420, 32);
         cmbAula.DropDownStyle = ComboBoxStyle.DropDownList;
         cmbAula.TabIndex = 0;
+        cmbAula.SelectedIndexChanged += FiltroCambiado;
 
         // lblFecha
         lblFecha.Name = "lblFecha";
@@ -91,9 +94,8 @@ partial class FormAsistencia
         dtpFecha.Location = new Point(462, 126);
         dtpFecha.Size = new Size(210, 32);
         dtpFecha.Format = DateTimePickerFormat.Short;
-        dtpFecha.Value = new DateTime(2026, 10, 5);
         dtpFecha.TabIndex = 1;
-        dtpFecha.ValueChanged += dtpFecha_ValueChanged;
+        dtpFecha.ValueChanged += FiltroCambiado;
 
         // btnGuardar
         btnGuardar.Name = "btnGuardar";
@@ -102,13 +104,13 @@ partial class FormAsistencia
         btnGuardar.Text = "Guardar asistencia";
         btnGuardar.UseVisualStyleBackColor = true;
         btnGuardar.TabIndex = 2;
+        btnGuardar.Enabled = false;
         btnGuardar.Click += btnGuardar_Click;
 
         // dgvAsistencia
         dgvAsistencia.Name = "dgvAsistencia";
         dgvAsistencia.Location = new Point(28, 186);
         dgvAsistencia.Size = new Size(1020, 430);
-        dgvAsistencia.ReadOnly = false;
         dgvAsistencia.AllowUserToAddRows = false;
         dgvAsistencia.AllowUserToDeleteRows = false;
         dgvAsistencia.AutoGenerateColumns = false;
@@ -118,9 +120,11 @@ partial class FormAsistencia
         dgvAsistencia.BackgroundColor = Color.White;
         dgvAsistencia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvAsistencia.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvAsistencia.Columns.AddRange(colCodigo, colEstudiante, colEstado, colObservacion);
+        dgvAsistencia.Columns.AddRange(colCodigo, colEstudiante, colEstado, colObservacion, colAcciones);
         dgvAsistencia.TabIndex = 3;
         dgvAsistencia.CellContentClick += dgvAsistencia_CellContentClick;
+        dgvAsistencia.CellValueChanged += dgvAsistencia_CellValueChanged;
+        dgvAsistencia.CurrentCellDirtyStateChanged += dgvAsistencia_CurrentCellDirtyStateChanged;
 
         // colCodigo
         colCodigo.Name = "colCodigo";
@@ -140,6 +144,12 @@ partial class FormAsistencia
         colObservacion.Name = "colObservacion";
         colObservacion.HeaderText = "Observación (opcional)";
         colObservacion.MaxInputLength = 250;
+
+        // colAcciones
+        colAcciones.Name = "colAcciones";
+        colAcciones.HeaderText = "Acciones";
+        colAcciones.Text = "Marcar";
+        colAcciones.UseColumnTextForButtonValue = true;
 
         // lblNota
         lblNota.Name = "lblNota";
@@ -177,6 +187,8 @@ partial class FormAsistencia
         btnMatrizSemanal.UseVisualStyleBackColor = true;
         btnMatrizSemanal.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         btnMatrizSemanal.TabIndex = 4;
+        btnMatrizSemanal.Enabled = false;
+        btnMatrizSemanal.Click += btnMatrizSemanal_Click;
 
         // FormAsistencia
         AutoScaleMode = AutoScaleMode.Font;

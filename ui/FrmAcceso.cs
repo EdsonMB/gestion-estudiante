@@ -26,16 +26,30 @@ public partial class FrmAcceso : Form
 
         EstudianteService servicio;
         ArchivoService servicioArchivos;
+        AulaService servicioAulas;
+        MatriculaService servicioMatriculas;
+        AsistenciaService servicioAsistencia;
         try
         {
             if (gestor == null)
             {
-                gestor = new GestorBaseDatos();
+                GestorBaseDatos nuevoGestor = new GestorBaseDatos();
+                if (!AbrirCarpetaDeDatos(nuevoGestor))
+                {
+                    return;
+                }
+                gestor = nuevoGestor;
             }
 
-            EstudianteRepository repositorio = new EstudianteRepository(gestor);
-            servicio = new EstudianteService(repositorio);
+            EstudianteRepository estudiantes = new EstudianteRepository(gestor);
+            AulaRepository aulas = new AulaRepository(gestor);
+            MatriculaRepository matriculas = new MatriculaRepository(gestor);
+            AsistenciaRepository asistencia = new AsistenciaRepository(gestor);
+            servicio = new EstudianteService(estudiantes);
             servicioArchivos = new ArchivoService(gestor);
+            servicioAulas = new AulaService(aulas, matriculas);
+            servicioMatriculas = new MatriculaService(matriculas, estudiantes, aulas);
+            servicioAsistencia = new AsistenciaService(asistencia, aulas, matriculas);
         }
         catch (Exception error)
         {
@@ -44,12 +58,38 @@ public partial class FrmAcceso : Form
         }
 
         Hide();
-        using (FrmInicio inicio = new FrmInicio(servicio, servicioArchivos, new EscolarService(gestor)))
+        using (FrmInicio inicio = new FrmInicio(servicio, servicioArchivos, servicioAulas,
+            servicioMatriculas, servicioAsistencia))
         {
             inicio.ShowDialog();
         }
         txtClave.Clear();
         Show();
         txtUsuario.Focus();
+    }
+
+    private bool AbrirCarpetaDeDatos(GestorBaseDatos nuevoGestor)
+    {
+        try
+        {
+            if (nuevoGestor.CargarUbicacionGuardada())
+            {
+                return true;
+            }
+        }
+        catch (Exception error)
+        {
+            MessageBox.Show(this, error.Message + " Seleccione otra carpeta de datos.",
+                "Carpeta de datos", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        string? carpeta = FrmArchivos.ElegirCarpeta(this);
+        if (carpeta == null)
+        {
+            return false;
+        }
+
+        nuevoGestor.CargarUsar(carpeta);
+        return true;
     }
 }

@@ -5,7 +5,9 @@ namespace GestionEstudiante;
 
 public partial class FrmReportes : Form
 {
-    private readonly EscolarService servicio = null!;
+    private readonly AulaService servicioAulas = null!;
+    private readonly ReporteOcupacion reporteOcupacion = null!;
+    private readonly ReporteAsistencia reporteAsistencia = null!;
     private Reporte reporte = null!;
     private ResultadoReporte? resultado;
     private bool cargando;
@@ -18,20 +20,29 @@ public partial class FrmReportes : Form
             Constantes.ReporteAsistencia
         });
     }
-    public FrmReportes(EscolarService servicio) : this()
+    public FrmReportes(EstudianteService servicioEstudiantes, AulaService servicioAulas,
+        MatriculaService servicioMatriculas, AsistenciaService servicioAsistencia) : this()
     {
-        this.servicio = servicio;
+        this.servicioAulas = servicioAulas;
+        reporteOcupacion = new ReporteOcupacion(servicioAulas);
+        reporteAsistencia = new ReporteAsistencia(servicioEstudiantes, servicioMatriculas, servicioAsistencia);
         numAnio.Value = Constantes.AnioEscolar;
         dtpDesde.Value = new DateTime(Constantes.AnioEscolar, 1, 1);
         dtpHasta.Value = DateTime.Today;
         cboTipo.SelectedIndex = 0;
-        cboTipo.SelectedIndexChanged += (_, _) => Generar();
-        cboAula.SelectedIndexChanged += (_, _) => Generar();
-        numAnio.ValueChanged += (_, _) => CambiarAnio();
-        dtpDesde.ValueChanged += (_, _) => Generar();
-        dtpHasta.ValueChanged += (_, _) => Generar();
+        cboTipo.SelectedIndexChanged += FiltroCambiado;
+        cboAula.SelectedIndexChanged += FiltroCambiado;
+        numAnio.ValueChanged += AnioCambiado;
+        dtpDesde.ValueChanged += FiltroCambiado;
+        dtpHasta.ValueChanged += FiltroCambiado;
     }
-    private void CambiarAnio()
+
+    private void FiltroCambiado(object? sender, EventArgs e)
+    {
+        Generar();
+    }
+
+    private void AnioCambiado(object? sender, EventArgs e)
     {
         cargando = true;
         int anio = (int)numAnio.Value;
@@ -46,9 +57,19 @@ public partial class FrmReportes : Form
         int id = (cboAula.SelectedItem as Opcion)?.Id ?? 0;
         cboAula.Items.Clear();
         cboAula.Items.Add(new Opcion(0, Constantes.TodasLasAulas));
-        foreach (Aula aula in servicio.Aulas.Listar().Where(x => x.anio == numAnio.Value))
-            cboAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
-        cboAula.SelectedIndex = Math.Max(0, cboAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == id));
+        int indice = 0;
+        foreach (Aula aula in servicioAulas.Listar())
+        {
+            if (aula.anio == numAnio.Value)
+            {
+                int posicion = cboAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
+                if (aula.id == id)
+                {
+                    indice = posicion;
+                }
+            }
+        }
+        cboAula.SelectedIndex = indice;
         cargando = false;
         Generar();
     }
@@ -57,7 +78,7 @@ public partial class FrmReportes : Form
         if (cargando) return;
         bool asistencia = cboTipo.SelectedIndex == 1;
         dtpDesde.Enabled = dtpHasta.Enabled = asistencia;
-        reporte = asistencia ? new ReporteAsistencia(servicio) : new ReporteOcupacion(servicio);
+        reporte = asistencia ? reporteAsistencia : reporteOcupacion;
         dgvReporte.Columns.Clear();
         resultado = null;
         btnExportar.Enabled = false;
@@ -65,11 +86,35 @@ public partial class FrmReportes : Form
         {
             resultado = reporte.Generar(new FiltroReporte((int)numAnio.Value,
                 (cboAula.SelectedItem as Opcion)?.Id ?? 0, dtpDesde.Value, dtpHasta.Value));
-            foreach (string columna in resultado.Columnas) dgvReporte.Columns.Add(columna, columna);
-            foreach (string[] fila in resultado.Filas) dgvReporte.Rows.Add(fila.Cast<object>().ToArray());
-            lblResumen.Text = resultado.Filas.Count == 0 ? "No hay datos para los filtros seleccionados." : asistencia
-                ? "Asistencia = (presentes + tardanzas) / registros. Las fechas sin registro no cuentan como faltas."
-                : $"{resultado.Filas.Count} aulas · {resultado.Filas.Sum(x => int.Parse(x[2]))} matrículas activas · {resultado.Filas.Sum(x => int.Parse(x[3]))} cupos disponibles.";
+            foreach (string columna in resultado.Columnas)
+            {
+                dgvReporte.Columns.Add(columna, columna);
+            }
+
+            int matriculados = 0;
+            int cuposDisponibles = 0;
+            foreach (string[] fila in resultado.Filas)
+            {
+                dgvReporte.Rows.Add(fila);
+                if (!asistencia)
+                {
+                    matriculados += int.Parse(fila[2]);
+                    cuposDisponibles += int.Parse(fila[3]);
+                }
+            }
+
+            if (resultado.Filas.Count == 0)
+            {
+                lblResumen.Text = "No hay datos para los filtros seleccionados.";
+            }
+            else if (asistencia)
+            {
+                lblResumen.Text = "Asistencia = (presentes + tardanzas) / registros. Las fechas sin registro no cuentan como faltas.";
+            }
+            else
+            {
+                lblResumen.Text = $"{resultado.Filas.Count} aulas · {matriculados} matrículas activas · {cuposDisponibles} cupos disponibles.";
+            }
             btnExportar.Enabled = resultado.Filas.Count > 0;
         }
         catch (ArgumentException error) { lblResumen.Text = error.Message; }
