@@ -61,15 +61,6 @@ Los repositorios calculan los identificadores a partir de la cantidad de registr
 
 `ejemplos/` contiene datos ficticios: seis estudiantes, cuatro aulas, seis matrículas (una cancelada) y ocho asistencias. Copie esa carpeta fuera del repositorio y selecciónela al entrar o desde **Archivos → Seleccionar carpeta**. En Asistencia, consulte el 5 o 6 de octubre de 2026.
 
-## Material de estudio
-
-- [Guía de estudio](Material_de_estudio/Guia_de_estudio_GestionEstudiante.pdf)
-- [Manual de ejecución en Visual Studio](Material_de_estudio/Manual_de_ejecucion_GestionEstudiante.pdf)
-- [Manual de pruebas de la aplicación](Material_de_estudio/Manual_de_pruebas_GestionEstudiante.pdf)
-- [Diagramas de flujo en PNG y SVG](Material_de_estudio/Diagramas)
-
-Los tres documentos también están disponibles en Word dentro de [Material_de_estudio](Material_de_estudio).
-
 ## Validación
 
 Para compilar desde Linux con el SDK .NET 8:
