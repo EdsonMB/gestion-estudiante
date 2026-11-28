@@ -1,8 +1,0 @@
-niveles|Inicial
-niveles|Primaria
-niveles|Secundaria
-estadosMatricula|Activa
-estadosMatricula|Cancelada
-estadosAsistencia|Presente
-estadosAsistencia|Tardanza
-estadosAsistencia|Falta

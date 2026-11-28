@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="547.2pt" height="312.48pt" viewBox="0 0 547.2 312.48" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-28T14:24:56.507674</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.0, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 312.48
+L 547.2 312.48
+L 547.2 0
+L 0 0
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 23.76 9.36
+L 331.92 9.36
+Q 338.4 9.36 338.4 15.84
+L 338.4 46.8
+Q 338.4 53.28 331.92 53.28
+L 23.76 53.28
+Q 17.28 53.28 17.28 46.8
+L 17.28 15.84
+Q 17.28 9.36 23.76 9.36
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #132e3d; stroke: #132e3d; stroke-width: 1.15; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 177.84 55.44
+Q 177.84 61.56 177.84 66.058851
+" clip-path="url(#pd1cf40b8c5)" style="fill: none; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+    <path d="M 180.44 60.858851
+L 177.84 66.058851
+L 175.24 60.858851
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #385663; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 23.76 69.84
+L 331.92 69.84
+Q 338.4 69.84 338.4 76.32
+L 338.4 107.28
+Q 338.4 113.76 331.92 113.76
+L 23.76 113.76
+Q 17.28 113.76 17.28 107.28
+L 17.28 76.32
+Q 17.28 69.84 23.76 69.84
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #f0f6f8; stroke: #abc8d3; stroke-width: 1.15; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 177.84 115.92
+Q 177.84 122.04 177.84 126.538851
+" clip-path="url(#pd1cf40b8c5)" style="fill: none; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+    <path d="M 180.44 121.338851
+L 177.84 126.538851
+L 175.24 121.338851
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #385663; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 23.76 130.32
+L 331.92 130.32
+Q 338.4 130.32 338.4 136.8
+L 338.4 167.76
+Q 338.4 174.24 331.92 174.24
+L 23.76 174.24
+Q 17.28 174.24 17.28 167.76
+L 17.28 136.8
+Q 17.28 130.32 23.76 130.32
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #f0f6f8; stroke: #abc8d3; stroke-width: 1.15; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 177.84 176.4
+Q 177.84 181.08 177.84 184.138851
+" clip-path="url(#pd1cf40b8c5)" style="fill: none; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+    <path d="M 180.44 178.938851
+L 177.84 184.138851
+L 175.24 178.938851
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #385663; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 32.4 212.4
+L 177.84 187.92
+L 323.28 212.4
+L 177.84 236.88
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #fff4de; stroke: #dcb474; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 382.32 190.8
+L 529.2 190.8
+Q 535.68 190.8 535.68 197.28
+L 535.68 227.52
+Q 535.68 234 529.2 234
+L 382.32 234
+Q 375.84 234 375.84 227.52
+L 375.84 197.28
+Q 375.84 190.8 382.32 190.8
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #fff4de; stroke: #dcb474; stroke-width: 1.15; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 324.72 212.4
+Q 348.12 212.4 369.898851 212.4
+" clip-path="url(#pd1cf40b8c5)" style="fill: none; stroke: #805015; stroke-width: 1.45; stroke-linecap: round"/>
+    <path d="M 364.698851 209.8
+L 369.898851 212.4
+L 364.698851 215
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #805015; stroke: #805015; stroke-width: 1.45; stroke-linecap: round"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 177.84 239.04
+Q 177.84 244.08 177.84 247.498851
+" clip-path="url(#pd1cf40b8c5)" style="fill: none; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+    <path d="M 180.44 242.298851
+L 177.84 247.498851
+L 175.24 242.298851
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #385663; stroke: #385663; stroke-width: 1.45; stroke-linecap: round"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 23.76 251.28
+L 331.92 251.28
+Q 338.4 251.28 338.4 257.76
+L 338.4 288.72
+Q 338.4 295.2 331.92 295.2
+L 23.76 295.2
+Q 17.28 295.2 17.28 288.72
+L 17.28 257.76
+Q 17.28 251.28 23.76 251.28
+z
+" clip-path="url(#pd1cf40b8c5)" style="fill: #e7f6ef; stroke: #a8d5c9; stroke-width: 1.15; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #ffffff" x="177.84" y="36.166562" transform="rotate(-0 177.84 36.166562)">Abrir Aulas</text>
+   </g>
+   <g id="text_2">
+    <text style="font-weight: 700; font-size: 12.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #132e3d" x="26.64" y="86.754" transform="rotate(-0 26.64 86.754)">Crear, editar o cambiar el estado</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 10.35px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #385663" x="26.64" y="102.329353" transform="rotate(-0 26.64 102.329353)">Revisar el grupo, su capacidad y su ocupación.</text>
+   </g>
+   <g id="text_4">
+    <text style="font-weight: 700; font-size: 12.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #132e3d" x="26.64" y="146.762" transform="rotate(-0 26.64 146.762)">Aplicar las reglas del aula</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 10.35px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #385663" x="26.64" y="162.809353" transform="rotate(-0 26.64 162.809353)">Revisa identidad, rangos y matrículas activas.</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 11.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #132e3d" x="177.84" y="215.961203" transform="rotate(-0 177.84 215.961203)">¿El cambio es válido?</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 12.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #805015" x="385.2" y="208.532" transform="rotate(-0 385.2 208.532)">Mostrar el motivo</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 10.35px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #805015" x="385.2" y="223.602609" transform="rotate(-0 385.2 223.602609)">Mantener el aula anterior.</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #805015" x="349.2" y="205.894219" transform="rotate(-0 349.2 205.894219)">No</text>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #006b62" x="188.64" y="248.008125" transform="rotate(-0 188.64 248.008125)">Sí</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 12.8px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #006b62" x="26.64" y="269.012" transform="rotate(-0 26.64 269.012)">Guardar aulas.txt</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 10.35px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #385663" x="26.64" y="283.562353" transform="rotate(-0 26.64 283.562353)">Actualizar el listado y los cupos.</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pd1cf40b8c5">
+   <rect x="0" y="0" width="547.2" height="312.48"/>
+  </clipPath>
+ </defs>
+</svg>

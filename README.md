@@ -1,6 +1,6 @@
 # Gestión de Estudiantes
 
-Aplicación de escritorio en C# con Windows Forms y .NET 8. La rama `completo` integra los módulos sobre el proyecto existente e incorpora los cambios de Asistencia de `main`. Los formularios usan controles nativos de Windows Forms y conservan sus archivos `.Designer.cs`.
+Aplicación de escritorio en C# con Windows Forms y .NET 8. Los formularios usan controles nativos de Windows Forms y conservan sus archivos `.Designer.cs`.
 
 ## Ejecutar
 
@@ -16,7 +16,7 @@ Acceso local: usuario `admin`, contraseña `987987`. El año mostrado en Inicio 
 ## Módulos
 
 - **Inicio:** indicadores reales de estudiantes, matrículas, cupos y asistencias; ocupación de las primeras tres aulas y accesos directos.
-- **Estudiantes:** altas, edición, búsqueda y baja lógica. La baja exige cancelar primero las matrículas activas.
+- **Estudiantes:** alta, edición, búsqueda, baja lógica y reactivación. La baja exige cancelar primero las matrículas activas.
 - **Aulas:** alta, edición, filtros por nivel y año, activación y desactivación. No se permite repetir nivel/grado/sección/año, reducir capacidad por debajo de la ocupación ni desactivar un aula ocupada. Un aula con matrículas conserva su identidad; se puede cambiar capacidad y estado.
 - **Matrículas:** registro, filtros y cancelación con conservación del historial. Valida estudiante y aula activos, año, fecha y cupos. Un estudiante solo puede tener una matrícula activa por año. Cancelar libera su cupo.
 - **Asistencia:** selección de aula y fecha, botón **Marcar** para alternar entre Presente, Falta y Tardanza, y observación por matrícula. **Guardar asistencia** se activa cuando cambia una fila. Seleccionar **Sin registro** retira una marca anterior; una fecha sin marca no cuenta como falta. La navegación y el cierre consultan qué hacer con cambios pendientes. Incluye matriz semanal de lunes a domingo.
@@ -42,9 +42,9 @@ El campo `estado` de `asistencias.txt` admite los textos `Presente`, `Falta` y `
 
 Fechas: ISO 8601, formato `O`. Booleanos: `true` o `false`. `fechaCancelacion` vacía significa matrícula activa. Los escapes reversibles son `\\` para barra inversa, `\p` para `|`, `\r` y `\n` para saltos de línea. No quite las posiciones de campos vacíos.
 
-Aulas admite Inicial (3–5 años), Primaria (1–6) y Secundaria (1–5), años 2000–2100 y capacidad 1–1000. Las observaciones de asistencia admiten 250 caracteres.
+Aulas admite Inicial (3–5 años), Primaria (1–6) y Secundaria (1–5), años 2000–2100 y capacidad de 1 a 40 estudiantes. Las observaciones de asistencia admiten 250 caracteres.
 
-Al seleccionar una carpeta vacía, el sistema crea los cuatro TXT de la tabla. Las carpetas con datos deben contener los cuatro archivos. Un TXT sin filas representa una entidad sin registros. La carga rechaza identificadores repetidos, referencias inexistentes, matrículas con periodos superpuestos y datos inconsistentes. `catalogos.txt` se conserva como referencia del ejemplo; los valores admitidos se validan en el código.
+Al seleccionar una carpeta vacía, el sistema crea los cuatro TXT de la tabla. Las carpetas con datos deben contener los cuatro archivos. Un TXT sin filas representa una entidad sin registros. La carga rechaza identificadores repetidos, referencias inexistentes, matrículas con periodos superpuestos y datos inconsistentes.
 
 Los repositorios calculan los identificadores a partir de la cantidad de registros más uno. Estudiantes, Aulas y Matrículas rechazan una colisión en el alta. Si una marca de Asistencia se retiró y el identificador calculado ya está ocupado, se busca el siguiente disponible. Las correcciones conservan el identificador.
 
@@ -60,6 +60,15 @@ Los repositorios calculan los identificadores a partir de la cantidad de registr
 ## Datos de ejemplo
 
 `ejemplos/` contiene datos ficticios: seis estudiantes, cuatro aulas, seis matrículas (una cancelada) y ocho asistencias. Copie esa carpeta fuera del repositorio y selecciónela al entrar o desde **Archivos → Seleccionar carpeta**. En Asistencia, consulte el 5 o 6 de octubre de 2026.
+
+## Material de estudio
+
+- [Guía de estudio](Material_de_estudio/Guia_de_estudio_GestionEstudiante.pdf)
+- [Manual de ejecución en Visual Studio](Material_de_estudio/Manual_de_ejecucion_GestionEstudiante.pdf)
+- [Manual de pruebas de la aplicación](Material_de_estudio/Manual_de_pruebas_GestionEstudiante.pdf)
+- [Diagramas de flujo en PNG y SVG](Material_de_estudio/Diagramas)
+
+Los tres documentos también están disponibles en Word dentro de [Material_de_estudio](Material_de_estudio).
 
 ## Validación
 
