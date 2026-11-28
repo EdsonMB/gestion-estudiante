@@ -1,5 +1,4 @@
 #nullable enable
-using GestionEstudiante.util;
 namespace GestionEstudiante;
 partial class FrmReportes
 {
@@ -55,7 +54,6 @@ partial class FrmReportes
         cboTipo.Location = new Point(28, 150);
         cboTipo.Size = new Size(260, 32);
         cboTipo.DropDownStyle = ComboBoxStyle.DropDownList;
-        cboTipo.Items.AddRange(Constantes.TiposReportes.ToArray());
         lblAnio = new Label();
         lblAnio.Name = "lblAnio";
         lblAnio.Location = new Point(310, 120);

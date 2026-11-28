@@ -7,7 +7,16 @@ public partial class FrmAula : Form
 {
     private readonly AulaService servicio = null!;
     private readonly Aula? original;
-    public FrmAula() { InitializeComponent(); }
+    public FrmAula()
+    {
+        InitializeComponent();
+        cboNivel.Items.AddRange(new object[]
+        {
+            Constantes.NivelInicial,
+            Constantes.NivelPrimaria,
+            Constantes.NivelSecundaria
+        });
+    }
     public FrmAula(AulaService servicio, Aula? aula, int anio) : this()
     {
         this.servicio = servicio;

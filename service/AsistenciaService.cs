@@ -13,7 +13,7 @@ public class AsistenciaService
         repositorio = new Repositorio<Asistencia>(gestor, Constantes.ArchivoAsistencias,
             d => d.asistencias, (d, lista) => d.asistencias = lista);
     }
-    public IReadOnlyList<Asistencia> Listar() => repositorio.Listar();
+    public List<Asistencia> Listar() => repositorio.Listar();
     public List<Matricula> MatriculasDelDia(int aulaId, DateTime fecha) => gestor.Datos.matriculas
         .Where(x => x.aulaId == aulaId && x.VigenteEn(fecha) &&
             gestor.Datos.aulas.Single(a => a.id == aulaId).anio == fecha.Year).ToList();
@@ -28,14 +28,15 @@ public class AsistenciaService
         if (registros.Any(x => !matriculas.Any(m => m.id == x.matriculaId)) ||
             registros.GroupBy(x => x.matriculaId).Any(g => g.Count() > 1))
             throw new ArgumentException("La lista de asistencia no corresponde al aula y fecha seleccionados.");
-        List<Asistencia> nuevos = Listar().Where(x => x.fecha.Date != fecha.Date ||
+        List<Asistencia> existentes = Listar();
+        List<Asistencia> nuevos = existentes.Where(x => x.fecha.Date != fecha.Date ||
             !matriculas.Any(m => m.id == x.matriculaId)).ToList();
         int siguiente = repositorio.SiguienteId();
         foreach (Asistencia registro in registros)
         {
             if (!Enum.IsDefined(registro.estado) || registro.observacion.Trim().Length > 250)
                 throw new ArgumentException("Seleccione un estado válido y una observación de hasta 250 caracteres.");
-            Asistencia? anterior = Listar().SingleOrDefault(x => x.matriculaId == registro.matriculaId && x.fecha.Date == fecha.Date);
+            Asistencia? anterior = existentes.SingleOrDefault(x => x.matriculaId == registro.matriculaId && x.fecha.Date == fecha.Date);
             nuevos.Add(new Asistencia { id = anterior?.id ?? siguiente++, matriculaId = registro.matriculaId,
                 fecha = fecha.Date, estado = registro.estado, observacion = registro.observacion.Trim() });
         }

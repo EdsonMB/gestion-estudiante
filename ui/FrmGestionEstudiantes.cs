@@ -1,5 +1,6 @@
 using GestionEstudiante.model;
 using GestionEstudiante.service;
+using GestionEstudiante.util;
 
 namespace GestionEstudiante;
 public partial class FrmGestionEstudiantes : Form
@@ -8,12 +9,19 @@ public partial class FrmGestionEstudiantes : Form
     public FrmGestionEstudiantes()
     {
         InitializeComponent();
+        cboEstado.Items.AddRange(new object[]
+        {
+            Constantes.TodosLosEstados,
+            Constantes.EstudiantesActivos,
+            Constantes.EstudiantesInactivos
+        });
+        cboEstado.SelectedIndex = 0;
     }
 
-    public FrmGestionEstudiantes(EstudianteService servicio)
+    public FrmGestionEstudiantes(EstudianteService servicio) : this()
     {
         this.servicio = servicio;
-        InitializeComponent();
+        cboEstado.SelectedIndexChanged += FiltroCambiado;
     }
 
     private void FrmGestionEstudiantes_Load(object? sender, EventArgs e)

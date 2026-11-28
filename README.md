@@ -11,7 +11,7 @@ dotnet build GestionEstudiante.sln
 dotnet run --project GestionEstudiante.csproj
 ```
 
-Acceso local: usuario `admin`, contraseña `987987`. Se mantienen las constantes del proyecto. El año mostrado en Inicio se configura en `util/Constantes.cs`. Las opciones fijas de todos los combos se definen allí como listas de solo lectura. Los combos que seleccionan estudiantes o aulas se completan con los registros actuales del sistema.
+Acceso local: usuario `admin`, contraseña `987987`. El año mostrado en Inicio y los textos fijos de los combos se definen en `util/Constantes.cs`. Cada formulario agrega a sus combos las constantes que usa y carga los estudiantes o aulas a partir de los registros actuales del sistema.
 
 ## Módulos
 

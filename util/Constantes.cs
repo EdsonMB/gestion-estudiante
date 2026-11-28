@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using GestionEstudiante.model;
 
 namespace GestionEstudiante.util;
@@ -24,38 +23,20 @@ public static class Constantes
     public const string NivelInicial = "Inicial";
     public const string NivelPrimaria = "Primaria";
     public const string NivelSecundaria = "Secundaria";
+    public const string TodosLosNiveles = "Todos los niveles";
+    public const string TodasLasAulas = "Todas las aulas";
+    public const string TodosLosEstados = "Todos los estados";
+    public const string EstudiantesActivos = "Activos";
+    public const string EstudiantesInactivos = "Inactivos";
+    public const string MatriculasActivasYCanceladas = "Activas y canceladas";
+    public const string MatriculasSoloActivas = "Solo activas";
+    public const string MatriculasSoloCanceladas = "Solo canceladas";
     public const string AsistenciaSinRegistro = "Sin registro";
     public const string AsistenciaPresente = nameof(EstadoAsistencia.Presente);
     public const string AsistenciaFalta = nameof(EstadoAsistencia.Falta);
     public const string AsistenciaTardanza = nameof(EstadoAsistencia.Tardanza);
-
-    // Listas fijas de los combos. El orden de los filtros conserva sus índices actuales.
-    public static readonly ReadOnlyCollection<string> Niveles = Array.AsReadOnly(new[]
-    {
-        NivelInicial, NivelPrimaria, NivelSecundaria
-    });
-    public static readonly ReadOnlyCollection<string> FiltrosNiveles = Array.AsReadOnly(
-        new[] { "Todos los niveles" }.Concat(Niveles).ToArray());
-    public static readonly ReadOnlyCollection<string> EstadosEstudiantes = Array.AsReadOnly(new[]
-    {
-        "Todos los estados", "Activos", "Inactivos"
-    });
-    public static readonly ReadOnlyCollection<string> EstadosMatriculas = Array.AsReadOnly(new[]
-    {
-        "Activas y canceladas", "Solo activas", "Solo canceladas"
-    });
-    public static readonly ReadOnlyCollection<string> EstadosAsistencia = Array.AsReadOnly(new[]
-    {
-        AsistenciaSinRegistro, AsistenciaPresente, AsistenciaFalta, AsistenciaTardanza
-    });
-    public static readonly ReadOnlyCollection<string> TiposReportes = Array.AsReadOnly(new[]
-    {
-        "Ocupación de aulas", "Asistencia por estudiante"
-    });
-    public static readonly ReadOnlyCollection<string> FiltrosAulas = Array.AsReadOnly(new[]
-    {
-        "Todas las aulas"
-    });
+    public const string ReporteOcupacion = "Ocupación de aulas";
+    public const string ReporteAsistencia = "Asistencia por estudiante";
 
     //total de columnas
     public const int EstudiantesColumnas = 9;

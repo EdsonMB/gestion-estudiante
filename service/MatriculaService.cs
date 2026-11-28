@@ -13,7 +13,7 @@ public class MatriculaService
         repositorio = new Repositorio<Matricula>(gestor, Constantes.ArchivoMatriculas,
             d => d.matriculas, (d, lista) => d.matriculas = lista);
     }
-    public IReadOnlyList<Matricula> Listar() => repositorio.Listar();
+    public List<Matricula> Listar() => repositorio.Listar();
     public void Registrar(int estudianteId, int aulaId, DateTime fecha)
     {
         Estudiante estudiante = gestor.Datos.estudiantes.SingleOrDefault(x => x.id == estudianteId && x.activo)

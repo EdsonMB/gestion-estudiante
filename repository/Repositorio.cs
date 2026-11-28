@@ -19,12 +19,12 @@ public class Repositorio<T> where T : ModeloBase
         this.publicar = publicar;
     }
 
-    public IReadOnlyList<T> Listar() => leer(gestor.Datos).AsReadOnly();
-    public int SiguienteId() => checked(Listar().Select(x => x.id).DefaultIfEmpty(0).Max() + 1);
+    public List<T> Listar() => leer(gestor.Datos).ToList();
+    public int SiguienteId() => checked(leer(gestor.Datos).Select(x => x.id).DefaultIfEmpty(0).Max() + 1);
 
     public void Guardar(T registro)
     {
-        List<T> nuevos = Listar().ToList();
+        List<T> nuevos = Listar();
         if (registro.id == 0)
         {
             registro.id = SiguienteId();

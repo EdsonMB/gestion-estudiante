@@ -10,7 +10,17 @@ public partial class FormAsistencia : Form
     private bool modificado;
     private int aulaActual;
     private DateTime fechaActual = DateTime.Today;
-    public FormAsistencia() { InitializeComponent(); }
+    public FormAsistencia()
+    {
+        InitializeComponent();
+        colEstado.Items.AddRange(new object[]
+        {
+            Constantes.AsistenciaSinRegistro,
+            Constantes.AsistenciaPresente,
+            Constantes.AsistenciaFalta,
+            Constantes.AsistenciaTardanza
+        });
+    }
     public FormAsistencia(EscolarService servicio) : this()
     {
         this.servicio = servicio;
@@ -62,10 +72,12 @@ public partial class FormAsistencia : Form
     {
         cargando = true;
         dgvAsistencia.Rows.Clear();
+        List<Estudiante> estudiantes = servicio.Estudiantes;
+        List<Asistencia> asistencias = servicio.Asistencias.Listar();
         foreach (Matricula matricula in servicio.Asistencias.MatriculasDelDia(aulaActual, fechaActual))
         {
-            Estudiante estudiante = servicio.Estudiantes.Single(x => x.id == matricula.estudianteId);
-            Asistencia? asistencia = servicio.Asistencias.Listar().SingleOrDefault(x => x.matriculaId == matricula.id && x.fecha.Date == fechaActual);
+            Estudiante estudiante = estudiantes.Single(x => x.id == matricula.estudianteId);
+            Asistencia? asistencia = asistencias.SingleOrDefault(x => x.matriculaId == matricula.id && x.fecha.Date == fechaActual);
             int fila = dgvAsistencia.Rows.Add(estudiante.codigo, servicio.NombreEstudiante(estudiante.id),
                 asistencia?.estado.ToString() ?? Constantes.AsistenciaSinRegistro, asistencia?.observacion ?? "");
             dgvAsistencia.Rows[fila].Tag = matricula.id;

@@ -10,7 +10,7 @@ public class EscolarService
     public AulaService Aulas { get; }
     public MatriculaService Matriculas { get; }
     public AsistenciaService Asistencias { get; }
-    public IReadOnlyList<Estudiante> Estudiantes => gestor.Datos.estudiantes.AsReadOnly();
+    public List<Estudiante> Estudiantes => gestor.Datos.estudiantes.ToList();
 
     public EscolarService(GestorBaseDatos gestor)
     {
@@ -21,7 +21,7 @@ public class EscolarService
     }
     public string NombreEstudiante(int id)
     {
-        Estudiante estudiante = Estudiantes.Single(x => x.id == id);
+        Estudiante estudiante = gestor.Datos.estudiantes.Single(x => x.id == id);
         return estudiante.nombre + " " + estudiante.apellidos;
     }
 }

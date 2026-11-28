@@ -9,7 +9,15 @@ public partial class FrmReportes : Form
     private Reporte reporte = null!;
     private ResultadoReporte? resultado;
     private bool cargando;
-    public FrmReportes() { InitializeComponent(); }
+    public FrmReportes()
+    {
+        InitializeComponent();
+        cboTipo.Items.AddRange(new object[]
+        {
+            Constantes.ReporteOcupacion,
+            Constantes.ReporteAsistencia
+        });
+    }
     public FrmReportes(EscolarService servicio) : this()
     {
         this.servicio = servicio;
@@ -37,7 +45,7 @@ public partial class FrmReportes : Form
         cargando = true;
         int id = (cboAula.SelectedItem as Opcion)?.Id ?? 0;
         cboAula.Items.Clear();
-        cboAula.Items.Add(new Opcion(0, Constantes.FiltrosAulas[0]));
+        cboAula.Items.Add(new Opcion(0, Constantes.TodasLasAulas));
         foreach (Aula aula in servicio.Aulas.Listar().Where(x => x.anio == numAnio.Value))
             cboAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
         cboAula.SelectedIndex = Math.Max(0, cboAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == id));

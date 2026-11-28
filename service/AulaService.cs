@@ -12,7 +12,7 @@ public class AulaService
         this.gestor = gestor;
         repositorio = new Repositorio<Aula>(gestor, Constantes.ArchivoAulas, d => d.aulas, (d, lista) => d.aulas = lista);
     }
-    public IReadOnlyList<Aula> Listar() => repositorio.Listar();
+    public List<Aula> Listar() => repositorio.Listar();
     public int Ocupados(int id) => gestor.Datos.matriculas.Count(x => x.aulaId == id && x.Activa);
     public int Disponibles(Aula aula) => aula.capacidad - Ocupados(aula.id);
 

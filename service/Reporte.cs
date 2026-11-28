@@ -44,7 +44,7 @@ public class ReporteOcupacion : Reporte
             filas.Add(new[] { aula.Descripcion, aula.capacidad.ToString(), ocupados.ToString(),
                 (aula.activo ? aula.capacidad - ocupados : 0).ToString(), aula.activo ? "Activa" : "Inactiva" });
         }
-        return new ResultadoReporte("Ocupación de aulas", new[] { "Aula", "Capacidad", "Matriculados", "Cupos disponibles", "Estado" }, filas);
+        return new ResultadoReporte(Constantes.ReporteOcupacion, new[] { "Aula", "Capacidad", "Matriculados", "Cupos disponibles", "Estado" }, filas);
     }
 }
 
@@ -59,23 +59,26 @@ public class ReporteAsistencia : Reporte
         DateTime desde = filtro.Desde.Date < inicioAnio ? inicioAnio : filtro.Desde.Date;
         DateTime hasta = filtro.Hasta.Date > finAnio ? finAnio : filtro.Hasta.Date;
         string[] columnas = { "Código", "Estudiante", "Presentes", "Faltas", "Tardanzas", "Registros", "% asistencia" };
-        if (desde > hasta) return new ResultadoReporte("Asistencia por estudiante", columnas, new());
-        var matriculas = servicio.Matriculas.Listar().Where(x => servicio.Aulas.Listar().Single(a => a.id == x.aulaId).anio == filtro.Anio &&
+        if (desde > hasta) return new ResultadoReporte(Constantes.ReporteAsistencia, columnas, new());
+        List<Aula> aulas = servicio.Aulas.Listar();
+        var matriculas = servicio.Matriculas.Listar().Where(x => aulas.Single(a => a.id == x.aulaId).anio == filtro.Anio &&
             (filtro.AulaId == 0 || x.aulaId == filtro.AulaId) && x.fecha.Date <= hasta &&
             (!x.fechaCancelacion.HasValue || x.fechaCancelacion.Value.Date >= desde)).ToList();
         List<string[]> filas = new();
+        List<Estudiante> estudiantes = servicio.Estudiantes;
+        List<Asistencia> asistencias = servicio.Asistencias.Listar();
         foreach (var grupo in matriculas.GroupBy(x => x.estudianteId))
         {
-            List<Asistencia> registros = servicio.Asistencias.Listar().Where(x => grupo.Any(m => m.id == x.matriculaId) &&
+            List<Asistencia> registros = asistencias.Where(x => grupo.Any(m => m.id == x.matriculaId) &&
                 x.fecha.Date >= desde && x.fecha.Date <= hasta).ToList();
             int presentes = registros.Count(x => x.estado == EstadoAsistencia.Presente);
             int faltas = registros.Count(x => x.estado == EstadoAsistencia.Falta);
             int tardanzas = registros.Count(x => x.estado == EstadoAsistencia.Tardanza);
             string porcentaje = registros.Count == 0 ? "Sin registros" :
                 (100m * (presentes + tardanzas) / registros.Count).ToString("0.0", CultureInfo.InvariantCulture) + "%";
-            filas.Add(new[] { servicio.Estudiantes.Single(x => x.id == grupo.Key).codigo, servicio.NombreEstudiante(grupo.Key),
+            filas.Add(new[] { estudiantes.Single(x => x.id == grupo.Key).codigo, servicio.NombreEstudiante(grupo.Key),
                 presentes.ToString(), faltas.ToString(), tardanzas.ToString(), registros.Count.ToString(), porcentaje });
         }
-        return new ResultadoReporte("Asistencia por estudiante", columnas, filas);
+        return new ResultadoReporte(Constantes.ReporteAsistencia, columnas, filas);
     }
 }

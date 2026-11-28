@@ -6,7 +6,17 @@ namespace GestionEstudiante;
 public partial class FrmAulas : Form
 {
     private readonly EscolarService servicio = null!;
-    public FrmAulas() { InitializeComponent(); }
+    public FrmAulas()
+    {
+        InitializeComponent();
+        cboNivel.Items.AddRange(new object[]
+        {
+            Constantes.TodosLosNiveles,
+            Constantes.NivelInicial,
+            Constantes.NivelPrimaria,
+            Constantes.NivelSecundaria
+        });
+    }
     public FrmAulas(EscolarService servicio) : this()
     {
         this.servicio = servicio;
