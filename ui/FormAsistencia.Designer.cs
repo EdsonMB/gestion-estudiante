@@ -1,4 +1,5 @@
 #nullable enable
+using GestionEstudiante.util;
 namespace GestionEstudiante;
 
 partial class FormAsistencia
@@ -135,7 +136,7 @@ partial class FormAsistencia
         // colEstado
         colEstado.Name = "colEstado";
         colEstado.HeaderText = "Estado registrado";
-        colEstado.Items.AddRange("Sin registro", "Presente", "Falta", "Tardanza");
+        colEstado.Items.AddRange(Constantes.EstadosAsistencia.ToArray());
 
         // colAcciones
         colAcciones.Name = "colAcciones";

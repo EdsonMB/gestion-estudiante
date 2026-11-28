@@ -1,3 +1,4 @@
+using GestionEstudiante.util;
 using GestionEstudiante.model;
 using GestionEstudiante.service;
 namespace GestionEstudiante;
@@ -66,7 +67,7 @@ public partial class FormAsistencia : Form
             Estudiante estudiante = servicio.Estudiantes.Single(x => x.id == matricula.estudianteId);
             Asistencia? asistencia = servicio.Asistencias.Listar().SingleOrDefault(x => x.matriculaId == matricula.id && x.fecha.Date == fechaActual);
             int fila = dgvAsistencia.Rows.Add(estudiante.codigo, servicio.NombreEstudiante(estudiante.id),
-                asistencia?.estado.ToString() ?? "Sin registro", asistencia?.observacion ?? "");
+                asistencia?.estado.ToString() ?? Constantes.AsistenciaSinRegistro, asistencia?.observacion ?? "");
             dgvAsistencia.Rows[fila].Tag = matricula.id;
         }
         cargando = false;
@@ -80,9 +81,9 @@ public partial class FormAsistencia : Form
     private void ActualizarTotales()
     {
         var filas = dgvAsistencia.Rows.Cast<DataGridViewRow>().ToList();
-        lblPresentes.Text = filas.Count(x => (string?)x.Cells[2].Value == "Presente") + " presentes";
-        lblFaltas.Text = filas.Count(x => (string?)x.Cells[2].Value == "Falta") + " faltas";
-        lblTardanzas.Text = filas.Count(x => (string?)x.Cells[2].Value == "Tardanza") + " tardanzas";
+        lblPresentes.Text = filas.Count(x => (string?)x.Cells[2].Value == Constantes.AsistenciaPresente) + " presentes";
+        lblFaltas.Text = filas.Count(x => (string?)x.Cells[2].Value == Constantes.AsistenciaFalta) + " faltas";
+        lblTardanzas.Text = filas.Count(x => (string?)x.Cells[2].Value == Constantes.AsistenciaTardanza) + " tardanzas";
     }
     public bool ConfirmarSalida()
     {
@@ -103,8 +104,8 @@ public partial class FormAsistencia : Form
             List<Asistencia> registros = new();
             foreach (DataGridViewRow fila in dgvAsistencia.Rows)
             {
-                string estado = (string?)fila.Cells[2].Value ?? "Sin registro";
-                if (estado == "Sin registro") continue;
+                string estado = (string?)fila.Cells[2].Value ?? Constantes.AsistenciaSinRegistro;
+                if (estado == Constantes.AsistenciaSinRegistro) continue;
                 registros.Add(new Asistencia { matriculaId = (int)fila.Tag!, estado = Enum.Parse<EstadoAsistencia>(estado),
                     observacion = fila.Cells[3].Value?.ToString() ?? "" });
             }

@@ -1,3 +1,4 @@
+using GestionEstudiante.util;
 using GestionEstudiante.model;
 using GestionEstudiante.service;
 namespace GestionEstudiante;
@@ -19,7 +20,7 @@ public partial class FrmMatriculas : Form
         int id = (cboAula.SelectedItem as Opcion)?.Id ?? 0;
         cargando = true;
         cboAula.Items.Clear();
-        cboAula.Items.Add(new Opcion(0, "Todas las aulas"));
+        cboAula.Items.Add(new Opcion(0, Constantes.FiltrosAulas[0]));
         foreach (Aula aula in servicio.Aulas.Listar()) cboAula.Items.Add(new Opcion(aula.id, aula.Descripcion));
         cboAula.SelectedIndex = Math.Max(0, cboAula.Items.Cast<Opcion>().ToList().FindIndex(x => x.Id == id));
         cargando = false;

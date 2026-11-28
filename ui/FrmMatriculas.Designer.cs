@@ -1,4 +1,5 @@
 #nullable enable
+using GestionEstudiante.util;
 namespace GestionEstudiante;
 
 partial class FrmMatriculas
@@ -75,7 +76,7 @@ partial class FrmMatriculas
         cboAula.Size = new Size(210, 32);
         cboAula.DropDownStyle = ComboBoxStyle.DropDownList;
         cboAula.TabIndex = 0;
-        cboAula.Items.Add("Todas las aulas");
+        cboAula.Items.AddRange(Constantes.FiltrosAulas.ToArray());
         cboAula.SelectedIndex = 0;
 
         // lblEstado
@@ -89,7 +90,7 @@ partial class FrmMatriculas
         cboEstado.Location = new Point(254, 126);
         cboEstado.Size = new Size(210, 32);
         cboEstado.DropDownStyle = ComboBoxStyle.DropDownList;
-        cboEstado.Items.AddRange(new object[] { "Activas y canceladas", "Solo activas", "Solo canceladas" });
+        cboEstado.Items.AddRange(Constantes.EstadosMatriculas.ToArray());
         cboEstado.TabIndex = 1;
         cboEstado.SelectedIndex = 0;
 

@@ -1,5 +1,9 @@
-﻿# Prototipos y documentacion local
+# Prototipos y documentacion local
 /doc/
+/prototipo/
+/prototipos/
+/tests/
+/test/
 
 # Documentos generados y archivos temporales
 /output/

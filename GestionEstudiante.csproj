@@ -36,8 +36,6 @@
       <DependentUpon>FormAsistencia.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Remove="tmp\**\*.cs" />
-    <Compile Remove="tests\**\*.cs" />
-    <EmbeddedResource Remove="tests\**\*" />
     <EmbeddedResource Remove="tmp\**\*" />
     <Compile Update="ui\FrmEstudiante.cs" />
     <Compile Update="ui\FrmArchivos.cs" />

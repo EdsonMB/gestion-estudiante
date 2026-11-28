@@ -1,4 +1,5 @@
 #nullable enable
+using GestionEstudiante.util;
 namespace GestionEstudiante;
 partial class FrmAula
 {
@@ -40,7 +41,7 @@ partial class FrmAula
         cboNivel.Location = new Point(28, 124);
         cboNivel.Size = new Size(270, 32);
         cboNivel.DropDownStyle = ComboBoxStyle.DropDownList;
-        cboNivel.Items.AddRange(new object[] { "Inicial", "Primaria", "Secundaria" });
+        cboNivel.Items.AddRange(Constantes.Niveles.ToArray());
         lblGrado = new Label();
         lblGrado.Name = "lblGrado";
         lblGrado.Location = new Point(330, 94);

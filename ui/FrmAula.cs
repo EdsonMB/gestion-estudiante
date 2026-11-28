@@ -1,3 +1,4 @@
+using GestionEstudiante.util;
 using GestionEstudiante.model;
 using GestionEstudiante.service;
 namespace GestionEstudiante;
@@ -13,7 +14,7 @@ public partial class FrmAula : Form
         original = aula;
         Text = lblTitulo.Text = aula == null ? "Nueva aula" : "Editar aula";
         cboNivel.SelectedIndexChanged += (_, _) => ActualizarGrados();
-        cboNivel.SelectedItem = aula?.nivel ?? "Primaria";
+        cboNivel.SelectedItem = aula?.nivel ?? Constantes.NivelPrimaria;
         numGrado.Value = aula?.grado ?? 1;
         txtSeccion.Text = aula?.seccion ?? "A";
         numAnio.Value = anio;
@@ -21,8 +22,8 @@ public partial class FrmAula : Form
     }
     private void ActualizarGrados()
     {
-        numGrado.Minimum = cboNivel.Text == "Inicial" ? 3 : 1;
-        numGrado.Maximum = cboNivel.Text == "Primaria" ? 6 : 5;
+        numGrado.Minimum = cboNivel.Text == Constantes.NivelInicial ? 3 : 1;
+        numGrado.Maximum = cboNivel.Text == Constantes.NivelPrimaria ? 6 : 5;
     }
     private void btnGuardar_Click(object? sender, EventArgs e)
     {

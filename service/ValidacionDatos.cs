@@ -1,3 +1,4 @@
+using GestionEstudiante.util;
 using GestionEstudiante.model;
 namespace GestionEstudiante.service;
 
@@ -5,8 +6,8 @@ public static class ValidacionDatos
 {
     public static void ValidarAula(Aula aula)
     {
-        int minimo = aula.nivel == "Inicial" ? 3 : 1;
-        int maximo = aula.nivel == "Primaria" ? 6 : aula.nivel is "Secundaria" or "Inicial" ? 5 : 0;
+        int minimo = aula.nivel == Constantes.NivelInicial ? 3 : 1;
+        int maximo = aula.nivel == Constantes.NivelPrimaria ? 6 : aula.nivel is Constantes.NivelSecundaria or Constantes.NivelInicial ? 5 : 0;
         if (maximo == 0 || aula.grado < minimo || aula.grado > maximo)
             throw new ArgumentException("Seleccione nivel y grado válidos (Inicial: 3 a 5 años; Primaria: 1 a 6; Secundaria: 1 a 5).");
         if (string.IsNullOrWhiteSpace(aula.seccion) || aula.seccion.Length > 10)

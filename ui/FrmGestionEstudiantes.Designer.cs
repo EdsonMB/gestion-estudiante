@@ -1,4 +1,5 @@
 #nullable enable
+using GestionEstudiante.util;
 namespace GestionEstudiante;
 partial class FrmGestionEstudiantes
 {
@@ -125,7 +126,7 @@ partial class FrmGestionEstudiantes
         Font = new Font("Segoe UI", 10F);
         Name = "FrmGestionEstudiantes";
         Text = "Estudiantes";
-        cboEstado.Items.AddRange(new object[] { "Todos los estados", "Activos", "Inactivos" });
+        cboEstado.Items.AddRange(Constantes.EstadosEstudiantes.ToArray());
         cboEstado.SelectedIndex = 0;
         dgvEstudiantes.Columns.AddRange(new DataGridViewColumn[] { colCodigo, colNombre, colApoderado, colTelefono, colEstado, colEditar, colBaja });
         txtBuscar.TextChanged += FiltroCambiado;

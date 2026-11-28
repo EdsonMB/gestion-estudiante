@@ -1,15 +1,16 @@
+using GestionEstudiante.util;
 using System.Globalization;
 namespace GestionEstudiante.model;
 
 public class Aula : ModeloBase
 {
-    public string nivel { get; set; } = "Primaria";
+    public string nivel { get; set; } = Constantes.NivelPrimaria;
     public int grado { get; set; } = 1;
     public string seccion { get; set; } = "A";
     public int anio { get; set; }
     public int capacidad { get; set; } = 30;
     public bool activo { get; set; } = true;
-    public string Descripcion => nivel == "Inicial" ? $"{nivel} · {grado} años {seccion} ({anio})" : $"{nivel} · {grado}.º {seccion} ({anio})";
+    public string Descripcion => nivel == Constantes.NivelInicial ? $"{nivel} · {grado} años {seccion} ({anio})" : $"{nivel} · {grado}.º {seccion} ({anio})";
     public override string[] ObtenerCampos() => new[]
     {
         id.ToString(CultureInfo.InvariantCulture), nivel, grado.ToString(CultureInfo.InvariantCulture),

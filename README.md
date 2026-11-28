@@ -11,7 +11,7 @@ dotnet build GestionEstudiante.sln
 dotnet run --project GestionEstudiante.csproj
 ```
 
-Acceso local: usuario `admin`, contraseña `987987`. Se mantienen las constantes del proyecto. El año mostrado en Inicio se configura en `util/Constantes.cs`.
+Acceso local: usuario `admin`, contraseña `987987`. Se mantienen las constantes del proyecto. El año mostrado en Inicio se configura en `util/Constantes.cs`. Las opciones fijas de todos los combos se definen allí como listas de solo lectura. Los combos que seleccionan estudiantes o aulas se completan con los registros actuales del sistema.
 
 ## Módulos
 
@@ -55,11 +55,9 @@ Estudiantes mantiene su regla anterior de id = cantidad de registros + 1, con co
 
 `GestorBaseDatos` se comparte durante la sesión. Los servicios consultan sus datos vigentes, por lo que cargar o recuperar otra carpeta actualiza todos los módulos al volver a abrirlos.
 
-## Ejemplos y prototipos
+## Datos de ejemplo
 
 `ejemplos/` contiene datos ficticios: seis estudiantes, cuatro aulas, seis matrículas (una cancelada) y ocho asistencias. Copie esa carpeta fuera del repositorio y selecciónela en **Archivos → Cargar / usar** para no modificar el ejemplo. En Asistencia, consulte el 5 o 6 de octubre de 2026.
-
-Las siete pantallas principales descargadas de Figma están en [`prototipo/`](prototipo/README.md). Se usan como referencia estructural y se adaptan a controles estándar de WinForms.
 
 ## Validación
 
@@ -68,13 +66,3 @@ Para compilar desde Linux con el SDK .NET 8:
 ```sh
 dotnet build GestionEstudiante.sln -p:EnableWindowsTargeting=true
 ```
-
-Pruebas automáticas de reglas, TXT, errores de escritura, importación, reportes, traslado y respaldos (requiere Python 3 y .NET 8):
-
-```sh
-python tests/ejecutar.py
-```
-
-El ejecutor genera y elimina un proyecto temporal de pruebas; no agrega otro proyecto de aplicación a la solución. Puede indicar el ejecutable del SDK con la variable `DOTNET`.
-
-La compilación cruzada y las pruebas de dominio no ejecutan la interfaz WinForms. La revisión visual y de interacción en Windows se describe en [`tests/RevisionWindows.md`](tests/RevisionWindows.md).

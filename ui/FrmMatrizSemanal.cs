@@ -1,3 +1,4 @@
+using GestionEstudiante.util;
 using GestionEstudiante.model;
 using GestionEstudiante.service;
 namespace GestionEstudiante;
@@ -20,7 +21,7 @@ public partial class FrmMatrizSemanal : Form
             {
                 DateTime actual = lunes.AddDays(dia);
                 Asistencia? asistencia = servicio.Asistencias.Listar().SingleOrDefault(x => x.matriculaId == matricula.id && x.fecha.Date == actual);
-                valores[dia + 1] = asistencia?.estado.ToString() ?? (matricula.VigenteEn(actual) ? "Sin registro" : "—");
+                valores[dia + 1] = asistencia?.estado.ToString() ?? (matricula.VigenteEn(actual) ? Constantes.AsistenciaSinRegistro : "—");
             }
             dgvMatriz.Rows.Add(valores);
         }

@@ -1,4 +1,5 @@
 #nullable enable
+using GestionEstudiante.util;
 namespace GestionEstudiante;
 partial class FrmAulas
 {
@@ -48,7 +49,7 @@ partial class FrmAulas
         cboNivel.Location = new Point(28, 150);
         cboNivel.Size = new Size(300, 32);
         cboNivel.DropDownStyle = ComboBoxStyle.DropDownList;
-        cboNivel.Items.AddRange(new object[] { "Todos los niveles", "Inicial", "Primaria", "Secundaria" });
+        cboNivel.Items.AddRange(Constantes.FiltrosNiveles.ToArray());
         lblAnio = new Label();
         lblAnio.Name = "lblAnio";
         lblAnio.Location = new Point(350, 120);
